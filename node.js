@@ -2,7 +2,8 @@ var globals =
 {
     app: require("http").createServer(handler), 
     lastScrape: null, //senaste tidpunkten som en skrapning genomfördes
-    timeBetweenScrapes: 300000 //tid mellan varje skrapning (5 minuter i millisekunder)
+    timeBetweenScrapes: 5000, //tid mellan varje skrapning (5 minuter i millisekunder)
+    scrapeURL: "http://coursepress.lnu.se/kurser/"
 };
 
 
@@ -33,7 +34,21 @@ function Scrape()
     //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
     if(globals.lastScrape === null || Date.now()-globals.lastScrape >= globals.timeBetweenScrapes)
     {
-        console.log("scrape");
+        var request = require("http").request(globals.scrapeURL, function(res)
+        {
+            
+            res.setEncoding('utf8');
+            
+            //om vi får nån data
+            res.on("data", function(body)
+            {
+                console.log(body);    
+            })
+        })
+        
+        //stoppa http-requesten
+        request.end();
+        
         globals.lastScrape = Date.now();
     }
     
