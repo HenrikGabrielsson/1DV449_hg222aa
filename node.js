@@ -37,6 +37,7 @@ function Scrape()
         var request = require("http").request(globals.scrapeURL, function(res)
         {
             
+            //vill ha sidan i utf-8. annars blir den ganska värdelös
             res.setEncoding('utf8');
             
             //om vi får nån data
