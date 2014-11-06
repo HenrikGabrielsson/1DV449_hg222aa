@@ -1,6 +1,12 @@
 var globals =
 {
-    app: require("http").createServer(handler), 
+    http: require("http"),
+    cheerio: require("cheerio"),
+    
+    //två egenskapade klasser som jag vill kunna skapa instanser av
+    Course: require("./course.js"),
+    Entry: require("./entry.js"),
+    
     lastScrape: null, //senaste tidpunkten som en skrapning genomfördes
     readableLastScrape:null,
     timeBetweenScrapes: 5000, //tid mellan varje skrapning (5 minuter i millisekunder)
@@ -11,7 +17,11 @@ var globals =
 //När en klient ansluter körs denna funktion.
 function handler (req, res) 
 {
-    scrape();
+    //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
+    if(globals.lastScrape === null || Date.now()-globals.lastScrape >= globals.timeBetweenScrapes)
+    {
+        scrape();
+    }
     
     res.writeHead(200, {"Content-Type": "text/html"});
     res.write
@@ -45,33 +55,38 @@ function addZeroIfLessThan10(number)
     return number;
 }
 
-//den här funktionen ska "skrapa" ner resultat från en extern html-sida
+//tar emot en sträng som innehåller alla html-taggar från den skrapade sidan och gör om den till nodes
+function getDomBody(body)
+{
+    $ = globals.cheerio.load(body);
+    
+    return $("#blogs_list");
+}
+
+//den här funktionen ska "skrapa" ner alla länkar till 
 function scrape()
 {
-    //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
-    if(globals.lastScrape === null || Date.now()-globals.lastScrape >= globals.timeBetweenScrapes)
+
+    var request = globals.http.request(globals.scrapeURL, function(res)
     {
-        var request = require("http").request(globals.scrapeURL, function(res)
+        //vill ha sidan i utf-8. annars blir den svår att förstå...
+        res.setEncoding('utf8');
+        
+        //om vi får nån data (body blir sidans html)
+        res.on("data", function(body)
         {
-            
-            //vill ha sidan i utf-8. annars blir den ganska värdelös
-            res.setEncoding('utf8');
-            
-            //om vi får nån data
-            res.on("data", function(body)
-            {
-                console.log(body);    
-            })
+            var domBody = getDomBody(body);
         })
-        
-        //stoppa http-requesten
-        request.end();
-        
-        //uppdatera tid-objekten
-        globals.lastScrape = Date.now();
-        globals.readableLastScrape = createDateString();
-    }
+    })
+    
+    //stoppa http-requesten
+    request.end();
+    
+    //uppdatera tid-objekten
+    globals.lastScrape = Date.now();
+    globals.readableLastScrape = createDateString();
     
 }
 
-globals.app.listen(8080); //lyssna genom denna port.
+//lyssna genom denna port och kör handler när någon ansluter.
+globals.http.createServer(handler).listen(8080);
