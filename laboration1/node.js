@@ -17,6 +17,15 @@ var globals =
 //När en klient ansluter körs denna funktion.
 function handler (req, res) 
 {
+    
+    //be favicon att dra åt he..
+    if(req.url == "/favicon.ico")
+    {
+        res.writeHead(200, {"Content-Type": "text/html"});
+        res.end();
+        return;
+    }
+    
     //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
     if(globals.lastScrape === null || Date.now()-globals.lastScrape >= globals.timeBetweenScrapes)
     {
@@ -55,27 +64,47 @@ function addZeroIfLessThan10(number)
     return number;
 }
 
-//tar emot en sträng som innehåller alla html-taggar från den skrapade sidan och gör om den till nodes
-function getDomBody(body)
+//kollar om det finns någon lista med kurslänkar i given html
+function containsCourseLinks(body)
 {
-    $ = globals.cheerio.load(body);
     
-    return $("#blogs_list");
+    //skapa ett node tree, av html-elementen
+    $ = globals.cheerio.load(body);
+
+    //kolla om det finns en lista med länkar till kurssidor 
+    console.log($("#blogs-list"));
+    
 }
 
 //den här funktionen ska "skrapa" ner alla länkar till 
 function scrape()
 {
-
+    
+    //länkar till alla kurser ska läggas till här
+    var courseLinks = [];
+    
     var request = globals.http.request(globals.scrapeURL, function(res)
     {
+        
+        var data;
+        
         //vill ha sidan i utf-8. annars blir den svår att förstå...
         res.setEncoding('utf8');
         
-        //om vi får nån data (body blir sidans html)
+        //om vi får lite data så lägger vi in det i variabeln data ( det kan komma mer..)
         res.on("data", function(body)
         {
-            var domBody = getDomBody(body);
+            data += body;
+        })
+        
+        //nu har vi fått hela sidans body
+        res.on("end", function()
+        {
+            if(containsCourseLinks(data))
+            {
+                //lägg till alla nya länkar
+                courseLinks = courseLinks.concat(getCourseLinks(data));
+            }
         })
     })
     
