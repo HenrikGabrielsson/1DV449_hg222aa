@@ -93,7 +93,7 @@ function getCourseLinks(body)
 
 //denna funktion hämtar alla länkar från alla listor
 //bpage visar vilken sida i pagineringen som ska genomsökas
-function getCourseList(bpage)
+function getCourseList(bpage, callback)
 {
     var courseList = [];
     
@@ -120,10 +120,14 @@ function getCourseList(bpage)
                 getCourseLinks(data);
                 
                 //här kallar funktionen på siog själv och hämtar ut länkarna från de andra sidorna också, genom att plussa på sidnumret
-                getCourseList(++bpage);
+                getCourseList(++bpage, function(){callback() });
+                
+                console.log("working hard");
             }
-            
-            return courseList;
+            else
+            {
+                callback();
+            }
 
         })
     })
@@ -137,7 +141,7 @@ function scrape()
 {
 
     //länkar till alla kurser ska läggas till här
-    getCourseList(1);
+    getCourseList(1, function(){console.log("all done")});
     
     //uppdatera tid-objekten
     globals.lastScrape = Date.now();
@@ -146,4 +150,4 @@ function scrape()
 }
 
 //lyssna genom denna port och kör handler när någon ansluter.
-globals.http.createServer(handler).listen(8007);
+globals.http.createServer(handler).listen(8080);
