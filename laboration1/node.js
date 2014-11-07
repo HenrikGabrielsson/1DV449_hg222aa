@@ -10,7 +10,9 @@ var globals =
     lastScrape: null, //senaste tidpunkten som en skrapning genomfördes
     readableLastScrape:null,
     timeBetweenScrapes: 5000, //tid mellan varje skrapning (5 minuter i millisekunder)
-    scrapeURL: "http://coursepress.lnu.se/kurser/"
+    scrapeURL: "http://coursepress.lnu.se/kurser/",
+    
+    courseList: []
 };
 
 
@@ -68,24 +70,36 @@ function addZeroIfLessThan10(number)
 function containsCourseLinks(body)
 {
     
-    //skapa ett node tree, av html-elementen
-    $ = globals.cheerio.load(body);
+    //skapa ett node tree, och plocka ut listan med id "blogs-list"
+    var blogsList = globals.cheerio.load(body)("#blogs-list");
 
-    //kolla om det finns en lista med länkar till kurssidor 
-    console.log($("#blogs-list"));
+    //returnera true om den finns.
+    return blogsList.html() !== null;
     
 }
 
-//den här funktionen ska "skrapa" ner alla länkar till 
-function scrape()
+function getCourseLinks(body)
 {
+    //skapa ett node tree, och plocka ut listan med id "blogs-list"
+    var blogsList = globals.cheerio.load(body)("#blogs-list");
     
-    //länkar till alla kurser ska läggas till här
-    var courseLinks = [];
-    
-    var request = globals.http.request(globals.scrapeURL, function(res)
+    //lägger till alla länkar till alla kurser i listan i en array som ska returneras
+    for(var i = 0; i < blogsList.children().length; i++)
     {
-        
+        globals.courseList.push(blogsList.children(i).children(".item").children(".item-title").children("a").attr("href"));
+    }
+}
+
+
+//denna funktion hämtar alla länkar från alla listor
+//bpage visar vilken sida i pagineringen som ska genomsökas
+function getCourseList(bpage)
+{
+    var courseList = [];
+    
+    
+    var request = globals.http.request(globals.scrapeURL + "?bpage=" + bpage, function(res)
+    {
         var data;
         
         //vill ha sidan i utf-8. annars blir den svår att förstå...
@@ -100,16 +114,30 @@ function scrape()
         //nu har vi fått hela sidans body
         res.on("end", function()
         {
+            //om det finns länkar på sidan (listan är inte slut än)
             if(containsCourseLinks(data))
             {
-                //lägg till alla nya länkar
-                courseLinks = courseLinks.concat(getCourseLinks(data));
+                getCourseLinks(data);
+                
+                //här kallar funktionen på siog själv och hämtar ut länkarna från de andra sidorna också, genom att plussa på sidnumret
+                getCourseList(++bpage);
             }
+            
+            return courseList;
+
         })
     })
     
     //stoppa http-requesten
-    request.end();
+    request.end();    
+}
+
+//den här funktionen ska "skrapa" ner alla länkar till 
+function scrape()
+{
+
+    //länkar till alla kurser ska läggas till här
+    getCourseList(1);
     
     //uppdatera tid-objekten
     globals.lastScrape = Date.now();
@@ -118,4 +146,4 @@ function scrape()
 }
 
 //lyssna genom denna port och kör handler när någon ansluter.
-globals.http.createServer(handler).listen(8080);
+globals.http.createServer(handler).listen(8007);
