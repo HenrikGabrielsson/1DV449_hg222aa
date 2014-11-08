@@ -2,6 +2,7 @@ var globals =
 {
     http: require("http"),
     cheerio: require("cheerio"),
+    fs: require("fs"),
     
     //två egenskapade klasser som jag vill kunna skapa instanser av
     Course: require("./course.js"),
@@ -12,7 +13,8 @@ var globals =
     timeBetweenScrapes: 5000, //tid mellan varje skrapning (5 minuter i millisekunder)
     scrapeURL: "http://coursepress.lnu.se/kurser/",
     
-    courseList: []
+    linkList: [],
+    courseList:[]
 };
 
 
@@ -86,7 +88,12 @@ function getCourseLinks(body)
     //lägger till alla länkar till alla kurser i listan i en array som ska returneras
     for(var i = 0; i < blogsList.children().length; i++)
     {
-        globals.courseList.push(blogsList.children(i).children(".item").children(".item-title").children("a").attr("href"));
+        var link = blogsList.children(i).children(".item").children(".item-title").children("a").attr("href");
+        
+        if(link.indexOf("http://coursepress.lnu.se/kurs/") !== -1)
+        {
+            globals.linkList.push(link);
+        }
     }
 }
 
@@ -95,7 +102,7 @@ function getCourseLinks(body)
 //bpage visar vilken sida i pagineringen som ska genomsökas
 function getCourseList(bpage, callback)
 {
-    var courseList = [];
+    var linkList = [];
     
     
     var request = globals.http.request(globals.scrapeURL + "?bpage=" + bpage, function(res)
@@ -120,13 +127,13 @@ function getCourseList(bpage, callback)
                 getCourseLinks(data);
                 
                 //här kallar funktionen på siog själv och hämtar ut länkarna från de andra sidorna också, genom att plussa på sidnumret
+                //när den sista sidan har laddat klart så kommer alla callbacks köras i bakvänd ordning för att komma tillbaka till början
                 getCourseList(++bpage, function(){callback() });
                 
-                console.log("working hard");
             }
             else
             {
-                callback();
+                callback(); //we're done...
             }
 
         })
@@ -141,12 +148,42 @@ function scrape()
 {
 
     //länkar till alla kurser ska läggas till här
-    getCourseList(1, function(){console.log("all done")});
+    getCourseList(1, function()
+    {
+        //detta sker när alla länkar har laddats in.
+        //saveToFile();
+        console.log(globals.linkList);
+    });
     
     //uppdatera tid-objekten
     globals.lastScrape = Date.now();
     globals.readableLastScrape = createDateString();
     
+}
+
+function saveToFile()
+{
+    for(var i = 0; i < globals.linkList.length; i++)
+    {
+        var request = globals.http.request(globals.linkList[i], function(res)
+        {
+            var data;
+            
+            //vill ha sidan i utf-8. annars blir den svår att förstå...
+            res.setEncoding('utf8');
+            
+            res.on("data", function(body)
+            {
+                data += body;
+            });
+            
+            res.on("end", function()
+            {
+            });
+        });
+        
+        request.end();
+    }
 }
 
 //lyssna genom denna port och kör handler när någon ansluter.
