@@ -90,6 +90,7 @@ function getCourseLinks(body)
     {
         var link = blogsList.children(i).children(".item").children(".item-title").children("a").attr("href");
         
+        //sorterar bort icke-kurser
         if(link.indexOf("http://coursepress.lnu.se/kurs/") !== -1)
         {
             globals.linkList.push(link);
@@ -151,9 +152,11 @@ function scrape()
     getCourseList(1, function()
     {
         //detta sker när alla länkar har laddats in.
-        //saveToFile();
-        console.log(globals.linkList);
+        getAllCourses();
     });
+    
+    
+    
     
     //uppdatera tid-objekten
     globals.lastScrape = Date.now();
@@ -161,30 +164,95 @@ function scrape()
     
 }
 
-function saveToFile()
+function getAllCourses(data)
 {
     for(var i = 0; i < globals.linkList.length; i++)
     {
-        var request = globals.http.request(globals.linkList[i], function(res)
-        {
-            var data;
-            
-            //vill ha sidan i utf-8. annars blir den svår att förstå...
-            res.setEncoding('utf8');
-            
-            res.on("data", function(body)
-            {
-                data += body;
-            });
-            
-            res.on("end", function()
-            {
-            });
-        });
-        
-        request.end();
+        globals.courseList.push(getCourse(globals.linkList[i]));
     }
 }
 
+//skapar ett Course-objekt efter att ha hämtat data från länken till kursen.
+function getCourse(link)
+{
+    var course;
+    
+    var request = globals.http.request(link, function(res)
+    {
+        var data;
+    
+        //vill ha sidan i utf-8. annars blir den svår att förstå...
+        res.setEncoding('utf8');
+        
+        res.on("data", function(body)
+        {
+            data += body;
+        });
+        
+        res.on("end", function()
+        {
+            //skapa ett node-tree av html-kroppen
+            var page = globals.cheerio.load(data);
+            
+            //hämta ut olika delar.
+            var courseTitle = page("h1", "#header-wrapper").text();
+            var courseCode = page("ul", "#header-wrapper").children(2).children("a").text();
+            var syllabusLink = "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=" +courseCode+ "&documenttype=pdf&lang=sv"; 
+            var introText = page("p", ".entry-content").text();
+            
+            //inlägg har lite olika format så för att få med alla "senaste inlägg" så får vi först ta reda på hur html-sidan är uppbyggd.
+            var lastHTMLEntry;
+            if(page("#content").is("div"))
+            {
+                lastHTMLEntry = page("section", "#content").children("article").first();
+
+            }
+            
+            else if(page("#content").is("section"))
+            {
+                lastHTMLEntry = page("#content").children(2);
+                    
+            }
+        
+            var entryHeader = lastHTMLEntry.children(".entry-header");
+            var entryDate = entryHeader.children(".entry-byline").text().match(/[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}/);
+            
+            if(entryDate !== null)
+            {
+                entryDate = entryDate[0];
+            }
+            else 
+            {
+                entryDate = null;
+            }
+            
+            //skapa senaste inlägget (sem ett Entry-objekt)
+            var entry = new globals.Entry
+            (
+                entryHeader.children(".entry-title").children("a").text(),
+                entryHeader.children(".entry-byline").children("strong").text(),
+                entryDate
+                
+            );
+            
+            //Skapa nytt Course-objekt
+            var course = new globals.Course(link, courseTitle, courseCode, syllabusLink, introText, entry);
+            
+            console.log(course);
+            
+        });
+    });
+    
+    request.end();
+    
+    return course;
+}
+
+
+function saveToFile()
+{
+
+}
+
 //lyssna genom denna port och kör handler när någon ansluter.
-globals.http.createServer(handler).listen(8080);
+globals.http.createServer(handler).listen(8000);
