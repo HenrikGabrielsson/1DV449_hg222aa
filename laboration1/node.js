@@ -14,7 +14,9 @@ var globals =
     lastScrape: null, //senaste tidpunkten som en skrapning genomfördes
     readableLastScrape:null,
     timeBetweenScrapes: 5000, //tid mellan varje skrapning (5 minuter i millisekunder)
-    scrapeURL: "http://coursepress.lnu.se/kurser/",
+    scrapeHost:"coursepress.lnu.se",
+    scrapeListPath:"/kurser/",
+    
     userAgent: "hg222aaBot/1.0 (hg222aa@student.lnu.se)",
     
     linkList: [],
@@ -110,7 +112,7 @@ function getCourseList(bpage, callback)
     var linkList = [];
     
     
-    var request = globals.http.request(globals.scrapeURL + "?bpage=" + bpage, function(res)
+    var request = globals.http.request({hostname: globals.scrapeHost, path: globals.scrapeListPath + "?bpage=" + bpage, headers: {'user-agent': globals.userAgent}}, function(res)
     {
         var data;
         
@@ -261,8 +263,9 @@ function getAllCourses(callback)
 function getCourse(link, callback)
 {
     var course;
+    var path = link.split(globals.scrapeHost)[1];
     
-    var request = globals.http.request(link, function(res)
+    var request = globals.http.request({hostname: globals.scrapeHost, path: path, headers: {'user-agent': globals.userAgent}}, function(res)
     {
         var data;
     
