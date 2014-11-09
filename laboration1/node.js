@@ -4,6 +4,9 @@ var globals =
     cheerio: require("cheerio"),
     fs: require("fs"),
     
+    //fil där JSON-strängar ska sparas
+    courseFile: "courses.json",
+    
     //två egenskapade klasser som jag vill kunna skapa instanser av
     Course: require("./course.js"),
     Entry: require("./entry.js"),
@@ -117,7 +120,7 @@ function getCourseList(bpage, callback)
         res.on("data", function(body)
         {
             data += body;
-        })
+        });
         
         //nu har vi fått hela sidans body
         res.on("end", function()
@@ -144,6 +147,26 @@ function getCourseList(bpage, callback)
     request.end();    
 }
 
+//denna funktion sparar alla Course-objekt i en json-fil
+function saveToFile()
+{
+    for(var i = 0; i < globals.courseList.length;i++)
+    {
+        //skapar JSON-string av Course-objektet
+        var courseString = JSON.stringify(globals.courseList[i]);
+        
+        globals.fs.writeFile(globals.courseFile, courseString, function(error)
+        {
+            if(error)
+            {
+                console.log("Something has gone horribly wrong when saving to file.");
+                return;
+            }
+        });
+    }
+}
+
+
 //den här funktionen ska "skrapa" ner alla länkar till 
 function scrape()
 {
@@ -151,12 +174,15 @@ function scrape()
     //länkar till alla kurser ska läggas till här
     getCourseList(1, function()
     {
-        //detta sker när alla länkar har laddats in.
-        getAllCourses();
+        
+        //när alla länkar till kurser är hämtade så hämtas datan från alla kurssidor.
+        getAllCourses(function()
+        {
+            
+            //när all kursdata hämtats så sparas allt i en json-fil
+            saveToFile();
+        });
     });
-    
-    
-    
     
     //uppdatera tid-objekten
     globals.lastScrape = Date.now();
@@ -164,16 +190,29 @@ function scrape()
     
 }
 
-function getAllCourses(data)
+
+function getAllCourses(callback)
 {
     for(var i = 0; i < globals.linkList.length; i++)
     {
-        globals.courseList.push(getCourse(globals.linkList[i]));
+        getCourse(globals.linkList[i], coursePageScraped);
+    }
+    
+    //function som håller reda på hur många kurser som har skrapats och när alla är klara så rapporterar den tillbaka till funktionen som kallade på getAllCourses
+    var coursesDone = 0;
+    function coursePageScraped()
+    {
+        coursesDone++;
+        
+        if(coursesDone == globals.linkList.length)
+        {
+            callback();
+        }
     }
 }
 
 //skapar ett Course-objekt efter att ha hämtat data från länken till kursen.
-function getCourse(link)
+function getCourse(link, callback)
 {
     var course;
     
@@ -232,27 +271,21 @@ function getCourse(link)
                 entryHeader.children(".entry-title").children("a").text(),
                 entryHeader.children(".entry-byline").children("strong").text(),
                 entryDate
-                
             );
             
             //Skapa nytt Course-objekt
             var course = new globals.Course(link, courseTitle, courseCode, syllabusLink, introText, entry);
             
-            console.log(course);
-            
+            globals.courseList.push(course);
+            callback();
         });
     });
     
     request.end();
     
-    return course;
+    
 }
 
-
-function saveToFile()
-{
-
-}
 
 //lyssna genom denna port och kör handler när någon ansluter.
 globals.http.createServer(handler).listen(8000);
