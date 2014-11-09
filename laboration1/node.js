@@ -15,6 +15,7 @@ var globals =
     readableLastScrape:null,
     timeBetweenScrapes: 5000, //tid mellan varje skrapning (5 minuter i millisekunder)
     scrapeURL: "http://coursepress.lnu.se/kurser/",
+    userAgent: "hg222aaBot/1.0 (hg222aa@student.lnu.se)",
     
     linkList: [],
     courseList:[]
@@ -143,19 +144,66 @@ function getCourseList(bpage, callback)
         })
     })
     
-    //stoppa http-requesten
+    
+    
+    //skicka!
     request.end();    
+}
+
+function createJSONString(course)
+{
+    var noInfo = "no information";
+    
+    //sätter tomma och nullvärden till "no information istället.
+    if(course.courseUrl === null || course.courseUrl.length === 0)
+    {
+        course.courseUrl = noInfo;
+    }
+    if(course.name === null || course.name.length === 0)
+    {
+        course.name = noInfo;
+    }
+    if(course.courseCode === null || course.courseCode.length === 0)
+    {
+        course.courseCode = noInfo;
+    }
+    if(course.syllabusUrl === null || course.syllabusUrl.length === 0)
+    {
+        course.syllabusUrl = noInfo;
+    }
+    if(course.introText === null || course.introText.length === 0)
+    {
+        course.introText = noInfo;
+    }
+    if(course.lastEntry.title === null || course.lastEntry.title.length === 0)
+    {
+        course.lastEntry.title = noInfo;
+    }
+    if(course.lastEntry.writer === null || course.lastEntry.writer.length === 0)
+    {
+        course.lastEntry.writer = noInfo;
+    }
+    if(course.lastEntry.date === null || course.lastEntry.date.length === 0)
+    {
+        course.lastEntry.date = noInfo;
+    }
+    
+    return JSON.stringify(course) + "\n";
+    
 }
 
 //denna funktion sparar alla Course-objekt i en json-fil
 function saveToFile()
 {
+    
+    var courseString = "";
     for(var i = 0; i < globals.courseList.length;i++)
     {
         //skapar JSON-string av Course-objektet
-        var courseString = JSON.stringify(globals.courseList[i]);
-        
-        globals.fs.writeFile(globals.courseFile, courseString, function(error)
+        courseString += createJSONString(globals.courseList[i]);
+    }
+    
+    globals.fs.writeFile(globals.courseFile, courseString, function(error)
         {
             if(error)
             {
@@ -163,14 +211,12 @@ function saveToFile()
                 return;
             }
         });
-    }
 }
 
 
 //den här funktionen ska "skrapa" ner alla länkar till 
 function scrape()
 {
-
     //länkar till alla kurser ska läggas till här
     getCourseList(1, function()
     {
@@ -282,10 +328,8 @@ function getCourse(link, callback)
     });
     
     request.end();
-    
-    
 }
 
 
 //lyssna genom denna port och kör handler när någon ansluter.
-globals.http.createServer(handler).listen(8000);
+globals.http.createServer(handler).listen(8020);
