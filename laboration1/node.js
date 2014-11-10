@@ -7,13 +7,13 @@ var globals =
     //fil där JSON-strängar ska sparas
     courseFile: "courses.json",
     
+    cachedObjects: null,
+    
     //två egenskapade klasser som jag vill kunna skapa instanser av
     Course: require("./course.js"),
     Entry: require("./entry.js"),
-    
-    lastScrape: null, //senaste tidpunkten som en skrapning genomfördes
-    readableLastScrape:null,
-    timeBetweenScrapes: 5000, //tid mellan varje skrapning (5 minuter i millisekunder)
+
+    timeBetweenScrapes: 60000, //tid mellan varje skrapning (5 minuter i millisekunder)
     scrapeHost:"coursepress.lnu.se",
     scrapeListPath:"/kurser/",
     
@@ -22,6 +22,30 @@ var globals =
     linkList: [],
     courseList:[]
 };
+
+function checkIfTimeToScrape()
+{
+    var cachedObjects = globals.fs.readFileSync(globals.courseFile, {encoding:"utf8", flag:"r"})
+    var cachedJSON;
+    
+    //kolla om det går att skapa en JSON av innehållet i filen. annars får sidan skrapas på nytt
+    try
+    {
+        cachedJSON = JSON.parse(cachedObjects);
+    }
+    catch(error)
+    {
+        return true;
+    }
+    
+    if(cachedJSON.statistics.lastScrape + globals.timeBetweenScrapes < Date.now())
+    { 
+        return true;
+    }
+    
+    return false;
+    
+}
 
 
 //När en klient ansluter körs denna funktion.
@@ -37,7 +61,7 @@ function handler (req, res)
     }
     
     //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
-    if(globals.lastScrape === null || Date.now()-globals.lastScrape >= globals.timeBetweenScrapes)
+    if(checkIfTimeToScrape())
     {
         scrape();
     }
@@ -50,7 +74,7 @@ function handler (req, res)
         "<head>"+
         "</head>"+
         "<body>"+
-        "<p>"+globals.readableLastScrape+"</p>"+
+        "<p>Nothing here yet</p>"+
         "</body>"+
         "</html>"
     );
@@ -152,60 +176,28 @@ function getCourseList(bpage, callback)
     request.end();    
 }
 
-function createJSONString(course)
+function createJSONString()
 {
-    var noInfo = "no information";
     
-    //sätter tomma och nullvärden till "no information istället.
-    if(course.courseUrl === null || course.courseUrl.length === 0)
+    var statsObject = 
     {
-        course.courseUrl = noInfo;
-    }
-    if(course.name === null || course.name.length === 0)
-    {
-        course.name = noInfo;
-    }
-    if(course.courseCode === null || course.courseCode.length === 0)
-    {
-        course.courseCode = noInfo;
-    }
-    if(course.syllabusUrl === null || course.syllabusUrl.length === 0)
-    {
-        course.syllabusUrl = noInfo;
-    }
-    if(course.introText === null || course.introText.length === 0)
-    {
-        course.introText = noInfo;
-    }
-    if(course.lastEntry.title === null || course.lastEntry.title.length === 0)
-    {
-        course.lastEntry.title = noInfo;
-    }
-    if(course.lastEntry.writer === null || course.lastEntry.writer.length === 0)
-    {
-        course.lastEntry.writer = noInfo;
-    }
-    if(course.lastEntry.date === null || course.lastEntry.date.length === 0)
-    {
-        course.lastEntry.date = noInfo;
-    }
+        lastScrape: Date.now(),
+        numberOfCoursesScraped: globals.courseList.length
+    };
     
-    return JSON.stringify(course) + "\n";
+    var jsonString = JSON.stringify({statistics:statsObject, courses:globals.courseList}, null, "\n");
+    
+
+    return jsonString;
     
 }
 
 //denna funktion sparar alla Course-objekt i en json-fil
 function saveToFile()
 {
+    jsonString = createJSONString();
     
-    var courseString = "";
-    for(var i = 0; i < globals.courseList.length;i++)
-    {
-        //skapar JSON-string av Course-objektet
-        courseString += createJSONString(globals.courseList[i]);
-    }
-    
-    globals.fs.writeFile(globals.courseFile, courseString, function(error)
+    globals.fs.writeFile(globals.courseFile, jsonString, function(error)
         {
             if(error)
             {
@@ -231,11 +223,6 @@ function scrape()
             saveToFile();
         });
     });
-    
-    //uppdatera tid-objekten
-    globals.lastScrape = Date.now();
-    globals.readableLastScrape = createDateString();
-    
 }
 
 
