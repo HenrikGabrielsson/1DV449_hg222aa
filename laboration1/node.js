@@ -3,6 +3,7 @@ var globals =
     http: require("http"),
     cheerio: require("cheerio"),
     fs: require("fs"),
+    ns: require("node-static"),
     
     //fil där JSON-strängar ska sparas
     courseFile: "courses.json",
@@ -52,7 +53,6 @@ function checkIfTimeToScrape()
 //När en klient ansluter körs denna funktion.
 function handler (req, res) 
 {
-    
     //be favicon att dra åt he..
     if(req.url == "/favicon.ico")
     {
@@ -61,25 +61,20 @@ function handler (req, res)
         return;
     }
     
+    var fileServer = new globals.ns.Server({cache: 10});
+    
     //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
     if(checkIfTimeToScrape())
     {
         scrape();
     }
     
-    res.writeHead(200, {"Content-Type": "text/html"});
-    res.write
-    (
-        "<!doctype html>"+
-        "<html>"+
-        "<head>"+
-        "</head>"+
-        "<body>"+
-        "<p>Nothing here yet</p>"+
-        "</body>"+
-        "</html>"
-    );
-    res.end();
+    req.addListener('end', function() 
+    {
+        fileServer.serve(req, res); //skicka filer
+
+    }).resume();
+
 }
 
 //funktion som returnerar datum/tid i korrekt format 
@@ -343,4 +338,4 @@ function getCourse(link, callback)
 
 
 //lyssna genom denna port och kör handler när någon ansluter.
-globals.http.createServer(handler).listen(8020);
+globals.http.createServer(handler).listen(8080);
