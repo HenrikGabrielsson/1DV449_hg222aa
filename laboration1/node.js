@@ -13,7 +13,7 @@ var globals =
     Course: require("./course.js"),
     Entry: require("./entry.js"),
 
-    timeBetweenScrapes: 60000, //tid mellan varje skrapning (5 minuter i millisekunder)
+    timeBetweenScrapes: 300000, //tid mellan varje skrapning (5 minuter i millisekunder)
     scrapeHost:"coursepress.lnu.se",
     scrapeListPath:"/kurser/",
     
@@ -38,6 +38,7 @@ function checkIfTimeToScrape()
         return true;
     }
     
+    //kolla om det har gått tillräckligt med tid för att det ska vara dags att skrapa igen.
     if(cachedJSON.statistics.lastScrape + globals.timeBetweenScrapes < Date.now())
     { 
         return true;
@@ -176,28 +177,48 @@ function getCourseList(bpage, callback)
     request.end();    
 }
 
+//skapar jsonobjekt som ska sparas.
 function createJSONString()
 {
-    
+    //lite statistik
     var statsObject = 
     {
         lastScrape: Date.now(),
         numberOfCoursesScraped: globals.courseList.length
     };
     
+    //spara statistiken tillsammans med kurserna.
     var jsonString = JSON.stringify({statistics:statsObject, courses:globals.courseList}, null, "\n");
     
-
     return jsonString;
+    
+}
+
+//sorterar kurserna efter namn i bostavsordning
+function sortCoursesByName()
+{
+    globals.courseList.sort(function(a,b)
+    {
+        if(a.name < b.name)
+        {
+            return -1;
+        }
+        if(a.name > b.name)
+        {
+            return 1;
+        }
+        return 0;
+    })
     
 }
 
 //denna funktion sparar alla Course-objekt i en json-fil
 function saveToFile()
 {
-    jsonString = createJSONString();
+    //Sorterar kurserna först
+    sortCoursesByName();
     
-    globals.fs.writeFile(globals.courseFile, jsonString, function(error)
+    globals.fs.writeFile(globals.courseFile, createJSONString(), function(error)
         {
             if(error)
             {
