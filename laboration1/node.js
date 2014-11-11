@@ -15,6 +15,7 @@ var globals =
     Entry: require("./entry.js"),
 
     timeBetweenScrapes: 300000, //tid mellan varje skrapning (5 minuter i millisekunder)
+    
     scrapeHost:"coursepress.lnu.se",
     scrapeListPath:"/kurser/",
     
@@ -89,9 +90,9 @@ function serveFiles(req,res)
 
 
 //funktion som returnerar datum/tid i korrekt format 
-function createDateString()
+function createDateString(timeStamp)
 {
-    var date = new Date(globals.lastScrape);
+    var date = new Date(timeStamp);
     
     return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + addZeroIfLessThan10(date.getDate()) + " " + addZeroIfLessThan10(date.getHours()) + ":" + addZeroIfLessThan10(date.getMinutes()) + ":" + addZeroIfLessThan10(date.getSeconds());
 }
@@ -189,7 +190,9 @@ function createJSONString()
     //lite statistik
     var statsObject = 
     {
+        
         lastScrape: Date.now(),
+        readableLastScrape:createDateString(Date.now()),
         numberOfCoursesScraped: globals.courseList.length
     };
     

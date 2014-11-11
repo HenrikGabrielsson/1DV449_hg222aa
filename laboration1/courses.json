@@ -3,7 +3,10 @@
 "statistics": {
 
 
-"lastScrape": 1415704683944,
+"lastScrape": 1415723122810,
+
+
+"readableLastScrape": "2014-11-11 16:25:22",
 
 
 "numberOfCoursesScraped": 68
@@ -801,7 +804,7 @@
 
 
 
-"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap-2/",
+"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap/",
 
 
 
@@ -809,11 +812,11 @@
 
 
 
-"courseCode": "2DV40E",
+"courseCode": "1DV41E",
 
 
 
-"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=2DV40E&documenttype=pdf&lang=sv",
+"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=1DV41E&documenttype=pdf&lang=sv",
 
 
 
@@ -850,7 +853,7 @@
 
 
 
-"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap/",
+"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap-2/",
 
 
 
@@ -858,11 +861,11 @@
 
 
 
-"courseCode": "1DV41E",
+"courseCode": "2DV40E",
 
 
 
-"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=1DV41E&documenttype=pdf&lang=sv",
+"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=2DV40E&documenttype=pdf&lang=sv",
 
 
 
@@ -1062,7 +1065,7 @@
 
 
 
-"introText": "Välkommen till kursen!På sidan kursöversikt så hittar du en beskrivning av upplägg och innehåll för kursen.I kursforumet kan du få tips och ställa frågor.OBS! Kurssidan kommer att uppdateras inom kort inför kurstillfälle HT14 OBS!",
+"introText": "Välkommen till kursen!På sidan kursöversikt så hittar du en beskrivning av upplägg och innehåll för kursen.I kursforumet kan du få tips och ställa frågor.",
 
 
 
@@ -2189,7 +2192,7 @@
 
 
 
-"introText": "\n1DV012 Operating Systems, 7.5 credits\n1DV012 Operating Systems, 7.5 creditsThis course will discuss operating system concepts. We will learn about the process concept, process scheduling and synchronization, memory management and file management.This course includes a series of lectures and a practical assignment.In total 20 points may be achieved during the course,At least 12 points are needed to Pass (G) the course, whereas with at least 16 points the course is Passed with Distinction (VG). Please keep visiting this website, since additional relevant information for the course will be included continually.",
+"introText": "\n1DV012 Operating Systems, 7.5 credits\n1DV012 Operating Systems, 7.5 creditsThis course will discuss operating system concepts. We will learn about the process concept, process scheduling and synchronization, memory management and file management.This course includes a series of lectures and a practical assignment.In total 20 points may be achieved during the course,At least 12 points are needed to Pass (G) the course, whereas with at least 16 points the course is Passed with Distinction (VG). Please keep visiting this website, since additional relevant information for the course will be included continually.The deadline for course registration was April 15, 2014.Course Participants in H1401.\tBengtsson,\tHåkan\n02.\tBergman,\tJohannes\n03.\tBilgic,\tNazli\n04.\tBjörk,\tBenjamin\n05.\tBlixt,\tDaniel\n06.\tBogdanovic,\tMilos\n07.\tDarvelid,\tMarcus\n08.\tDoroudian,\tAmir\n09.\tEbersohl,\tBrandon\n10.\tEbert,\tDylan\n11.\tGerdzhikov,\tPetko\n12.\tGriffith,\tIoseff\n13.\tGündogdu,\tElif\n14.\tHallink,\tRobert\n15.\tHolmström,\tJesper\n16.\tIsaksson,\tMårten\n17.\tJohansson,\tAnders\n18.\tJönsson,\tLudwig\n19.\tKomolafe\tYemi\n20.\tLagerkrants,\tEleonor\n21.\tLegaspi Ramos,\tXurxo\n22.\tLjungqvist,\tMattias\n23.\tMedeström,\tJohan\n24.\tMösenbacher,\tAnton\n25.\tNasser-Eddine,\tHussein\n26.\tNilsson,\tDaniel\n27.\tNilsson,\tMagnus\n28.\tPage,\tRaphael\n29.\tPagels,\tCarl\n30.\tPalm,\tMarkus\n31.\tPetersson Costa,\tAnnika\n32.\tPrado,\tPriscila\n33.\tRadhouane,\tSelina\n34.\tRong,\tHuan\n35.\tRozenblioum,\tPavel\n36.\tSchiedt,\tFlorian\n37.\tSteczko,\tJan\n38.\tSundström,\tTed\n39.\tSöderlund,\tOscar\n40.\tSöylemez,\tAbdullah\n41.\tThomas,\tKevin\n42.\tTorsson,\tMarkus\n43.\tUlm,\tGregor\n44.\tVulgari,\tSophia-Kyriaki\n45.\tVångö,\tJakob\n46.\tWassbjer,\tRobin\n47.\tXue,\tYibing\n48.\tYu,\tWeibin\n49.\tÅkesson,\tMelker\n50.\tÖzdemir,\tOzan",
 
 
 
@@ -3022,7 +3025,7 @@
 
 
 
-"introText": "Denna kurs fokuserar helt på webben. Kursen tar upp webbens historia, utveckling och betydelse för samhället, problem inom forskningen kring webben (Web Science). Kursen tar också upp optimering och säkerhet i webbapplikationer. Stort fokus kommer att ligga i att kunna hantera öppna Webb-API:er för att sammanfoga data i så kallade mashup-applikationer.Du bör nu fått ett e-postmeddelande till den adress du angav på quiz-formuläret med ditt resultat.Jag har nu lagt upp lite nya länkar under Steg 1.Glöm inte göra Quizen senast söndag. Den bör vara hyfsat snabbt gjort ifall man hängde med på peer-instructionspasset. Först quizen är nu utlagd och bör inte vara några problem för er som hängde med på gårdagens peer-instruction. Det är ett vanligt googleformulär som ska fyllas i (man kan bara fylla i det en gång och det kräver inloggning via er google mejl). Senast söndag vill jag ha era svar. Annars får jag önska en trevlig helg!Då har vi haft första passet som använder peer-instruction. Jag tycker att det fungerade riktigt bra. Kanske blev det lite långt. Jag behöver fundera lite kring hur man formulerar vissa frågor och i vissa fall bör man köra lite längre tid till både första och andra “röstningen”. Sist hade jag ju en fråga kring hur ni upplevde passet och resultatet av denna blev:Det verkar som ni gillar konceptet och vi kommer alltså fortsätta köra det genom kursen. Kul tycker jag!Vad som nu gäller är att jag så fort jag hinner ska publicera inspelningen av passet, skapa en Quiz, gå igenom era förkunskap samt lägga ut nästa veckas studiematerial. Quizen hoppas jag kunna ha klar till torsdag lunch och det kommer finnas instruktioner om hur den går till. Den kommer i mångt och mycket bygga på detta pass vi körde.",
+"introText": "Denna kurs fokuserar helt på webben. Kursen tar upp webbens historia, utveckling och betydelse för samhället, problem inom forskningen kring webben (Web Science). Kursen tar också upp optimering och säkerhet i webbapplikationer. Stort fokus kommer att ligga i att kunna hantera öppna Webb-API:er för att sammanfoga data i så kallade mashup-applikationer.Jag har nu lagt ut en inspelning av Peer-Instruction #2. Jag kände att jag hade en ganska dålig dag på jobbet och strulade till det lite dels med applikationen och var lite rörig i vissa resonemang. Hur som helst. Nästa vecka kör vi vidare med webbsäkerhet och då kommer Johan med också så det blir lite ordning och reda   Självstudiematerial och laboration hoppas jag få ut under veckan.Några påpekade att coursepress webbserver visst går lite på knäna vissa tidpunkter när många testkör sina skrapor. Det är en skarp server och den kan säkert bli överbelastad ifall alla kör förfrågningar mot alla sidor samtidigt. Därför ber jag er att tänka lite på detta och kanske inte köra skrapan på ALLA sidor varje gång ni testar den. Det kanske räcker att bara köra mot en kurssida i taget för att testa strukturen och hur man plockar ut data, eller tänka sig för när man kör sin utveckling. Sen när man tror sig klar kan man köra en “slutkörning” mot alla sidorna. På så sätt kan vi nog hålla servern hyfsat rapp i alla fall.Du bör nu fått ett e-postmeddelande till den adress du angav på quiz-formuläret med ditt resultat.Jag har nu lagt upp lite nya länkar under Steg 1.Glöm inte göra Quizen senast söndag. Den bör vara hyfsat snabbt gjort ifall man hängde med på peer-instructionspasset. Först quizen är nu utlagd och bör inte vara några problem för er som hängde med på gårdagens peer-instruction. Det är ett vanligt googleformulär som ska fyllas i (man kan bara fylla i det en gång och det kräver inloggning via er google mejl). Senast söndag vill jag ha era svar. Annars får jag önska en trevlig helg!",
 
 
 
@@ -3031,7 +3034,7 @@
 
 
 
-"title": "Quiz-reultat",
+"title": "PI#2 och slö webbserver",
 
 
 
@@ -3041,7 +3044,7 @@
 
 
 
-"date": "2014-11-10 10:03"
+"date": "2014-11-11 04:29"
 
 
 
