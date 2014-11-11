@@ -3,7 +3,7 @@
 "statistics": {
 
 
-"lastScrape": 1415651893348,
+"lastScrape": 1415696816425,
 
 
 "numberOfCoursesScraped": 68
@@ -523,7 +523,7 @@
 
 
 
-"introText": "Ämne: Datavetenskap\nNivå: Grundnivå\nHögskolepoäng: 7,5\nKurskod: 1DV423På denna webbplats hittar du all information kring kursen. De flesta sidorna med sin information är helt öppna – ett fåtal sidor kräver inloggning beroende på att det är privat information.",
+"introText": "Ämne: Datavetenskap\nNivå: Grundnivå\nHögskolepoäng: 7,5\nKurskod: 1DV423På denna webbplats hittar du all information kring kursen. De flesta sidorna med sin information är helt öppna – ett fåtal sidor kräver inloggning beroende på att det är privat information.Nu är jag äntligen tillbaka i Kalmar, jag hoppas att det gått bra den första veckan.\nTanken var att vi skulle träffas idag och diskutera de första 3 föreläsningarna, dessvärre så kom jag hem till en son som hade feber och allmänt hängig.\nJag måste därför vara hemma med han idag så vi får träffas först imorgon eftermiddag kl. 1315.Tills dess ska ni även ha tittat på föreläsning 4 och 5 så kan vi ta och diskutera igenom dem också imorgon.Lycka till så ses vi imorgon.",
 
 
 
@@ -532,17 +532,17 @@
 
 
 
-"title": "no information",
+"title": "Flyttad föreläsningar",
 
 
 
 
-"writer": "no information",
+"writer": "Jacob Lindehoff",
 
 
 
 
-"date": "no information"
+"date": "2014-11-11 07:26"
 
 
 
@@ -801,7 +801,7 @@
 
 
 
-"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap-2/",
+"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap/",
 
 
 
@@ -809,11 +809,11 @@
 
 
 
-"courseCode": "2DV40E",
+"courseCode": "1DV41E",
 
 
 
-"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=2DV40E&documenttype=pdf&lang=sv",
+"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=1DV41E&documenttype=pdf&lang=sv",
 
 
 
@@ -850,7 +850,7 @@
 
 
 
-"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap/",
+"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap-2/",
 
 
 
@@ -858,11 +858,11 @@
 
 
 
-"courseCode": "1DV41E",
+"courseCode": "2DV40E",
 
 
 
-"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=1DV41E&documenttype=pdf&lang=sv",
+"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=2DV40E&documenttype=pdf&lang=sv",
 
 
 

@@ -61,21 +61,32 @@ function handler (req, res)
         return;
     }
     
-    var fileServer = new globals.ns.Server({cache: 10});
-    
     //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
     if(checkIfTimeToScrape())
     {
-        scrape();
+        scrape(
+        function()
+        {
+            serveFiles(req,res);     
+        });
     }
+    else
+    {
+        serveFiles(req,res);
+    }
+}
+
+function serveFiles(req,res)
+{
+    var fileServer = new globals.ns.Server({cache: 10});
     
     req.addListener('end', function() 
     {
         fileServer.serve(req, res); //skicka filer
 
-    }).resume();
-
+    }).resume();           
 }
+
 
 //funktion som returnerar datum/tid i korrekt format 
 function createDateString()
@@ -213,19 +224,12 @@ function saveToFile()
     //Sorterar kurserna först
     sortCoursesByName();
     
-    globals.fs.writeFile(globals.courseFile, createJSONString(), function(error)
-        {
-            if(error)
-            {
-                console.log("Something has gone horribly wrong when saving to file.");
-                return;
-            }
-        });
+    globals.fs.writeFileSync(globals.courseFile, createJSONString());
 }
 
 
 //den här funktionen ska "skrapa" ner alla länkar till 
-function scrape()
+function scrape(callback)
 {
     //länkar till alla kurser ska läggas till här
     getCourseList(1, function()
@@ -237,6 +241,8 @@ function scrape()
             
             //när all kursdata hämtats så sparas allt i en json-fil
             saveToFile();
+            
+            callback();
         });
     });
 }
