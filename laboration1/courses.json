@@ -3,7 +3,7 @@
 "statistics": {
 
 
-"lastScrape": 1415696816425,
+"lastScrape": 1415704683944,
 
 
 "numberOfCoursesScraped": 68
@@ -801,7 +801,7 @@
 
 
 
-"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap/",
+"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap-2/",
 
 
 
@@ -809,11 +809,11 @@
 
 
 
-"courseCode": "1DV41E",
+"courseCode": "2DV40E",
 
 
 
-"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=1DV41E&documenttype=pdf&lang=sv",
+"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=2DV40E&documenttype=pdf&lang=sv",
 
 
 
@@ -850,7 +850,7 @@
 
 
 
-"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap-2/",
+"courseUrl": "http://coursepress.lnu.se/kurs/examensarbete-inom-datavetenskap/",
 
 
 
@@ -858,11 +858,11 @@
 
 
 
-"courseCode": "2DV40E",
+"courseCode": "1DV41E",
 
 
 
-"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=2DV40E&documenttype=pdf&lang=sv",
+"syllabusUrl": "http://prod.kursinfo.lnu.se/utbildning/GenerateDocument.ashx?templatetype=coursesyllabus&code=1DV41E&documenttype=pdf&lang=sv",
 
 
 

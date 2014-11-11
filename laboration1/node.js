@@ -64,8 +64,8 @@ function handler (req, res)
     //om det har gått en viss tid sedan senaste skrapningen så ska den göras igen.
     if(checkIfTimeToScrape())
     {
-        scrape(
-        function()
+        
+        scrape(function()
         {
             serveFiles(req,res);     
         });
@@ -231,6 +231,7 @@ function saveToFile()
 //den här funktionen ska "skrapa" ner alla länkar till 
 function scrape(callback)
 {
+    console.log("scraping");
     //länkar till alla kurser ska läggas till här
     getCourseList(1, function()
     {
