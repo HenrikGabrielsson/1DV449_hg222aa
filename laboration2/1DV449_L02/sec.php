@@ -54,9 +54,6 @@ function isUser($u, $p) {
 		$stm = $db->prepare($q);
 		$stm->execute();
 		$result = $stm->fetchAll();
-		if(!$result) {
-			return "Could not find the user";
-		}
 	}
 	catch(PDOException $e) {
 		echo("Error creating query: " .$e->getMessage());

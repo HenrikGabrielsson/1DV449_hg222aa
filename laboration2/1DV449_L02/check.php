@@ -15,7 +15,7 @@ if(isset($u) && isset($p) && isUser($u, $p)) {
 	header("Location: mess.php"); 
 }
 else {
-	// To bad
+	// Too bad
 	header('HTTP/1.1 401 Unauthorized');
 	die("could not call");
 }
