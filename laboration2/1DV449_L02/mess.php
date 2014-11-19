@@ -1,8 +1,5 @@
 <?php
-	require_once("../get.php");
-    require_once("../sec.php");
-
-    checkUser();
+	require_once("get.php");
 
 ?>
 <!DOCTYPE html>

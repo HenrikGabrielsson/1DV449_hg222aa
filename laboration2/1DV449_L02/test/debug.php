@@ -3,5 +3,5 @@
     // This should only be called in development enviroment
     $nanos = rand(100000000, 999999999);
     time_nanosleep(1, $nanos);
-    header("Location: ../public/mess.php");
+    header("Location: ../mess.php");
 ?>

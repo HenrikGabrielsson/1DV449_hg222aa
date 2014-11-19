@@ -32,7 +32,7 @@ var MessageBoard = {
         console.log("INNE");
         $.ajax({
 			type: "GET",
-			url: "../functions.php",
+			url: "functions.php",
 			data: {function: "getMessages"}
 		}).done(function(data) { // called when the AJAX call is ready
 						
@@ -61,7 +61,7 @@ var MessageBoard = {
         // Make call to ajax
         $.ajax({
 			type: "GET",
-		  	url: "../functions.php",
+		  	url: "functions.php",
 		  	data: {function: "add", name: MessageBoard.nameField.value, message:MessageBoard.textField.value}
 		}).done(function(data) {
 		  alert("Your message is saved! Reload the page for watching it");
