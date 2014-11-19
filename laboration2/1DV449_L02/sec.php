@@ -16,13 +16,14 @@ function sec_session_start() {
 }
 
 function checkUser() {
+
 	if(!session_id()) {
 		sec_session_start();
 	}
 
-	if(!isset($_SESSION["user"])) {header('HTTP/1.1 401 Unauthorized'); die();}
+	if(!isset($_SESSION["username"])) {header('HTTP/1.1 401 Unauthorized'); die();}
 
-	$user = getUser($_SESSION["user"]);
+	$user = getUser($_SESSION["username"]);
 	$un = $user[0]["username"];
 
 	if(isset($_SESSION['login_string'])) {
@@ -46,13 +47,15 @@ function isUser($u, $p) {
 	catch(PDOEception $e) {
 		die("Del -> " .$e->getMessage());
 	}
-	$q = "SELECT id FROM users WHERE username = '$u' AND password = '$p'";
+	$q = "SELECT id FROM users WHERE username = ? AND password = ?";
+
+	$params = array($u, $p);
 
 	$result;
 	$stm;
 	try {
 		$stm = $db->prepare($q);
-		$stm->execute();
+		$stm->execute($params);
 		$result = $stm->fetchAll();
 	}
 	catch(PDOException $e) {
@@ -96,6 +99,6 @@ function logout() {
 		sec_session_start();
 	}
 	session_end();
-	header('Location: index.php');
+	header('Location: public/index.php');
 }
 
