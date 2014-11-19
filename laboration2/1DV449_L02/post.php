@@ -14,8 +14,8 @@ function addToDB($message, $user) {
 		die("Something went wrong -> " .$e->getMessage());
 	}
 	
-	$q = "INSERT INTO messages (message, name) VALUES('$message', '$user')";
-	
+	$q = "INSERT INTO messages (message, name) VALUES(?,?)";
+	$params = array($message, $user);
 	try {
 		if(!$db->query($q)) {}
 	}

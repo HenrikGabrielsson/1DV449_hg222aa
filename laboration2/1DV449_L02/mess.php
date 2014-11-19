@@ -1,6 +1,10 @@
 <?php
 	require_once("get.php");
+    require_once("sec.php");
 
+    //kollar så användaren har en sessionskaka.
+    checkUser();
+    
 ?>
 <!DOCTYPE html>
 <html lang="sv">
