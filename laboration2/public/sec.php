@@ -40,7 +40,7 @@ function isUser($u, $p) {
 	$db = null;
 
 	try {
-		$db = new PDO("sqlite:db.db");
+		$db = new PDO("sqlite:../db.db");
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 	catch(PDOEception $e) {
@@ -74,7 +74,7 @@ function getUser($user) {
 	$db = null;
 
 	try {
-		$db = new PDO("sqlite:db.db");
+		$db = new PDO("sqlite:../db.db");
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 	catch(PDOEception $e) {
@@ -87,7 +87,7 @@ function getUser($user) {
 	$stm;
 	try {
 		$stm = $db->prepare($q);
-		$stm->execute();
+		$stm->execute($params);
 		$result = $stm->fetchAll();
 	}
 	catch(PDOException $e) {

@@ -16,7 +16,7 @@ if(isset($_GET['function'])) {
 	    $name = $_GET["name"];
 		$message = $_GET["message"];
 		addToDB($message, $name);
-		header("Location: test/debug.php");
+		header("Location: mess.php");
     }
     elseif($_GET['function'] == 'getMessages') {
   	   	echo(json_encode(getMessages()));

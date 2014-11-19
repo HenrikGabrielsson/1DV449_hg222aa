@@ -7,7 +7,7 @@ function addToDB($message, $user) {
 	$db = null;
 	
 	try {
-		$db = new PDO("sqlite:db.db");
+		$db = new PDO("sqlite:../db.db");
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 	catch(PDOEception $e) {
@@ -26,7 +26,7 @@ function addToDB($message, $user) {
 	$stm;
 	try {
 		$stm = $db->prepare($q);
-		$stm->execute();
+		$stm->execute($params);
 		$result = $stm->fetchAll();
 		if(!$result) {
 			return "Could not find the user";
