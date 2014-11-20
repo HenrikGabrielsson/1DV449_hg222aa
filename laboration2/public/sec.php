@@ -21,24 +21,17 @@ function checkUser() {
 		sec_session_start();
 	}
 
-    //sessionen ska ha en "login_string" och ett username.
-	if(!isset($_SESSION["username"]) || !isset($_SESSION['login_string']))
+	//kollar så det finns en sessionsvariabel med användarnamn
+	if(!isset($_SESSION["username"]))
     {
         header('HTTP/1.1 401 Unauthorized'); die();
     }
 
-	$user = getUser($_SESSION["username"]);
-	$un = $user[0]["username"];
 
-    if($_SESSION['login_string'] !== hash('sha512', "123456" . $un) )
+    if($_SERVER["REMOTE_ADDR"] != $_SESSION['ip'] || $_SERVER["HTTP_USER_AGENT"] != $_SESSION['useragent'])
     {
-        header('HTTP/1.1 401 Unauthorized'); die();
+    	header('HTTP/1.1 401 Unauthorized'); die();
     }
-
-	else {
-		header('HTTP/1.1 401 Unauthorized'); die();
-	}
-	return true;
 }
 
 function isUser($u, $p) {
@@ -51,28 +44,37 @@ function isUser($u, $p) {
 	catch(PDOException $e) {
 		die("Del -> " .$e->getMessage());
 	}
-	$q = "SELECT id FROM users WHERE username = ? AND password = ?";
-	$params = array($u, $p);
+
+	$sql = "SELECT salt FROM users WHERE username = ?";
+	$params = array($u);
+
+	$query = $db->prepare($sql);
+	$query->execute($params);
+	$salt = $query->fetch()[0];
 
 
-	$result;
-	$stm;
-	try {
-		$stm = $db->prepare($q);
-		$stm->execute($params);
-		$result = $stm->fetchAll();
-		if(!$result) {
-			
-			echo "Could not find the user. ";
-			return false;
-		}
-	}
-	catch(PDOException $e) {
-		echo("Error creating query: " .$e->getMessage());
+	//om användaren inte finns så returneras false.
+	if(!$salt)
+	{
+		echo "could not find the user. ";
 		return false;
+	}	
+
+	//matcha lösenord mot det i databasen
+	$sql = "SELECT id FROM users WHERE username = ? AND password = ?";
+	$params = array($u, strtoupper(hash("sha512", $p . $salt)));
+
+	$query = $db->prepare($sql);
+	$query->execute($params);
+	$result = $query->fetchAll();
+
+
+	if(!$result) 
+	{		
+		echo "Could not find the user. ";
 	}
+
 	return $result;
-	
 }
 
 function getUser($user) {
@@ -102,7 +104,6 @@ function getUser($user) {
 
 	return $result;
 }
-
 
 
 function logout() {

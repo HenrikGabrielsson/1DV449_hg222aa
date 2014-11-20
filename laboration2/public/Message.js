@@ -5,7 +5,7 @@ function Message(message, date){
 	}
 
 	this.setText = function(_text) {
-		message = text;
+		message = _text;
 	}
 
 	this.getDate = function() {
@@ -13,7 +13,7 @@ function Message(message, date){
 	}
 
 	this.setDate = function(_date) {
-		date = date;
+		date = _date;
 	}
 
 }
@@ -28,7 +28,7 @@ Message.prototype.getHTMLText = function() {
 }
 
 Message.prototype.getDateText = function() {
-    return this.getDate().toLocaleTimeString();
+    return this.getDate();
 }
 
 

@@ -36,8 +36,8 @@ function addToDB($message, $user) {
 	}
 
 	
-	$q = "INSERT INTO messages (message, name) VALUES(?,?)";
-	$params = array($message, $user);
+	$q = "INSERT INTO messages (message, name, date) VALUES(?,?,?)";
+	$params = array($message, $user, microtime());
 	try {
 		$query = $db->prepare($q);
 		$result = $query->execute($params);
