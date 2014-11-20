@@ -8,11 +8,10 @@ $p = $_POST['password'];
 // Check if user is OK
 if(isset($u) && isset($p) && isUser($u, $p)) {
 	// set the session
-	sec_session_start();
+	sec_session_start(true);
 	$_SESSION['username'] = $u;
     $_SESSION['ip'] = $_SERVER["REMOTE_ADDR"];
     $_SESSION['useragent'] = $_SERVER['HTTP_USER_AGENT'];
-	
 	header("Location: mess.php"); 
 }
 else {

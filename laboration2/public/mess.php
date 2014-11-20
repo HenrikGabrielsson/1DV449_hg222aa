@@ -150,8 +150,10 @@ background-color: #F3FCE4;
         <div id="container">
             
             <div id="messageboard">
-                <input class="btn btn-danger" type="button" id="buttonLogout" value="Logout" style="margin-bottom: 20px;" />
-                
+                <form action="functions.php?function=logout" method="post">
+                <input class="btn btn-danger" type="submit" id="buttonLogout" value="Logout" style="margin-bottom: 20px;" />
+                </form>
+
                 <div id="messagearea"></div>
                 
                 <p id="numberOfMess">Antal meddelanden: <span id="nrOfMessages">0</span></p>

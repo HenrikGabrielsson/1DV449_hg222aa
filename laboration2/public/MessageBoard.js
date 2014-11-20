@@ -132,10 +132,8 @@ var MessageBoard = {
          var showTime = "Created "+time.toLocaleDateString()+" at "+time.toLocaleTimeString();
 
          alert(showTime);
-    },
-    logout: function() {
-        window.location = "index.php";
     }
+
 }
 
 window.onload = MessageBoard.init;
