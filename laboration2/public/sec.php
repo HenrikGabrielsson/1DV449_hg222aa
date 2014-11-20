@@ -16,20 +16,25 @@ function sec_session_start() {
 }
 
 function checkUser() {
+
 	if(!session_id()) {
 		sec_session_start();
 	}
 
-	if(!isset($_SESSION["username"])) {header('HTTP/1.1 401 Unauthorized'); die();}
+    //sessionen ska ha en "login_string" och ett username.
+	if(!isset($_SESSION["username"]) || !isset($_SESSION['login_string']))
+    {
+        header('HTTP/1.1 401 Unauthorized'); die();
+    }
 
 	$user = getUser($_SESSION["username"]);
 	$un = $user[0]["username"];
 
-	if(isset($_SESSION['login_string'])) {
-		if($_SESSION['login_string'] !== hash('sha512', "123456" + $un) ) {
-			header('HTTP/1.1 401 Unauthorized'); die();
-		}
-	}
+    if($_SESSION['login_string'] !== hash('sha512', "123456" . $un) )
+    {
+        header('HTTP/1.1 401 Unauthorized'); die();
+    }
+
 	else {
 		header('HTTP/1.1 401 Unauthorized'); die();
 	}
@@ -43,7 +48,7 @@ function isUser($u, $p) {
 		$db = new PDO("sqlite:../db.db");
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
-	catch(PDOEception $e) {
+	catch(PDOException $e) {
 		die("Del -> " .$e->getMessage());
 	}
 	$q = "SELECT id FROM users WHERE username = ? AND password = ?";
@@ -77,7 +82,7 @@ function getUser($user) {
 		$db = new PDO("sqlite:../db.db");
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
-	catch(PDOEception $e) {
+	catch(PDOException $e) {
 		die("Del -> " .$e->getMessage());
 	}
 	$q = "SELECT * FROM users WHERE username = ?";
@@ -97,6 +102,8 @@ function getUser($user) {
 
 	return $result;
 }
+
+
 
 function logout() {
 

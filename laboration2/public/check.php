@@ -11,6 +11,8 @@ if(isset($u) && isset($p) && isUser($u, $p)) {
 	sec_session_start();
 	$_SESSION['username'] = $u;
 	$_SESSION['login_string'] = hash('sha512', "123456" +$u);
+    $_SESSION['ip'] = $_SERVER["REMOTE_ADDR"];
+    $_SESSION['useragent'] = $_SERVER['HTTP_USER_AGENT'];
 	
 	header("Location: mess.php"); 
 }
