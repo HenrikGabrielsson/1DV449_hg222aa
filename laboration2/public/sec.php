@@ -3,7 +3,7 @@
 /**
 Just som simple scripts for session handling
 */
-function sec_session_start($init = false) {
+function sec_session_start() {
         $session_name = 'sec_session_id'; // Set a custom session name
         $secure = false; // Set to true if using https.
         ini_set('session.use_only_cookies', 1); // Forces sessions to only use cookies.
@@ -12,27 +12,16 @@ function sec_session_start($init = false) {
         $httponly = true; // This stops javascript being able to access the session id.
         session_name($session_name); // Sets the session name to the one set above.
         session_start(); // Start the php session
-
-        if(!$init)
-        {
-			if(!isset($_SESSION["sessionId"]) || $_SESSION["sessionId"] != session_id())
-			{
-				logout();
-				header('HTTP/1.1 401 Unauthorized'); die();
-			}       
-        }
-
-
         session_regenerate_id(); // regenerated the session, delete the old one.
-
-        $_SESSION["sessionId"] = session_id();
 }
 
 function checkUser() {
 
-	sec_session_start();
+	if(!session_id()) {
+		sec_session_start();
+	}
 
-	
+	//kollar så det finns en sessionsvariabel med användarnamn
 	if(!isset($_SESSION["username"]))
     {
         header('HTTP/1.1 401 Unauthorized'); die();
@@ -119,10 +108,12 @@ function getUser($user) {
 
 function logout() {
 
-	sec_session_start(true);
-
+	if(!session_id()) {
+		sec_session_start();
+	}
 	session_unset(); 
 	session_destroy(); 
+	
 	header('Location: index.php');
 }
 
