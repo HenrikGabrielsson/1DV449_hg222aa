@@ -6,6 +6,7 @@
 function addToDB($message, $user) {
 	$db = null;
 
+
     //se till så att html-taggar i input inte tolkas av en webbläsare
     $message = htmlspecialchars($message);
     $user = htmlspecialchars($user);

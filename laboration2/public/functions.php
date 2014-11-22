@@ -15,7 +15,12 @@ if(isset($_GET['function'])) {
     elseif($_GET['function'] == 'add') {
 	    $name = $_GET["name"];
 		$message = $_GET["message"];
-		addToDB($message, $name);
+
+        if($_GET["token"] == $_SESSION["token"])
+        {
+            addToDB($message, $name);
+        }
+		
     }
     elseif($_GET['function'] == 'getMessages') {
   	   	echo(json_encode(getMessages()));

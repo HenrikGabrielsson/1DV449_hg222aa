@@ -4,6 +4,10 @@
 
     //kollar så användaren har en sessionskaka.
     checkUser();
+
+
+    $_SESSION["token"] = md5(uniqid());
+
     
 ?>
 <!DOCTYPE html>
@@ -160,6 +164,7 @@ background-color: #F3FCE4;
                 Name:<br /> <input id="inputName" type="text" name="name" /><br />
                 Message: <br />
                 <textarea name="mess" id="inputText" cols="55" rows="6"></textarea>
+                <input type="hidden" name="token" id="hiddenToken" <?php echo 'value="'.$_SESSION["token"].'"' ?>>
                 <input class="btn btn-primary" type="button" id="buttonSend" value="Write your message" />
                 <span class="clear">&nbsp;</span>
 

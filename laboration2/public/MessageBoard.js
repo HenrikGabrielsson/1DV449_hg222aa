@@ -3,6 +3,7 @@ var MessageBoard = {
     messages: [],
     textField: null,
     messageArea: null,
+    hiddenToken: null,
 
     init:function(e)
     {
@@ -10,6 +11,7 @@ var MessageBoard = {
 		    MessageBoard.textField = document.getElementById("inputText");
 		    MessageBoard.nameField = document.getElementById("inputName");
             MessageBoard.messageArea = document.getElementById("messagearea");
+            MessageBoard.hiddenToken = document.getElementById("hiddenToken");
     
             // Add eventhandlers    
             document.getElementById("inputText").onfocus = function(e){ this.className = "focus"; }
@@ -62,7 +64,7 @@ var MessageBoard = {
         $.ajax({
 			type: "GET",
 		  	url: "functions.php",
-		  	data: {function: "add", name: MessageBoard.nameField.value, message:MessageBoard.textField.value}
+		  	data: {function: "add", name: MessageBoard.nameField.value, message:MessageBoard.textField.value, token:MessageBoard.hiddenToken.value} 
 		}).done(function(data) {
 		  alert("Your message is saved! Reload the page for watching it");
 		});
