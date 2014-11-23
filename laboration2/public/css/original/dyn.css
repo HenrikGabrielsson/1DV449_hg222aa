@@ -1,6 +1,7 @@
 body{
     margin:0;
     padding:0;
+
     background-color:#C3D9FF;
     background-image:url('../pic/logo.png');
     background-repeat:no-repeat;
@@ -17,6 +18,11 @@ body{
 
 }
 
+#messagearea
+{
+    clear:both;
+}
+
 #messageboard{
     width:600px;
     margin:auto;
@@ -27,8 +33,14 @@ body{
 }
 
 #messageboard input {
-    float:right;
+    float:left;
+    clear:both;
+}
 
+#messageboard label
+{
+    float:left;
+    clear:both;
 }
 
 #numberOfMess {
@@ -51,6 +63,11 @@ body{
    
 }
 
+#addMessage
+{
+    float:left;
+    width:100%;
+}
 
 .message img {
     float:right;
@@ -79,6 +96,16 @@ body{
     padding:5px;
 
 }
+
+#inputName {
+    width:300px;
+    height:50px;
+    border:1px solid silver;
+    font-family:verdana, helvetica, Sans-Serif;
+    font-size:20px;
+    padding:5px;
+}
+
 .blur{
     background-color: white;
 }

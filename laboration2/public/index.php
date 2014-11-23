@@ -11,7 +11,6 @@
     <title>Mezzy Labbage - Logga in</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" type="text/css" href="css/dyn.css" />
     <link href="css/bootstrap.css" rel="stylesheet">
 	<link href="css/indexStyle.css" rel="stylesheet">		
 

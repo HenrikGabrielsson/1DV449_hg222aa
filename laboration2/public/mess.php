@@ -24,28 +24,25 @@
     <link rel="apple-touch-icon" sizes="152x152" href="touch-icon-ipad-retina.png">
     <link rel="shortcut icon" href="pic/favicon.png">
 
-    <link rel="stylesheet" type="text/css" href="css/dyn.css" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="css/messStyle.css" />
+    <link rel="stylesheet" type="text/css" href="css/dyn.css" />
 
     
 	<title>Messy Labbage</title>
-  </head>
-	  
-	  	<body background="http://www.lockley.net/backgds/big_leo_minor.jpg">        
+  </head>       
 
         <div id="container">
             
             <div id="messageboard">
-                <form action="functions.php?function=logout" method="post">
+                <form action="functions.php?function=logout" method="post" id="addMessage">
                 <input class="btn btn-danger" type="submit" id="buttonLogout" value="Logout" style="margin-bottom: 20px;" />
                 </form>
 
                 <div id="messagearea"></div>
                 
                 <p id="numberOfMess">Antal meddelanden: <span id="nrOfMessages">0</span></p>
-                Name:<br /> <input id="inputName" type="text" name="name" /><br />
-                Message: <br />
+                <label for="inputName">Name:</label> <input id="inputName" type="text" name="name" /><br />
+                <label for="inputText">Message:</label>
                 <textarea name="mess" id="inputText" cols="55" rows="6"></textarea>
                 <input type="hidden" name="token" id="hiddenToken" <?php echo 'value="'.$_SESSION["token"].'"' ?>>
                 <input class="btn btn-primary" type="button" id="buttonSend" value="Write your message" />
