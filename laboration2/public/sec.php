@@ -35,6 +35,8 @@ function checkUser() {
 }
 
 function isUser($u, $p) {
+	
+	
 	$db = null;
 
 	try {
@@ -45,13 +47,15 @@ function isUser($u, $p) {
 		die("Del -> " .$e->getMessage());
 	}
 
+	
 	$sql = "SELECT salt FROM users WHERE username = ?";
 	$params = array($u);
 
 	$query = $db->prepare($sql);
 	$query->execute($params);
-	$salt = $query->fetch()[0];
+	$salt = $query->fetch();	
 
+	$salt = $salt[0];
 
 	//om användaren inte finns så returneras false.
 	if(!$salt)
@@ -66,6 +70,7 @@ function isUser($u, $p) {
 
 	$query = $db->prepare($sql);
 	$query->execute($params);
+	
 	$result = $query->fetchAll();
 
 
