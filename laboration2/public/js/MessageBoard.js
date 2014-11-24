@@ -28,10 +28,12 @@ var MessageBoard = {
                 return false;
             }
         }
-        MessageBoard.getMessages();
-
+        MessageBoard.getMessages(function()
+        {
+            getNewMessages(MessageBoard.messages[MessageBoard.messages.length-1].getDate());
+        });
     },
-    getMessages:function() {
+    getMessages:function(callback) {
         console.log("INNE");
         $.ajax({
             type: "GET",
@@ -52,7 +54,7 @@ var MessageBoard = {
 
             }
             document.getElementById("nrOfMessages").innerHTML = MessageBoard.messages.length;
-
+            callback();
         });
 
 
@@ -142,21 +144,18 @@ var MessageBoard = {
 
 function Message(message, date){
 
+    this.date = date;
+    this.message = message;
+
     this.getText = function() {
         return message;
     }
 
-    this.setText = function(_text) {
-        message = _text;
-    }
 
     this.getDate = function() {
-        return date;
+        return this.date;
     }
 
-    this.setDate = function(_date) {
-        date = _date;
-    }
 
 }
 

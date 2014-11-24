@@ -6,8 +6,6 @@
     checkUser();
 
     $_SESSION["token"] = md5(uniqid());
-
-    
 ?>
 <!DOCTYPE html>
 <html lang="sv">
@@ -30,6 +28,7 @@
 	<title>Messy Labbage</title>
   </head>       
 
+  <body>
         <div id="container">
             
             <div id="messageboard">
@@ -51,9 +50,9 @@
 
         </div>
 
+        <script type="text/javascript" src="js/longpoll.js"></script>
         <script src="js/MessageBoard.js"></script>
         <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-        <script type="text/javascript" src="js/longpoll.js"></script>
 		<script src="js/bootstrap.js"></script>
 
 	</body>
