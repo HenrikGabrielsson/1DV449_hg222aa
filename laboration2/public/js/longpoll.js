@@ -32,10 +32,9 @@ var recieveData =function(data)
         document.getElementById("nrOfMessages").innerHTML = MessageBoard.messages.length;
     }
 
-    //kör igen efter 5 sekunder
-    setTimeout(function(){
-        getNewMessages(MessageBoard.messages[MessageBoard.messages.length-1].getDate());
-    },5000)
+
+    getNewMessages(MessageBoard.messages[MessageBoard.messages.length-1].getDate());
+    
 
     
 }
