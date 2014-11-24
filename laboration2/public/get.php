@@ -47,7 +47,7 @@ function getMessagesSince($timeStamp)
         echo ("Error");
     }
 
-    $q = "SELECT date FROM messages WHERE date > ?";
+    $q = "SELECT * FROM messages WHERE CAST(date AS INTEGER)  > ?";
     $params = array($timeStamp);
 
     try
@@ -76,7 +76,7 @@ function getAnyNewMessages($timeStamp)
 
         if(count($newMessages) > 0)
         {
-            return $newMessages;
+            break;
         }
         sleep(1);
 

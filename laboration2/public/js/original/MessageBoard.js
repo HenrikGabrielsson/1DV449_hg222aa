@@ -1,3 +1,27 @@
+function Message(message, date)
+{
+    this.message = message;
+    this.date = date;
+}
+
+Message.prototype.toString = function(){
+    return this.message+" ("+this.date+")";
+}
+
+Message.prototype.getHTMLText = function() {
+      
+    return this.message.replace(/[\n\r]/g, "<br />");
+}
+
+Message.prototype.getDateText = function() {
+    return new Date(this.date).toLocaleString();
+}
+
+
+
+
+
+
 var MessageBoard = {
 
     messages: [],
@@ -32,7 +56,6 @@ var MessageBoard = {
     
     },
     getMessages:function() {
-        console.log("INNE");
         $.ajax({
 			type: "GET",
 			url: "functions.php",
@@ -45,7 +68,7 @@ var MessageBoard = {
 			for(var mess in data) {
 				var obj = data[mess];
 			    var text = obj.name +" said:\n" +obj.message;
-				var mess = new Message(text, new Date());
+				var mess = new Message(text, obj.date);
                 var messageID = MessageBoard.messages.push(mess)-1;
     
                 MessageBoard.renderMessage(messageID);
@@ -138,41 +161,6 @@ var MessageBoard = {
     }
 
 }
-
-
-function Message(message, date){
-
-    this.getText = function() {
-        return message;
-    }
-
-    this.setText = function(_text) {
-        message = _text;
-    }
-
-    this.getDate = function() {
-        return date;
-    }
-
-    this.setDate = function(_date) {
-        date = _date;
-    }
-
-}
-
-Message.prototype.toString = function(){
-    return this.getText()+" ("+this.getDate()+")";
-}
-
-Message.prototype.getHTMLText = function() {
-      
-    return this.getText().replace(/[\n\r]/g, "<br />");
-}
-
-Message.prototype.getDateText = function() {
-    return this.getDate();
-}
-
 
 
 window.onload = MessageBoard.init;

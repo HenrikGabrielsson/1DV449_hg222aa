@@ -47,7 +47,7 @@ var MessageBoard = {
             for(var mess in data) {
                 var obj = data[mess];
                 var text = obj.name +" said:\n" +obj.message;
-                var mess = new Message(text, new Date());
+                var mess = new Message(text, obj.date);
                 var messageID = MessageBoard.messages.push(mess)-1;
 
                 MessageBoard.renderMessage(messageID);
@@ -144,16 +144,16 @@ var MessageBoard = {
 
 function Message(message, date){
 
-    this.date = date;
+    //från s till ms
+    this.date = Number(date) * 1000;
     this.message = message;
 
     this.getText = function() {
         return message;
     }
 
-
     this.getDate = function() {
-        return this.date;
+        return new Date(this.date);
     }
 
 
