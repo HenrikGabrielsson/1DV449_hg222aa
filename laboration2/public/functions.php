@@ -4,7 +4,7 @@ require_once("post.php");
 require_once("sec.php");
 
 sec_session_start();
-
+session_write_close();
 /*
 * It's here all the ajax calls goes
 */

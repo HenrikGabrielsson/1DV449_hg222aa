@@ -12,7 +12,6 @@ var getNewMessages = function(timestamp)
 
 var recieveData =function(data)
 {
-    console.log(data);
 
     if(data != null)
     {

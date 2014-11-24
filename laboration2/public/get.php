@@ -69,7 +69,7 @@ function getAnyNewMessages($timeStamp)
 {
     $timeSinceRequest = 0;
 
-    while($timeSinceRequest < 5)
+    while($timeSinceRequest < 10)
     {
         $newMessages = getMessagesSince($timeStamp);
 

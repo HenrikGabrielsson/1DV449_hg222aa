@@ -6,6 +6,7 @@
     checkUser();
 
     $_SESSION["token"] = md5(uniqid());
+    session_write_close();
 ?>
 <!DOCTYPE html>
 <html lang="sv">
