@@ -5,7 +5,6 @@
     //kollar så användaren har en sessionskaka.
     checkUser();
 
-
     $_SESSION["token"] = md5(uniqid());
 
     

@@ -1,1 +1,178 @@
-function Message(e,t){this.getText=function(){return e};this.setText=function(t){e=t};this.getDate=function(){return t};this.setDate=function(e){t=e}}var MessageBoard={messages:[],textField:null,messageArea:null,hiddenToken:null,init:function(e){MessageBoard.textField=document.getElementById("inputText");MessageBoard.nameField=document.getElementById("inputName");MessageBoard.messageArea=document.getElementById("messagearea");MessageBoard.hiddenToken=document.getElementById("hiddenToken");document.getElementById("inputText").onfocus=function(e){this.className="focus"};document.getElementById("inputText").onblur=function(e){this.className="blur"};document.getElementById("buttonSend").onclick=function(e){MessageBoard.sendMessage();return false};document.getElementById("buttonLogout").onclick=function(e){MessageBoard.logout();return false};MessageBoard.textField.onkeypress=function(e){if(!e)var e=window.event;if(e.keyCode==13&&!e.shiftKey){MessageBoard.sendMessage();return false}};MessageBoard.getMessages()},getMessages:function(){console.log("INNE");$.ajax({type:"GET",url:"functions.php",data:{"function":"getMessages"}}).done(function(e){e=JSON.parse(e);for(var t in e){var n=e[t];var r=n.name+" said:\n"+n.message;var t=new Message(r,new Date);var i=MessageBoard.messages.push(t)-1;MessageBoard.renderMessage(i)}document.getElementById("nrOfMessages").innerHTML=MessageBoard.messages.length})},sendMessage:function(){if(MessageBoard.textField.value=="")return;$.ajax({type:"GET",url:"functions.php",data:{"function":"add",name:MessageBoard.nameField.value,message:MessageBoard.textField.value,token:MessageBoard.hiddenToken.value}}).done(function(e){alert("Your message is saved! Reload the page for watching it")})},renderMessages:function(){MessageBoard.messageArea.innerHTML="";for(var e=0;e<MessageBoard.messages.length;++e){MessageBoard.renderMessage(e)}document.getElementById("nrOfMessages").innerHTML=MessageBoard.messages.length},renderMessage:function(e){var t=document.createElement("div");t.className="message";aTag=document.createElement("a");aTag.href="#";aTag.onclick=function(){MessageBoard.showTime(e);return false};var n=document.createElement("img");n.src="pic/clock.png";n.alt="Show creation time";aTag.appendChild(n);t.appendChild(aTag);var r=document.createElement("p");r.innerHTML=MessageBoard.messages[e].getHTMLText();t.appendChild(r);var i=document.createElement("span");i.appendChild(document.createTextNode(MessageBoard.messages[e].getDateText()));t.appendChild(i);var s=document.createElement("span");s.className="clear";t.appendChild(s);MessageBoard.messageArea.appendChild(t)},removeMessage:function(e){if(window.confirm("Vill du verkligen radera meddelandet?")){MessageBoard.messages.splice(e,1);MessageBoard.renderMessages()}},showTime:function(e){var t=MessageBoard.messages[e].getDate();var n="Created "+t.toLocaleDateString()+" at "+t.toLocaleTimeString();alert(n)}};Message.prototype.toString=function(){return this.getText()+" ("+this.getDate()+")"};Message.prototype.getHTMLText=function(){return this.getText().replace(/[\n\r]/g,"<br />")};Message.prototype.getDateText=function(){return this.getDate()};window.onload=MessageBoard.init
+var MessageBoard = {
+
+    messages: [],
+    textField: null,
+    messageArea: null,
+    hiddenToken: null,
+
+    init:function(e)
+    {
+
+        MessageBoard.textField = document.getElementById("inputText");
+        MessageBoard.nameField = document.getElementById("inputName");
+        MessageBoard.messageArea = document.getElementById("messagearea");
+        MessageBoard.hiddenToken = document.getElementById("hiddenToken");
+
+        // Add eventhandlers
+        document.getElementById("inputText").onfocus = function(e){ this.className = "focus"; }
+        document.getElementById("inputText").onblur = function(e){ this.className = "blur" }
+        document.getElementById("buttonSend").onclick = function(e) {MessageBoard.sendMessage(); return false;}
+        document.getElementById("buttonLogout").onclick = function(e) {MessageBoard.logout(); return false;}
+
+        MessageBoard.textField.onkeypress = function(e){
+            if(!e) var e = window.event;
+
+            if(e.keyCode == 13 && !e.shiftKey){
+                MessageBoard.sendMessage();
+
+                return false;
+            }
+        }
+        MessageBoard.getMessages();
+
+    },
+    getMessages:function() {
+        console.log("INNE");
+        $.ajax({
+            type: "GET",
+            url: "functions.php",
+            data: {function: "getMessages"}
+        }).done(function(data) { // called when the AJAX call is ready
+
+            data = JSON.parse(data);
+
+
+            for(var mess in data) {
+                var obj = data[mess];
+                var text = obj.name +" said:\n" +obj.message;
+                var mess = new Message(text, new Date());
+                var messageID = MessageBoard.messages.push(mess)-1;
+
+                MessageBoard.renderMessage(messageID);
+
+            }
+            document.getElementById("nrOfMessages").innerHTML = MessageBoard.messages.length;
+
+        });
+
+
+    },
+    sendMessage:function(){
+
+        if(MessageBoard.textField.value == "") return;
+
+        // Make call to ajax
+        $.ajax({
+            type: "GET",
+            url: "functions.php",
+            data: {function: "add", name: MessageBoard.nameField.value, message:MessageBoard.textField.value, token:MessageBoard.hiddenToken.value}
+        }).done(function(data) {
+            alert("Your message is saved! Reload the page for watching it");
+        });
+
+    },
+    renderMessages: function(){
+        // Remove all messages
+        MessageBoard.messageArea.innerHTML = "";
+
+        // Renders all messages.
+        for(var i=0; i < MessageBoard.messages.length; ++i){
+            MessageBoard.renderMessage(i);
+        }
+
+        document.getElementById("nrOfMessages").innerHTML = MessageBoard.messages.length;
+    },
+    renderMessage: function(messageID){
+        // Message div
+        var div = document.createElement("div");
+        div.className = "message";
+
+        // Clock button
+        aTag = document.createElement("a");
+        aTag.href="#";
+        aTag.onclick = function(){
+            MessageBoard.showTime(messageID);
+            return false;
+        }
+
+        var imgClock = document.createElement("img");
+        imgClock.src="pic/clock.png";
+        imgClock.alt="Show creation time";
+
+        aTag.appendChild(imgClock);
+        div.appendChild(aTag);
+
+        // Message text
+        var text = document.createElement("p");
+        text.innerHTML = MessageBoard.messages[messageID].getHTMLText();
+        div.appendChild(text);
+
+        // Time - Should fix on server!
+        var spanDate = document.createElement("span");
+        spanDate.appendChild(document.createTextNode(MessageBoard.messages[messageID].getDateText()))
+
+        div.appendChild(spanDate);
+
+        var spanClear = document.createElement("span");
+        spanClear.className = "clear";
+
+        div.appendChild(spanClear);
+
+        MessageBoard.messageArea.appendChild(div);
+    },
+    removeMessage: function(messageID){
+        if(window.confirm("Vill du verkligen radera meddelandet?")){
+
+            MessageBoard.messages.splice(messageID,1); // Removes the message from the array.
+
+            MessageBoard.renderMessages();
+        }
+    },
+    showTime: function(messageID){
+
+        var time = MessageBoard.messages[messageID].getDate();
+
+        var showTime = "Created "+time.toLocaleDateString()+" at "+time.toLocaleTimeString();
+
+        alert(showTime);
+    }
+
+}
+
+
+function Message(message, date){
+
+    this.getText = function() {
+        return message;
+    }
+
+    this.setText = function(_text) {
+        message = _text;
+    }
+
+    this.getDate = function() {
+        return date;
+    }
+
+    this.setDate = function(_date) {
+        date = _date;
+    }
+
+}
+
+Message.prototype.toString = function(){
+    return this.getText()+" ("+this.getDate()+")";
+}
+
+Message.prototype.getHTMLText = function() {
+
+    return this.getText().replace(/[\n\r]/g, "<br />");
+}
+
+Message.prototype.getDateText = function() {
+    return this.getDate();
+}
+
+
+
+window.onload = MessageBoard.init;

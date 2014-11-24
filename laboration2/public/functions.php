@@ -2,6 +2,7 @@
 require_once("get.php");
 require_once("post.php");
 require_once("sec.php");
+
 sec_session_start();
 
 /*
@@ -9,10 +10,12 @@ sec_session_start();
 */
 if(isset($_GET['function'])) {
 
-	if($_GET['function'] == 'logout') {
+	if($_GET['function'] == 'logout')
+    {
 		logout();
     } 
-    elseif($_GET['function'] == 'add') {
+    elseif($_GET['function'] == 'add')
+    {
 	    $name = $_GET["name"];
 		$message = $_GET["message"];
 
@@ -22,7 +25,18 @@ if(isset($_GET['function'])) {
         }
 		
     }
-    elseif($_GET['function'] == 'getMessages') {
+    else if($_GET['function'] == 'getMessages')
+    {
   	   	echo(json_encode(getMessages()));
     }
+    else if($_GET['function'] == 'getNewMessages')
+    {
+        if(isset($_GET['lastTimeStamp']))
+        {
+            $lastTimeStamp = $_GET['lastTimeStamp'];
+
+            echo (json_encode(getAnyNewMessages($lastTimeStamp)));
+        }
+    }
+
 }
