@@ -32,7 +32,7 @@ function getMessages() {
 	 	return false;
 }
 
-
+//tar ett datum och hämtar alla messages som kommit in efter det.
 function getMessagesSince($timeStamp)
 {
     $db = null;
@@ -65,11 +65,12 @@ function getMessagesSince($timeStamp)
     return $result;
 }
 
+//longpolling
 function getAnyNewMessages($timeStamp)
 {
     $timeSinceRequest = 0;
 
-    while($timeSinceRequest < 10)
+    while($timeSinceRequest < 20)
     {
         $newMessages = getMessagesSince($timeStamp);
 

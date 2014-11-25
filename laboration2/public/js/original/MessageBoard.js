@@ -34,7 +34,6 @@ var MessageBoard = {
         });
     },
     getMessages:function(callback) {
-        console.log("INNE");
         $.ajax({
             type: "GET",
             url: "functions.php",
@@ -84,6 +83,7 @@ var MessageBoard = {
 
         document.getElementById("nrOfMessages").innerHTML = MessageBoard.messages.length;
     },
+
     renderMessage: function(messageID){
         // Message div
         var div = document.createElement("div");
@@ -122,14 +122,7 @@ var MessageBoard = {
 
         MessageBoard.messageArea.appendChild(div);
     },
-    removeMessage: function(messageID){
-        if(window.confirm("Vill du verkligen radera meddelandet?")){
 
-            MessageBoard.messages.splice(messageID,1); // Removes the message from the array.
-
-            MessageBoard.renderMessages();
-        }
-    },
     showTime: function(messageID){
 
         var time = MessageBoard.messages[messageID].getDate();

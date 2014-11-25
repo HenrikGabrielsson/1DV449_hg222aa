@@ -1,5 +1,6 @@
 var getNewMessages = function(timestamp)
 {
+    //från millisekunder till sekunder
     timestamp = timestamp/1000;
 
     $.ajax("functions.php",{
@@ -12,7 +13,6 @@ var getNewMessages = function(timestamp)
 
 var recieveData =function(data)
 {
-
     if(data != null)
     {
         var messageArea = document.getElementById("messagearea");
@@ -33,7 +33,4 @@ var recieveData =function(data)
 
 
     getNewMessages(MessageBoard.messages[MessageBoard.messages.length-1].getDate());
-    
-
-    
 }
