@@ -2,7 +2,6 @@ var modules =
 {
     http: require('http'),
     ns: require('node-static'),
-    sqlite: require('sqlite3'),
   
     traffic: require('./traffic.js'),
     maps: null //require('./maps.js')
@@ -11,18 +10,13 @@ var modules =
 var globals = 
 {
     fileServer: null,
-    db:null,
     traffic: null, //objekt som hämtar trafikinformtation
     maps: null //objekt som hämtar karta.
     
-}
+};
 
 var init = function()
 {
-    globals.db = new modules.sqlite.Database("db.db");
-    
-    console.log(globals.db);
-    
     globals.fileServer = new modules.ns.Server("./public",{cache: 10});
     globals.traffic = new modules.traffic();
     
