@@ -1,0 +1,6 @@
+{
+  "name": "laboration3_traficmap",
+  "version": "0.0.1",
+  "description": "en liten mashup-app som visar trafikhändelser på en karta.",
+  "main": "index.js"
+}

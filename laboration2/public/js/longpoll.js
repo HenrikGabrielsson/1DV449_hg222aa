@@ -1,5 +1,20 @@
 var getNewMessages = function(timestamp)
 {
+
+    //liten check om det finns support för websockets.
+    if("WebSocket" in window)
+    {
+        getDataWithWebSockets();
+    }
+    else
+    {
+        getDataWithLongPolling(timestamp);
+    }
+
+}
+
+var getDataWithLongPolling = function(timestamp)
+{
     timestamp = timestamp/1000;
 
     $.ajax("functions.php",{
@@ -8,6 +23,12 @@ var getNewMessages = function(timestamp)
         success: recieveData,
         error: recieveData
     });
+}
+
+var getDataWithWebSockets = function()
+{
+    var ws = new WebSocket("ws://websockets.php");
+    
 }
 
 var recieveData =function(data)
