@@ -17,7 +17,7 @@ var globals =
 
 var init = function()
 {
-    globals.fileServer = new modules.ns.Server({cache: 10});
+    globals.fileServer = new modules.ns.Server("./public",{cache: 10});
     globals.traffic = new modules.traffic();
     
     globals.traffic.getTrafficNews();
@@ -27,6 +27,8 @@ var init = function()
 //När en klient ansluter körs denna funktion.
 var handler = function(req, res) 
 {
+    console.log(req.url);
+    
     //ignorera favicon
     if(req.url == "/favicon.ico")
     {
