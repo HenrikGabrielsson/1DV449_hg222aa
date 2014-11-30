@@ -9,5 +9,11 @@ var loadMap = function()
     map = new google.maps.Map(mapElement, mapOptions);
 }
 
+socket.on("trafficMessages", function(json)
+{
+    alert(json.dataRecievedTime);
+})
+
+
 //ladda in kartan när sidan laddat klart.
 google.maps.event.addDomListener(window, 'load', loadMap);

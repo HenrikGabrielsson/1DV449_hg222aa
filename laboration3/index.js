@@ -25,7 +25,7 @@ var init = function()
  
     modules.sio = require('socket.io').listen(globals.httpServer);
     
-    //globals.traffic.getTrafficNewsFromSR();
+    globals.traffic.getTrafficNewsFromSR();
     setInterval(function()
     {
         //globals.traffic.getTrafficNewsFromSR()
@@ -37,8 +37,7 @@ var broadcastMessages = function(socket)
 {
     var json = globals.traffic.getMessages();
     
-    console.log(typeof(json));
-    
+    socket.emit("trafficMessages",json);
 }
 
 

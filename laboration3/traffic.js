@@ -62,8 +62,13 @@ Traffic.prototype.getMessagesFromSR = function(callback)
         res.on('end', function()
         {
             
+            //gör till json och lägg till datum för senaste hämtning
+            var json = JSON.parse(chunks);
+            json.dataRecievedTime = Date.now();
+            
+            //tillbaka till sträng och return
             //kör callback och skickar med json-data som lästes ut.
-            callback(chunks);
+            callback(JSON.stringify(json));
             
         })
     });
