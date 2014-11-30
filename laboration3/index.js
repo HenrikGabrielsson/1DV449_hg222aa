@@ -21,7 +21,11 @@ var init = function()
     globals.traffic = new modules.traffic();
     
     globals.traffic.getTrafficNews();
-    setInterval(globals.traffic.getTrafficNews, 5000);
+    setInterval(function()
+    {
+        //globals.traffic.getTrafficNews()
+        
+    }, 2000);
 };
 
 //När en klient ansluter körs denna funktion.
@@ -57,4 +61,4 @@ function serveFiles(req,res)
 init(); //kör denna funktion när servern startar.
 
 //lyssna genom denna port och kör handler när någon ansluter.
-modules.http.createServer(handler).listen(8080);
+modules.http.createServer(handler).listen(8888);
