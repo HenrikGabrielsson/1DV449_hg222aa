@@ -2,6 +2,7 @@ var modules =
 {
     http: require('http'),
     ns: require('node-static'),
+    sio: null,
   
     traffic: require('./traffic.js'),
     maps: null //require('./maps.js')
@@ -9,6 +10,7 @@ var modules =
 
 var globals = 
 {
+    httpServer: null,
     fileServer: null,
     traffic: null, //objekt som hämtar trafikinformtation
     maps: null //objekt som hämtar karta.
@@ -17,14 +19,11 @@ var globals =
 
 var init = function()
 {
+    globals.httpServer = modules.http.createServer(handler);
     globals.fileServer = new modules.ns.Server("./public",{cache: 10});
     globals.traffic = new modules.traffic();
-    
-
-    globals.traffic.getMessages(function(messages)
-    {
-        broadcastMessages(messages)
-    });
+ 
+    modules.sio = require('socket.io').listen(globals.httpServer);
     
     //globals.traffic.getTrafficNewsFromSR();
     setInterval(function()
@@ -34,16 +33,18 @@ var init = function()
     }, 300000);
 };
 
-var broadcastMessages = function(messages)
+var broadcastMessages = function(socket)
 {
-    
+    globals.traffic.getMessages(function(messages)
+    {
+        console.log(messages);
+    });
 }
 
 
 //När en klient ansluter körs denna funktion.
 var handler = function(req, res) 
 {
-    console.log(req.url);
     
     //ignorera favicon
     if(req.url == "/favicon.ico")
@@ -73,4 +74,6 @@ function serveFiles(req,res)
 init(); //kör denna funktion när servern startar.
 
 //lyssna genom denna port och kör handler när någon ansluter.
-modules.http.createServer(handler).listen(8888);
+globals.httpServer.listen(8888);
+
+modules.sio.sockets.on('connection', broadcastMessages);
