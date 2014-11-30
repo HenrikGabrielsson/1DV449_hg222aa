@@ -35,10 +35,10 @@ var init = function()
 
 var broadcastMessages = function(socket)
 {
-    globals.traffic.getMessages(function(messages)
-    {
-        console.log(messages);
-    });
+    var json = globals.traffic.getMessages();
+    
+    console.log(typeof(json));
+    
 }
 
 

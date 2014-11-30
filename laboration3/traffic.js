@@ -1,69 +1,41 @@
 var Traffic = function()
 {
-    this.sqlite = require('sqlite3').verbose();
-    this.db = new this.sqlite.Database("traffic.db");
+    this.fs = require("fs");
+    this.file = "traffic.json";
     
-    this.url = "http://api.sr.se/api/v2/traffic/messages?format=json&size=100";
+    this.url = "http://api.sr.se/api/v2/traffic/messages?format=json&size=100&pagination=false";
 }
 
 Traffic.prototype.getTrafficNewsFromSR = function()
 {
-    //workaround..
-    var saveMessages = this.saveMessagesInDatabase;
-    var db = this.db;
+    //workaround
+    var fs = this.fs;
+    var file = this.file;
 
-    var workaround = function(messages)
+    this.getMessagesFromSR(function(jsonString)
     {
-        saveMessages(messages,db);
-    }
-
-    this.getMessagesFromSR(function(json)
-    {
-        workaround(json.messages);
+        fs.writeFileSync(file, jsonString);
     });
     
 }
 
-Traffic.prototype.saveMessagesInDatabase = function(messages, db)
+
+Traffic.prototype.getMessages = function()
 {
-    var query; 
-    var params;
-    var stmt;
+    var fileContent = this.fs.readFileSync(this.file, {encoding:"utf8", flag:"r"});
     
-    //töm databasen
-    query = "DELETE FROM message";
-    stmt = db.prepare(query);
-    stmt.run();
+    var cachedJSON;
     
-    for(var i  = 0; i < messages.length; i++)
+    //fånga fel om det inte går att tolka innehållet som json.
+    try
     {
-        query = "INSERT INTO message VALUES (?,?,?,?,?,?,?,?,?,?)";
-        params = [messages[i].id, messages[i].priority, messages[i].createddate, messages[i].title, messages[i].exactlocation, messages[i].description, messages[i].latitude, messages[i].longitude, messages[i].category, messages[i].subcategory,];
-    
-        stmt = db.prepare(query);
-        stmt.run(params);
+        cachedJSON = JSON.parse(fileContent);
     }
-    
-}
-
-Traffic.prototype.getMessages = function(callback)
-{
-    var messages = [];
-
-    var query = "SELECT * FROM message";
-    
-    this.db.each(query, function(err, row)
+    catch(error)
     {
-        messages.push(row.id);
-    },
-    
-    //körs när each är klar
-    function()
-    {
-        callback(messages);
+        return null;
     }
-    );
-
+    return cachedJSON;
 }
 
 
@@ -86,21 +58,17 @@ Traffic.prototype.getMessagesFromSR = function(callback)
             chunks += data;
         })
         
-        //när all data kommit från sr så parsar vi det som json
+        //när all data kommit från sr så kallar vi på callbackfunktionen och skickar med strängen
         res.on('end', function()
         {
-
-            //parsea som JSON och plocka ut intressanta bitar.
-            json = JSON.parse(chunks);
             
             //kör callback och skickar med json-data som lästes ut.
-            callback(json);
+            callback(chunks);
             
         })
     });
 
     request.end();
 }
-
 
 module.exports = Traffic;
