@@ -20,13 +20,25 @@ var init = function()
     globals.fileServer = new modules.ns.Server("./public",{cache: 10});
     globals.traffic = new modules.traffic();
     
-    globals.traffic.getTrafficNews();
+
+    globals.traffic.getMessages(function(messages)
+    {
+        broadcastMessages(messages)
+    });
+    
+    //globals.traffic.getTrafficNewsFromSR();
     setInterval(function()
     {
-        //globals.traffic.getTrafficNews()
+        //globals.traffic.getTrafficNewsFromSR()
         
-    }, 2000);
+    }, 300000);
 };
+
+var broadcastMessages = function(messages)
+{
+    
+}
+
 
 //När en klient ansluter körs denna funktion.
 var handler = function(req, res) 
