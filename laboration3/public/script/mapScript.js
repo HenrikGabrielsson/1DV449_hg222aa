@@ -1,6 +1,10 @@
 var mapElement = document.getElementById("mapDiv");
 var map;
 
+var serverData;
+
+var markers = {};
+
 var socket = io.connect(); //används för att kommunicera med server
 
 var loadMap = function()
@@ -11,7 +15,13 @@ var loadMap = function()
 
 socket.on("trafficMessages", function(json)
 {
-    updateAboutSection(json.dataRecievedTime, json.copyright)
+    messages = json.messages;
+    
+    updateAboutSection(json.dataRecievedTime, json.copyright);
+    updateMap();
+    updateMessageList();
+    
+    
 })
 
 var updateAboutSection = function(date, copyright)
@@ -25,6 +35,78 @@ var updateAboutSection = function(date, copyright)
     
     lastUpdateDiv.appendChild(lastUpdateText);
     copyrightDiv.appendChild(copyrightText);
+}
+
+var updateMessageList = function()
+{
+    var messageListDiv = document.getElementById("messageList");
+    var messageList = document.createElement("ul");
+    messageListDiv.appendChild(messageList);
+    
+    for(var i = 0; i < messages.length; i++)
+    {
+        messageList.appendChild(createListItem(messages[i]));
+    }
+}
+
+var updateMap = function()
+{
+    var position;
+    var marker;
+    
+    for(var i = 0; i < messages.length; i++)
+    {
+        position = new google.maps.LatLng(messages[i].latitude, messages[i].longitude);
+        
+        marker = new google.maps.Marker({position: position, map: map });
+
+        markers[messages[i].id] = marker;
+        
+    }
+    
+}
+
+var createListItem = function(message)
+{
+    
+        //delar av ett listelement
+        var listItem = document.createElement("li");
+        
+        var itemDiv = document.createElement("div");
+        var itemHeader = document.createElement("div");
+        var itemBody = document.createElement("div");
+        
+        //gör om detta till ett vettigt datum först
+        var date = getDateString(Number(message.createddate.split("+")[0].slice(6)));
+        
+        //lägg till allt innehåll
+        itemHeader.appendChild(document.createTextNode(message.title));
+        itemHeader.appendChild(document.createTextNode(date));
+        
+        itemBody.appendChild(document.createTextNode("Var: " + message.exactlocation));
+        itemBody.appendChild(document.createTextNode("Typ: " + message.subcategory));
+        itemBody.appendChild(document.createTextNode("Beskrivning: " + message.description));
+        
+        //sätt ihop allt och returnera
+        itemDiv.appendChild(itemHeader);
+        itemDiv.appendChild(itemBody);
+        listItem.appendChild(itemDiv);
+        
+        //marker ska studsa på kartan när man håller över ett listobjekt
+        listItem.addEventListener("mouseover", function()
+        {
+            listItem.setAttribute("class", "highlight");
+            markers[message.id].setAnimation(google.maps.Animation.BOUNCE);
+        }, false);
+        
+        //..och sluta när man tar bort den.
+        listItem.addEventListener("mouseout", function()
+        {
+            listItem.removeAttribute("class");
+            markers[message.id].setAnimation(null);
+        }, false);
+        
+        return listItem;
 }
 
 var getDateString = function(timestamp)
