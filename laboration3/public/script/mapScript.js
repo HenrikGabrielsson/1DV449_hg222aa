@@ -92,19 +92,18 @@ var createListItem = function(message)
         itemDiv.appendChild(itemBody);
         listItem.appendChild(itemDiv);
         
-        //marker ska studsa på kartan när man håller över ett listobjekt
-        listItem.addEventListener("mouseover", function()
+        //marker ska studsa på kartan när man klickar på  ett listobjekt
+        listItem.addEventListener("click", function()
         {
-            listItem.setAttribute("class", "highlight");
             markers[message.id].setAnimation(google.maps.Animation.BOUNCE);
+            
+            setTimeout(function() 
+            {
+                markers[message.id].setAnimation(null);
+            }, 1400);
+            
         }, false);
         
-        //..och sluta när man tar bort den.
-        listItem.addEventListener("mouseout", function()
-        {
-            listItem.removeAttribute("class");
-            markers[message.id].setAnimation(null);
-        }, false);
         
         return listItem;
 }
