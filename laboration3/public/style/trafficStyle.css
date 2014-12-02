@@ -29,3 +29,8 @@ html,body {
 .highlight {
     background-color:yellow;
 }
+
+.infowindow-title {
+    font-weight:bold;
+}
+

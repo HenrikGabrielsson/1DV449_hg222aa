@@ -3,7 +3,7 @@ var Traffic = function()
     this.fs = require("fs");
     this.file = "traffic.json";
     
-    this.url = "http://api.sr.se/api/v2/traffic/messages?format=json&size=100&pagination=false&sort=createddate";
+    this.url = "http://api.sr.se/api/v2/traffic/messages?format=json&size=100&sort=createddate";
 }
 
 Traffic.prototype.getTrafficNewsFromSR = function()

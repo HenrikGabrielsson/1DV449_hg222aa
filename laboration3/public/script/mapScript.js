@@ -4,6 +4,7 @@ var map;
 var serverData;
 
 var markers = {};
+var infowindows = [];
 
 var socket = io.connect(); //används för att kommunicera med server
 
@@ -13,14 +14,16 @@ var loadMap = function()
     map = new google.maps.Map(mapElement, mapOptions);
 }
 
+var priorities = [1,2,3,4,5];
+
+
 socket.on("trafficMessages", function(json)
 {
     messages = json.messages;
-    
+
     updateAboutSection(json.dataRecievedTime, json.copyright);
     updateMap();
     updateMessageList();
-    
     
 })
 
@@ -51,19 +54,71 @@ var updateMessageList = function()
 
 var updateMap = function()
 {
+    alert(markers.length);
+    
     var position;
     var marker;
     
     for(var i = 0; i < messages.length; i++)
     {
-        position = new google.maps.LatLng(messages[i].latitude, messages[i].longitude);
         
+        position = new google.maps.LatLng(messages[i].latitude, messages[i].longitude);
         marker = new google.maps.Marker({position: position, map: map });
+        addInfoWindow(marker, messages[i]);
 
         markers[messages[i].id] = marker;
         
     }
     
+}
+
+var addInfoWindow = function(marker, message)
+{
+    var infowindow;
+    
+    //infowindow ska komma fram vid klick
+    infowindow = new google.maps.InfoWindow
+    ({
+        content: createInfoWindowContent(message)
+            
+    });
+    google.maps.event.addListener(marker, "click", function()
+    {
+        //stäng alla eventuella öppna infowindows
+        for(var i = 0; i < infowindows.length; i++)
+        {
+            infowindows[i].close();
+        }
+        
+        infowindow.open(map,marker);
+    })
+    
+    //spara alla infowindows i array;
+    infowindows.push(infowindow);
+    
+
+}
+
+var createInfoWindowContent = function(message)
+{
+    
+    var infowindowDiv = document.createElement("div");
+    var title = document.createElement("h2");
+    var description = document.createElement("p");
+    var date = document.createElement("p");
+    var category = document.createElement("p");
+    
+    infowindowDiv.setAttribute("class", "infowindow");
+    title.setAttribute("class", "infowindow-title");
+    
+    var formattedDate = getDateString(Number(message.createddate.split("+")[0].slice(6)));
+    
+    infowindowDiv.appendChild(title.appendChild(document.createTextNode(message.title)));
+    infowindowDiv.appendChild(description.appendChild(document.createTextNode(message.description)));
+    infowindowDiv.appendChild(date.appendChild(document.createTextNode(formattedDate)));
+    infowindowDiv.appendChild(category.appendChild(document.createTextNode(message.subcategory)));
+    
+    return infowindowDiv;
 }
 
 var createListItem = function(message)
