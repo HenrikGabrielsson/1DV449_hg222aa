@@ -9,8 +9,8 @@ var serverData;
 var markers = [];
 var infowindows = [];
 
-//De priorities [1-5] som ska visas på kartan. Alla ska visas från början
-var prioritiesFilter = [1,2,3,4,5];
+//De kategorier [0-3] som ska visas på kartan. Alla ska visas från början
+var categoryFilter = [0,1,2,3];
 
 var socket = io.connect(); //används för att kommunicera med server
 
@@ -26,7 +26,6 @@ socket.on("trafficMessages", function(json)
 
     updateAboutSection(json.dataRecievedTime, json.copyright);
     updatePage();
-    
 });
 
 filterForm.addEventListener("submit", function(e)
@@ -34,15 +33,15 @@ filterForm.addEventListener("submit", function(e)
     //ladda inte om sidan
     e.preventDefault();
     
-    var selected = document.getElementsByClassName("priority_checkbox"); 
+    var selected = document.getElementsByClassName("category_checkbox"); 
     
-    prioritiesFilter.length = 0; //ta bort gamla
+    categoryFilter.length = 0; //ta bort gamla
     
     for(var i = 0; i < selected.length; i++)
     {
         if(selected[i].checked)
         {
-            prioritiesFilter.push(Number(selected[i].value));
+            categoryFilter.push(Number(selected[i].value));
         }
     }
     
@@ -97,7 +96,7 @@ var updatePage = function()
     
     for(var j = 0; j < messages.length; j++)
     {
-        if(prioritiesFilter.indexOf(messages[j].priority) === -1)
+        if(categoryFilter.indexOf(messages[j].category) === -1)
         {
             continue;
         }
@@ -105,13 +104,11 @@ var updatePage = function()
         position = new google.maps.LatLng(messages[j].latitude, messages[j].longitude);
         marker = new google.maps.Marker({position: position, map: map });
         addInfoWindow(marker, messages[j]);
-        
+
         messageList.appendChild(createListItem(messages[j], marker));
 
         markers.push(marker);
     }
-    
-    console.log(messageList.childNodes.length)
 }
 
 var addInfoWindow = function(marker, message)
