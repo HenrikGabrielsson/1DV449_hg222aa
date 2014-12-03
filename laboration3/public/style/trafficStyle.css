@@ -14,7 +14,6 @@ html,body {
 }
 
 #mapDiv {
-    
     margin:auto;
     float:left;
     
@@ -34,3 +33,39 @@ html,body {
     font-weight:bold;
 }
 
+#legend {
+    width:30%;
+    float:left;
+}
+
+#priority_legend p{
+    padding-left:30px;
+    display:inline;
+}
+
+.priority-symbol {
+    width:22px;
+    height:41px;
+    
+    background-size:22px 41px;
+}
+
+.p1 {
+    background: url('../img/marker.png') 0 0 no-repeat;
+}
+
+.p2 {
+    background: url('../img/marker.png') -22px 0 no-repeat;
+}
+
+.p3 {
+    background: url('../img/marker.png') -44px 0 no-repeat;
+}
+
+.p4 {
+    background: url('../img/marker.png') -66px 0 no-repeat;
+}
+
+.p5 {
+    background: url('../img/marker.png') -88px 0 no-repeat;
+}

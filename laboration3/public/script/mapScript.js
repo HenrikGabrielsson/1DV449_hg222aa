@@ -3,7 +3,6 @@ var mapElement = document.getElementById("mapDiv");
 var filterForm = document.getElementById("filterOptionsForm");
 
 var map;
-
 var serverData;
 
 var markers = [];
@@ -94,6 +93,8 @@ var updatePage = function()
     var position;
     var marker;
     
+    var markerIcon;
+    
     for(var j = 0; j < messages.length; j++)
     {
         if(categoryFilter.indexOf(messages[j].category) === -1)
@@ -101,8 +102,10 @@ var updatePage = function()
             continue;
         }
         
+        markerIcon = {url: "../img/marker.png", origin: {x: (messages[j].priority -1 ) * 22 , y: 0}, size: {width:22, height:41}};
+        
         position = new google.maps.LatLng(messages[j].latitude, messages[j].longitude);
-        marker = new google.maps.Marker({position: position, map: map });
+        marker = new google.maps.Marker({position: position, map: map, icon: markerIcon });
         addInfoWindow(marker, messages[j]);
 
         messageList.appendChild(createListItem(messages[j], marker));

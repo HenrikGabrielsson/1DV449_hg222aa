@@ -17,7 +17,7 @@
             <p class="copyright"></p><p class="lastUpdate"></p>
         </div>
         
-        <div id="filterOptionsDiv">
+        <div id="legend">
             <form id="filterOptionsForm" method="POST">
                 <label for="category_1">Vägtrafik:</label>
                 <input type="checkbox" name="category" value="0" class="category_checkbox" id="category_1" checked />
@@ -33,6 +33,15 @@
 
                 <input type="submit" value="Filtrera">
             </form>
+            
+            <div id="priority_legend">
+                <div class="priority-symbol p1"></div><p>Mycket allvarlig händelse</p>
+                <div class="priority-symbol p2"></div><p>Stor händelse</p>
+                <div class="priority-symbol p3"></div><p>Störning</p>
+                <div class="priority-symbol p4"></div><p>Information</p>
+                <div class="priority-symbol p5"></div><p>Mindre störning</p>
+            </div>
+            
         </div>
         
         <script src="/socket.io/socket.io.js"></script>
