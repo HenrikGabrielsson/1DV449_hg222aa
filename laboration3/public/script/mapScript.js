@@ -85,6 +85,7 @@ var updatePage = function()
     {
         messageList = document.getElementById("messageList_ul");
         
+        //ta bort alla listobjekt
         while(messageList.firstChild)
         {
             messageList.removeChild(messageList.firstChild);
@@ -95,6 +96,26 @@ var updatePage = function()
             markers[i].setMap(null);
         }
         markers.length = 0;        
+    }
+    
+    var subList_li;
+    var subList_ul;  
+    
+    //om listan ska sorteras på area så skapas flera sub-lists
+    if(listSort === 1)
+    {
+
+        for(var i = 0; i < areas.length; i++)
+        {
+            subList_li = document.createElement("li");    
+            subList_ul = document.createElement("ul");
+            subList_ul.setAttribute("class", "subList " + areas[i].trafficdepartmentunitid);
+            
+            subList_li.appendChild(document.createTextNode(areas[i].name));
+            subList_li.appendChild(subList_ul);
+            messageList.appendChild(subList_li);
+            
+        }
     }
 
     var position;
@@ -124,7 +145,7 @@ var updatePage = function()
             }
             else if(listSort === 1)
             {
-                
+                document.getElementsByClassName("subList " + messages[j].area)[0].appendChild(createListItem(messages[j], marker));
             }
 
             markers.push(marker);
