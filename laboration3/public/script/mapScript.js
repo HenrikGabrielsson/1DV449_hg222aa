@@ -8,8 +8,8 @@ var serverData;
 var markers = [];
 var infowindows = [];
 
-//De kategorier [0-3] som ska visas på kartan. Alla ska visas från början
-var categoryFilter = [0,1,2,3];
+//Den kategori [0-3] (4 === alla) som ska visas på kartan. Alla ska visas från början
+var categoryFilter = 4;
 
 var socket = io.connect(); //används för att kommunicera med server
 
@@ -32,18 +32,10 @@ filterForm.addEventListener("submit", function(e)
     //ladda inte om sidan
     e.preventDefault();
     
-    var selected = document.getElementsByClassName("category_checkbox"); 
+    var dropdown = document.getElementById("categoryDropdown"); 
     
-    categoryFilter.length = 0; //ta bort gamla
-    
-    for(var i = 0; i < selected.length; i++)
-    {
-        if(selected[i].checked)
-        {
-            categoryFilter.push(Number(selected[i].value));
-        }
-    }
-    
+    categoryFilter = Number(dropdown.options[dropdown.selectedIndex].value);
+
     updatePage();
    
 },false);
@@ -97,20 +89,18 @@ var updatePage = function()
     
     for(var j = 0; j < messages.length; j++)
     {
-        if(categoryFilter.indexOf(messages[j].category) === -1)
+        if(categoryFilter === 4 || categoryFilter === messages[j].category)
         {
-            continue;
+            markerIcon = {url: "../img/marker.png", origin: {x: (messages[j].priority -1 ) * 22 , y: 0}, size: {width:22, height:41}};
+            
+            position = new google.maps.LatLng(messages[j].latitude, messages[j].longitude);
+            marker = new google.maps.Marker({position: position, map: map, icon: markerIcon });
+            addInfoWindow(marker, messages[j]);
+    
+            messageList.appendChild(createListItem(messages[j], marker));
+    
+            markers.push(marker);
         }
-        
-        markerIcon = {url: "../img/marker.png", origin: {x: (messages[j].priority -1 ) * 22 , y: 0}, size: {width:22, height:41}};
-        
-        position = new google.maps.LatLng(messages[j].latitude, messages[j].longitude);
-        marker = new google.maps.Marker({position: position, map: map, icon: markerIcon });
-        addInfoWindow(marker, messages[j]);
-
-        messageList.appendChild(createListItem(messages[j], marker));
-
-        markers.push(marker);
     }
 }
 

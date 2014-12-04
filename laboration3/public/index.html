@@ -19,17 +19,15 @@
         
         <div id="legend">
             <form id="filterOptionsForm" method="POST">
-                <label for="category_1">Vägtrafik:</label>
-                <input type="checkbox" name="category" value="0" class="category_checkbox" id="category_1" checked />
                 
-                <label for="category_2">Kollektivtrafik:</label>
-                <input type="checkbox" name="category" value="1" class="category_checkbox" id="category_2" checked />
-                
-                <label for="category_3">Planerad störning:</label>
-                <input type="checkbox" name="category" value="2" class="category_checkbox" id="category_3" checked />
-                
-                <label for="category_4">Övrigt:</label>
-                <input type="checkbox" name="category" value="3" class="category_checkbox" id="category_4" checked />
+                <label for="categoryDropdown">Välj kategori som ska visas:</label>
+                <select name="categoryDropdown" id="categoryDropdown">
+                    <option value="0">Vägtrafik</option>
+                    <option value="1">Kollektivtrafik</option>
+                    <option value="2">Planerad störning</option>
+                    <option value="3">Övrigt</option>
+                    <option value="4" selected>Visa allt</option>
+                </select>
 
                 <input type="submit" value="Filtrera">
             </form>
