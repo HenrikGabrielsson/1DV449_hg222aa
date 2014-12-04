@@ -25,10 +25,10 @@ var init = function()
  
     modules.sio = require('socket.io').listen(globals.httpServer);
     
-    //globals.traffic.getTrafficNewsFromSR();
+    globals.traffic.saveTrafficNewsFromSR();
     setInterval(function()
     {
-        //globals.traffic.getTrafficNewsFromSR()
+        //globals.traffic.saveTrafficNewsFromSR()
         
     }, 300000);
 };
