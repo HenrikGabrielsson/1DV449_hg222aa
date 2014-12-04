@@ -1,7 +1,9 @@
 var mapElement = document.getElementById("mapDiv");
 
 var filterForm = document.getElementById("filterOptionsForm");
+var listForm = document.getElementById("sortMethodForm");
 
+var messages;
 var map;
 var serverData;
 
@@ -10,6 +12,7 @@ var infowindows = [];
 
 //Den kategori [0-3] (4 === alla) som ska visas på kartan. Alla ska visas från början
 var categoryFilter = 4;
+var listSort = 0;
 
 var socket = io.connect(); //används för att kommunicera med server
 
@@ -22,10 +25,22 @@ var loadMap = function()
 socket.on("trafficMessages", function(json)
 {
     messages = json.messages;
+    areas = json.areas;
+    
 
     updateAboutSection(json.dataRecievedTime, json.copyright);
     updatePage();
 });
+
+listForm.addEventListener("change", function(e)
+{
+        
+    var dropdown = document.getElementById("listSortDropdown"); 
+    
+    listSort = Number(dropdown.options[dropdown.selectedIndex].value);
+    
+    updatePage();
+})
 
 filterForm.addEventListener("submit", function(e)
 {
@@ -87,6 +102,12 @@ var updatePage = function()
     
     var markerIcon;
     
+    //sortera listan efter område
+    if(listSort === 1)
+    {
+        sortMessagesByArea();
+    }
+    
     for(var j = 0; j < messages.length; j++)
     {
         if(categoryFilter === 4 || categoryFilter === messages[j].category)
@@ -97,11 +118,36 @@ var updatePage = function()
             marker = new google.maps.Marker({position: position, map: map, icon: markerIcon });
             addInfoWindow(marker, messages[j]);
     
-            messageList.appendChild(createListItem(messages[j], marker));
-    
+            if(listSort === 0)
+            {
+                messageList.appendChild(createListItem(messages[j], marker));
+            }
+            else if(listSort === 1)
+            {
+                
+            }
+
             markers.push(marker);
         }
     }
+}
+
+var sortMessagesByArea = function()
+{
+    var sortedMessages = [];
+    
+    for(var i = 0; i < areas.length;i++)
+    {
+        for(var j = 0; j < messages.length;j++)
+        {
+            if(areas[i].trafficdepartmentunitid === messages[j].area)
+            {
+                sortedMessages.push(messages[j]);
+            }
+        }
+    }
+    
+    messages = sortedMessages;
 }
 
 var addInfoWindow = function(marker, message)

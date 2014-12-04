@@ -2,25 +2,27 @@ var Traffic = function()
 {
     this.http = require('http');
     this.fs = require("fs");
+    
     this.messageFile = "traffic.json";
+    this.areaFile = "areas.json";
 
+    this.allAreasUrl = "http://api.sr.se/api/v2/traffic/areas?format=json&pagination=false";
     this.messageUrl = "http://api.sr.se/api/v2/traffic/messages?format=json&size=100&sort=createddate";
 }
 
 Traffic.prototype.saveTrafficNewsFromSR = function()
 {
     //workaround
-    var fs = this.fs;
     var traffic = this;
-    var messageFile = this.messageFile;
+
 
     this.getMessagesFromSR(function(json)
     {
         traffic.addAreaCodeToEachMessage(json.messages, function(messagesWithAreas)
         {
-
             json.messages = messagesWithAreas;
-            fs.writeFileSync(messageFile, JSON.stringify(json));
+            traffic.fs.writeFileSync(traffic.messageFile, JSON.stringify(json));
+            console.log("Last Message Update: " + json.dataRecievedTime);
         },0);
         
         
@@ -28,10 +30,60 @@ Traffic.prototype.saveTrafficNewsFromSR = function()
     
 }
 
+Traffic.prototype.saveAreasFromSR = function()
+{
+    //workaround
+    var traffic = this;
+    
+    this.getAreasFromSR(function(json)
+    {
+        traffic.fs.writeFileSync(traffic.areaFile, JSON.stringify(json));
+    })
+}
+
+Traffic.prototype.getAreasFromSR = function(callback)
+{
+    var json;
+    
+    var request = this.http.request(this.allAreasUrl, function(res)
+    {
+        res.setEncoding('utf8');
+        
+        var chunks = "";
+        
+        //varje gång vi får en "chunk" med data så lägger vi till det i var chunk.
+        res.on('data', function(data)
+        {
+            chunks += data;
+        })
+        
+        //när all data kommit från sr så kallar vi på callbackfunktionen och skickar med strängen
+        res.on('end', function()
+        {
+            
+            //kör callback och skickar med json-data som lästes ut.
+            callback(JSON.parse(chunks));
+            
+        })
+    });
+
+    request.end();    
+}
 
 Traffic.prototype.getMessages = function()
 {
-    var fileContent = this.fs.readFileSync(this.messageFile, {encoding:"utf8", flag:"r"});
+    return this.getFromFile(this.messageFile);
+}
+
+
+Traffic.prototype.getAreas = function()
+{
+    return this.getFromFile(this.areaFile);
+}
+
+Traffic.prototype.getFromFile = function(filename)
+{
+    var fileContent = this.fs.readFileSync(filename, {encoding:"utf8", flag:"r"});
     
     var cachedJSON;
     

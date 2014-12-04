@@ -9,6 +9,14 @@
     <body>
         <div id="messageList">
         <h2>Trafikmeddelanden</h2>
+        <form id="sortMethodForm" method="post">
+            <label for="listSortDropdown">Sortera efter:</label>
+            <select name="listSortDropdown" id="listSortDropdown">
+                <option value="0" selected>Tid</option>
+                <option value="1">Trafikområde</option>
+            </select>
+        </form>
+        
         </div>
         
         <div id="mapDiv">
