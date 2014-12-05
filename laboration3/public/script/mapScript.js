@@ -10,16 +10,19 @@ var serverData;
 var markers = [];
 var infowindows = [];
 
+var defaultMapOptions = {center: {lat:63, lng: 16}, zoom: 5};
+
 //Den kategori [0-3] (4 === alla) som ska visas på kartan. Alla ska visas från början
 var categoryFilter = 4;
+var areaFilter = 0;
 var listSort = 0;
+
 
 var socket = io.connect(); //används för att kommunicera med server
 
 var loadMap = function()
 {
-    var mapOptions = {center: {lat:63, lng: 16}, zoom: 5};
-    map = new google.maps.Map(mapElement, mapOptions);
+    map = new google.maps.Map(mapElement, defaultMapOptions);
 }
 
 socket.on("trafficMessages", function(json)
@@ -27,7 +30,7 @@ socket.on("trafficMessages", function(json)
     messages = json.messages;
     areas = json.areas;
     
-
+    fillAreaDropdown(areas);
     updateAboutSection(json.dataRecievedTime, json.copyright);
     updatePage();
 });
@@ -42,18 +45,82 @@ listForm.addEventListener("change", function(e)
     updatePage();
 })
 
-filterForm.addEventListener("submit", function(e)
+filterForm.addEventListener("change", function(e)
 {
-    //ladda inte om sidan
-    e.preventDefault();
-    
-    var dropdown = document.getElementById("categoryDropdown"); 
-    
-    categoryFilter = Number(dropdown.options[dropdown.selectedIndex].value);
+    var categoryDropdown = document.getElementById("categoryDropdown"); 
+    categoryFilter = Number(categoryDropdown.options[categoryDropdown.selectedIndex].value);
+
+    var areaDropdown = document.getElementById("areaDropdown"); 
+    var newAreaFilter = Number(areaDropdown.options[areaDropdown.selectedIndex].value);
+
+    //bara om man har ändrat på fillAreaDropdown
+    if(newAreaFilter !== areaFilter)
+    {
+        areaFilter = newAreaFilter;
+        
+        updateMapOptions();
+    }
 
     updatePage();
    
 },false);
+
+var updateMapOptions = function()
+{
+    //0 : default
+    if(areaFilter === 0)
+    {
+        map.setOptions(defaultMapOptions);
+        return;
+    }
+    
+    //hämta ut rätt trafikområde
+    var area;
+    for(var i = 0; i < areas.length; i++)
+    {
+        if(areas[i].trafficdepartmentunitid === areaFilter)
+        {
+            area = areas[i];
+            break;
+        }
+    }
+
+    var count = 0;
+    var averageLat = 0;
+    var averageLong = 0;
+    for(i = 0; i < messages.length; i++)
+    {
+        if(messages[i].area === area.trafficdepartmentunitid)
+        {
+            count++;
+            averageLat += messages[i].latitude;
+            averageLong += messages[i].longitude;
+        }
+    }
+    
+    map.setOptions({center: {lat:averageLat/count, lng: averageLong/count}, zoom: area.zoom-2});
+    
+}
+
+var fillAreaDropdown = function(areas)
+{
+    var dropdown = document.getElementById("areaDropdown");
+    var option;
+    
+    option = document.createElement("option");
+    option.setAttribute("value", 0);
+    option.appendChild(document.createTextNode("Visa alla"));
+    dropdown.appendChild(option);
+    
+    for(var i = 0; i < areas.length;i++)
+    {
+        option = document.createElement("option");
+        option.setAttribute("value", areas[i].trafficdepartmentunitid);
+        option.appendChild(document.createTextNode(areas[i].name));
+        dropdown.appendChild(option);            
+    }
+   
+}
 
 var updateAboutSection = function(date, copyright)
 {
@@ -131,7 +198,7 @@ var updatePage = function()
     
     for(var j = 0; j < messages.length; j++)
     {
-        if(categoryFilter === 4 || categoryFilter === messages[j].category)
+        if((categoryFilter === 4 || categoryFilter === messages[j].category) && (areaFilter === 0 || areaFilter === messages[j].area ))
         {
             markerIcon = {url: "../img/marker.png", origin: {x: (messages[j].priority -1 ) * 22 , y: 0}, size: {width:22, height:41}};
             
