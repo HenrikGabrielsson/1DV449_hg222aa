@@ -29,7 +29,7 @@ socket.on("trafficMessages", function(json)
 {
     messages = json.messages;
     areas = json.areas;
-    
+
     fillAreaDropdown(areas);
     updateAboutSection(json.dataRecievedTime, json.copyright);
     updatePage();
@@ -60,7 +60,6 @@ filterForm.addEventListener("change", function(e)
         
         updateMapOptions();
     }
-
     updatePage();
    
 },false);
@@ -96,6 +95,13 @@ var updateMapOptions = function()
             averageLat += messages[i].latitude;
             averageLong += messages[i].longitude;
         }
+    }
+    
+    //om det inte finna några meddelanden i valt område så körs default-inställningen (hela sverige)
+    if(count === 0)
+    {
+        map.setOptions(defaultMapOptions);
+        return;
     }
     
     map.setOptions({center: {lat:averageLat/count, lng: averageLong/count}, zoom: area.zoom-2});
@@ -190,8 +196,13 @@ var updatePage = function()
     
     var markerIcon;
     
+    //sortera listan efter tid
+    if(listSort === 0)
+    {
+        sortMessagesByTime();
+    }
     //sortera listan efter område
-    if(listSort === 1)
+    else if(listSort === 1)
     {
         sortMessagesByArea();
     }
@@ -236,6 +247,15 @@ var sortMessagesByArea = function()
     }
     
     messages = sortedMessages;
+}
+
+var sortMessagesByTime = function()
+{
+    messages.sort(function(a,b)
+    {
+        return Number(b.createddate.split("+")[0].slice(6)) - Number(a.createddate.split("+")[0].slice(6));
+        
+    });
 }
 
 var addInfoWindow = function(marker, message)
@@ -293,8 +313,17 @@ var createListItem = function(message, marker)
     var listItem = document.createElement("li");
     
     var itemDiv = document.createElement("div");
+    itemDiv.setAttribute("class", "message");
+    
     var itemHeader = document.createElement("div");
+    itemHeader.setAttribute("class", "message_header");
+    
     var itemBody = document.createElement("div");
+    itemBody.setAttribute("class", "message_body");
+
+    var where = document.createElement("p");
+    var type = document.createElement("p");
+    var description = document.createElement("p");
     
     //gör om detta till ett vettigt datum först
     var date = getDateString(Number(message.createddate.split("+")[0].slice(6)));
@@ -303,9 +332,13 @@ var createListItem = function(message, marker)
     itemHeader.appendChild(document.createTextNode(message.title));
     itemHeader.appendChild(document.createTextNode(date));
     
-    itemBody.appendChild(document.createTextNode("Var: " + message.exactlocation));
-    itemBody.appendChild(document.createTextNode("Typ: " + message.subcategory));
-    itemBody.appendChild(document.createTextNode("Beskrivning: " + message.description));
+    where.appendChild(document.createTextNode("Var: " + message.exactlocation));
+    type.appendChild(document.createTextNode("Typ: " + message.subcategory));
+    description.appendChild(document.createTextNode("Beskrivning: " + message.description));
+    
+    itemBody.appendChild(where);
+    itemBody.appendChild(type);
+    itemBody.appendChild(description);
     
     //sätt ihop allt och returnera
     itemDiv.appendChild(itemHeader);

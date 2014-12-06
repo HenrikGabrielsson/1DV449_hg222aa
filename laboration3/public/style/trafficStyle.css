@@ -1,6 +1,14 @@
 html,body {
     width:100%;
     height:100%;
+    
+    font-family:Verdana;
+}
+
+body {
+    background-image: url('../img/bakgrund.jpg');
+    background-size:100% 100%;
+    background-repeat:no-repeat;
 }
 
 #messageList {
@@ -11,6 +19,26 @@ html,body {
     height:80%;
     width:30%;
     max-height:1000px;
+}
+
+#messageList_ul, #messageList_ul ul {
+    list-style-type:none;
+    
+    margin-left:-40px;
+}
+
+.message {
+    background-color:white;
+    border:1px solid #DDD;
+    border-radius:5px;
+    margin-top:20px;
+}
+
+.message_header {
+    background-color:#86C543;
+    padding:2px;
+    color:white;
+    border-radius:5px 5px 0 0;
 }
 
 #mapDiv {
@@ -29,9 +57,10 @@ html,body {
     background-color:yellow;
 }
 
-.infowindow-title {
+.infowindow {
     font-weight:bold;
 }
+
 
 #legend {
     width:30%;
