@@ -7,56 +7,60 @@
         <link href="style/trafficStyle.css" rel="stylesheet" />
     </head>
     <body>
-        <div id="header">
-            <h1>Trafikkartan</h1>
-        </div>
-    
-        <div id="messageList">
-        <h2>Trafikmeddelanden</h2>
-        <form id="sortMethodForm" method="post">
-            <label for="listSortDropdown">Sortera efter:</label>
-            <select name="listSortDropdown" id="listSortDropdown">
-                <option value="0" selected>Tid</option>
-                <option value="1">Trafikområde</option>
-            </select>
-        </form>
+            <div id="header">
+                <h1>Trafikkartan</h1>
+            </div>
         
-        </div>
-        
-        <div id="mapDiv">
-        </div>
-        <div id="about">
-            <p class="copyright"></p><p class="lastUpdate"></p>
-        </div>
-        
-        <div id="legend">
-            <form id="filterOptionsForm" method="POST">
-                
-                <label for="categoryDropdown">Välj kategori som ska visas:</label>
-                <select name="categoryDropdown" id="categoryDropdown">
-                    <option value="0">Vägtrafik</option>
-                    <option value="1">Kollektivtrafik</option>
-                    <option value="2">Planerad störning</option>
-                    <option value="3">Övrigt</option>
-                    <option value="4" selected>Visa allt</option>
+            <div id="messageList">
+            <h2>Trafikmeddelanden</h2>
+            
+            <form id="sortMethodForm" method="post">
+                <label for="listSortDropdown">Sortera efter:</label>
+                <select name="listSortDropdown" id="listSortDropdown">
+                    <option value="0" selected>Tid</option>
+                    <option value="1">Trafikområde</option>
                 </select>
-                
-                <label for="areaDropdown" method="POST">Välj område som ska visas:</label>
-                <select name="areaDropdown" id="areaDropdown">
-                <!--Fylls på av scriptet-->              
-                </select>
-
             </form>
             
-            <div id="priority_legend">
-                <div class="priority-symbol p1"></div><p>Mycket allvarlig händelse</p>
-                <div class="priority-symbol p2"></div><p>Stor händelse</p>
-                <div class="priority-symbol p3"></div><p>Störning</p>
-                <div class="priority-symbol p4"></div><p>Information</p>
-                <div class="priority-symbol p5"></div><p>Mindre störning</p>
             </div>
             
-        </div>
+            <div id="mapDiv">
+            </div>
+            
+            
+            <div id="mapOptions">
+                <div id="about">
+                    <p class="copyright"></p>
+                    <p class="lastUpdate"></p>
+                </div>
+            
+                <form id="filterOptionsForm" method="POST">
+                    
+                    <label for="categoryDropdown">Välj kategori som ska visas:</label>
+                    <select name="categoryDropdown" id="categoryDropdown">
+                        <option value="0">Vägtrafik</option>
+                        <option value="1">Kollektivtrafik</option>
+                        <option value="2">Planerad störning</option>
+                        <option value="3">Övrigt</option>
+                        <option value="4" selected>Visa allt</option>
+                    </select>
+                    
+                    <label for="areaDropdown" method="POST">Välj område som ska visas:</label>
+                    <select name="areaDropdown" id="areaDropdown">
+                    <!--Fylls på av scriptet-->              
+                    </select>
+    
+                </form>
+                
+                <div id="priority_legend">
+                    <div class="priority-symbol p1"><p>Mycket allvarlig händelse</p></div>
+                    <div class="priority-symbol p2"><p>Stor händelse</p></div>
+                    <div class="priority-symbol p3"><p>Störning</p></div>
+                    <div class="priority-symbol p4"><p>Information</p></div>
+                    <div class="priority-symbol p5"><p>Mindre störning</p></div>
+                </div>
+                
+            </div>
         
         <script src="/socket.io/socket.io.js"></script>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxcezqYVL3pbVmcYxTbRJNOm98VFwyNQU"></script>

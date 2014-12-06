@@ -20,7 +20,7 @@ var globals =
 var init = function()
 {
     globals.httpServer = modules.http.createServer(handler);
-    globals.fileServer = new modules.ns.Server("./public",{cache: 10});
+    globals.fileServer = new modules.ns.Server("./public",{cache: 1});
     globals.traffic = new modules.traffic();
  
     modules.sio = require('socket.io').listen(globals.httpServer);

@@ -104,7 +104,7 @@ var updateMapOptions = function()
         return;
     }
     
-    map.setOptions({center: {lat:averageLat/count, lng: averageLong/count}, zoom: area.zoom-2});
+    map.setOptions({center: {lat:averageLat/count, lng: averageLong/count}, zoom: area.zoom-1});
     
 }
 
@@ -177,17 +177,18 @@ var updatePage = function()
     //om listan ska sorteras på area så skapas flera sub-lists
     if(listSort === 1)
     {
-
         for(var i = 0; i < areas.length; i++)
         {
             subList_li = document.createElement("li");    
+            subList_li.setAttribute("class","areaListItem hidden");
+            
             subList_ul = document.createElement("ul");
             subList_ul.setAttribute("class", "subList " + areas[i].trafficdepartmentunitid);
             
             subList_li.appendChild(document.createTextNode(areas[i].name));
             subList_li.appendChild(subList_ul);
             messageList.appendChild(subList_li);
-            
+
         }
     }
 
@@ -195,17 +196,10 @@ var updatePage = function()
     var marker;
     
     var markerIcon;
-    
-    //sortera listan efter tid
-    if(listSort === 0)
-    {
-        sortMessagesByTime();
-    }
-    //sortera listan efter område
-    else if(listSort === 1)
-    {
-        sortMessagesByArea();
-    }
+
+    var subList;
+
+    sortList();
     
     for(var j = 0; j < messages.length; j++)
     {
@@ -223,7 +217,13 @@ var updatePage = function()
             }
             else if(listSort === 1)
             {
-                document.getElementsByClassName("subList " + messages[j].area)[0].appendChild(createListItem(messages[j], marker));
+                subList = document.getElementsByClassName("subList " + messages[j].area)[0]; 
+                subList.appendChild(createListItem(messages[j], marker));
+                
+                if(subList.parentNode.getAttribute("class") == "areaListItem hidden")
+                {
+                    subList.parentNode.setAttribute("class", "areaListItem");
+                }
             }
 
             markers.push(marker);
@@ -231,31 +231,33 @@ var updatePage = function()
     }
 }
 
-var sortMessagesByArea = function()
+var sortList = function()
 {
-    var sortedMessages = [];
     
-    for(var i = 0; i < areas.length;i++)
-    {
-        for(var j = 0; j < messages.length;j++)
-        {
-            if(areas[i].trafficdepartmentunitid === messages[j].area)
-            {
-                sortedMessages.push(messages[j]);
-            }
-        }
-    }
-    
-    messages = sortedMessages;
-}
-
-var sortMessagesByTime = function()
-{
+    //sortera listan efter tid (ska alltid göras först)
     messages.sort(function(a,b)
     {
         return Number(b.createddate.split("+")[0].slice(6)) - Number(a.createddate.split("+")[0].slice(6));
-        
     });
+
+    //sortera listan efter område om användaren vill det
+    if(listSort === 1)
+    {
+        var sortedMessages = [];
+        
+        for(var i = 0; i < areas.length;i++)
+        {
+            for(var j = 0; j < messages.length;j++)
+            {
+                if(areas[i].trafficdepartmentunitid === messages[j].area)
+                {
+                    sortedMessages.push(messages[j]);
+                }
+            }
+        }
+        
+        messages = sortedMessages;
+    }
 }
 
 var addInfoWindow = function(marker, message)
@@ -295,15 +297,20 @@ var createInfoWindowContent = function(message)
     var category = document.createElement("p");
     
     infowindowDiv.setAttribute("class", "infowindow");
-    title.setAttribute("class", "infowindow-title");
+    title.setAttribute("class", "infowindow_title");
     
     var formattedDate = getDateString(Number(message.createddate.split("+")[0].slice(6)));
     
-    infowindowDiv.appendChild(title.appendChild(document.createTextNode(message.title)));
-    infowindowDiv.appendChild(description.appendChild(document.createTextNode(message.description)));
-    infowindowDiv.appendChild(date.appendChild(document.createTextNode(formattedDate)));
-    infowindowDiv.appendChild(category.appendChild(document.createTextNode(message.subcategory)));
+    title.appendChild(document.createTextNode(message.title));
+    description.appendChild(document.createTextNode("Vad: " + message.description));
+    date.appendChild(document.createTextNode("När: " + formattedDate));
+    category.appendChild(document.createTextNode("Typ: " + message.subcategory));
     
+    infowindowDiv.appendChild(title);
+    infowindowDiv.appendChild(description);
+    infowindowDiv.appendChild(date);
+    infowindowDiv.appendChild(category);
+
     return infowindowDiv;
 }
 
@@ -357,7 +364,6 @@ var createListItem = function(message, marker)
         
     }, false);
     
-    
     return listItem;
 }
 
@@ -384,11 +390,7 @@ var getDateString = function(timestamp)
     var minute = dateObject.getMinutes();
     var second = dateObject.getSeconds();
     
-    hour = addZero(hour);
-    minute = addZero(minute);
-    second = addZero(second);
-    
-    return hour + ":" + minute + ":" + second + " " + date + " " + month + " " + year;
+    return addZero(hour) + ":" + addZero(minute) + ":" + addZero(second) + " " + date + " " + month + " " + year;
     
 }
 
