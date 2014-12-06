@@ -13,16 +13,23 @@ body {
     background-repeat:no-repeat;
 }
 
-#messageList {
+#messageList_container {
+    border:2px solid #DDDDDD;
+    border-radius: 10px 0 0 10px; 
+
+    width:30%;
+    height:80%;
+    max-height:1000px;    
     
-    padding:20px;
+    padding: 0 20px 0 20px;
     
     float:left;
-    overflow:auto;
+}
+
+#messageList {
     
-    height:80%;
-    width:30%;
-    max-height:1000px;
+    height:inherit;
+    overflow:auto;
 }
 
 #messageList_ul, #messageList_ul ul {
@@ -54,11 +61,25 @@ body {
 
 .message_header {
     background-color:#86C543;
-    padding:2px;
+    padding:2px 10px 2px 10px;
     color:white;
     border-radius:5px 5px 0 0;
+    
+    min-height:1px;
+    overflow:hidden;
 }
 
+.message_header p:nth-child(1) {
+    float:left;
+}
+
+.message_header p:nth-child(2) {
+    float:right;
+}
+
+.message_body {
+    padding:2px 10px 2px 10px;    
+}
 
 #mapDiv {
     margin:auto;
@@ -85,13 +106,19 @@ body {
 #filterOptionsForm select, #filterOptionsForm label {
     float:left;
     clear:both;
+    
+    font-size:10pt;
 }
 
 #mapOptions {
     width:30%;
+    height:80%;
     float:left;
     
-    padding:20px;
+    padding: 0 20px 0 20px;
+    
+    border:2px solid #DDDDDD;
+    border-radius: 0 10px 10px 0;
 }
 
 #priority_legend {

@@ -336,8 +336,15 @@ var createListItem = function(message, marker)
     var date = getDateString(Number(message.createddate.split("+")[0].slice(6)));
     
     //lägg till allt innehåll
-    itemHeader.appendChild(document.createTextNode(message.title));
-    itemHeader.appendChild(document.createTextNode(date));
+    
+    var headerTitle = document.createElement("p");
+    var headerDate = document.createElement("p");
+    headerTitle.appendChild(document.createTextNode(message.title));
+    headerDate.appendChild(document.createTextNode(date));    
+    
+    
+    itemHeader.appendChild(headerTitle);
+    itemHeader.appendChild(headerDate);
     
     where.appendChild(document.createTextNode("Var: " + message.exactlocation));
     type.appendChild(document.createTextNode("Typ: " + message.subcategory));

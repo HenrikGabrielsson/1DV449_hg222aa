@@ -11,7 +11,8 @@
                 <h1>Trafikkartan</h1>
             </div>
         
-            <div id="messageList">
+            <div id="messageList_container">
+            
             <h2>Trafikmeddelanden</h2>
             
             <form id="sortMethodForm" method="post">
@@ -21,8 +22,13 @@
                     <option value="1">Trafikområde</option>
                 </select>
             </form>
+            <div id="messageList">
             
             </div>
+            
+            
+            </div>
+            
             
             <div id="mapDiv">
             </div>
@@ -45,7 +51,7 @@
                         <option value="4" selected>Visa allt</option>
                     </select>
                     
-                    <label for="areaDropdown" method="POST">Välj område som ska visas:</label>
+                    <label for="areaDropdown">Välj område som ska visas:</label>
                     <select name="areaDropdown" id="areaDropdown">
                     <!--Fylls på av scriptet-->              
                     </select>
