@@ -1,3 +1,4 @@
+
 var modules = 
 {
     http: require('http'),
@@ -5,7 +6,7 @@ var modules =
     sio: null,
   
     traffic: require('./traffic.js'),
-    maps: null //require('./maps.js')
+    maps: null 
 };
 
 var globals = 
@@ -17,11 +18,12 @@ var globals =
     
 };
 
+//init-funktion, skapar modul-objekt och hämtar data från sr, när servern startar. Därefter var 5:e minut
 var init = function()
 {
     globals.httpServer = modules.http.createServer(handler);
     globals.fileServer = new modules.ns.Server("./public",{cache: 1});
-    globals.traffic = new modules.traffic();
+    globals.traffic = new modules.traffic(modules.http);
  
     modules.sio = require('socket.io').listen(globals.httpServer);
 
@@ -33,6 +35,7 @@ var init = function()
     }, 300000);
 };
 
+//skickar json-fil med messages och areas till klient genom socket.
 var broadcastMessages = function(socket)
 {
     var json = globals.traffic.getMessages();
@@ -75,7 +78,7 @@ function serveFiles(req,res)
 
 init(); //kör denna funktion när servern startar.
 
+
 //lyssna genom denna port och kör handler när någon ansluter.
 globals.httpServer.listen(8888);
-
 modules.sio.sockets.on('connection', broadcastMessages);

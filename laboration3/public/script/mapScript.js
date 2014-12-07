@@ -1,12 +1,12 @@
 var mapElement = document.getElementById("mapDiv");
 
-var filterForm = document.getElementById("filterOptionsForm");
-var listForm = document.getElementById("sortMethodForm");
-
+//kommer med JSON från server
+var error;
 var messages;
-var map;
-var serverData;
 
+var map;
+
+//här ska alla markers och infowindows på kartan sparas.
 var markers = [];
 var infowindows = [];
 
@@ -20,22 +20,46 @@ var listSort = 0;
 
 var socket = io.connect(); //används för att kommunicera med server
 
+//Gör kartan och visa
 var loadMap = function()
 {
     map = new google.maps.Map(mapElement, defaultMapOptions);
 }
 
+//när det kommer nyheter från servern.
 socket.on("trafficMessages", function(json)
 {
     messages = json.messages;
     areas = json.areas;
 
-    fillAreaDropdown(areas);
-    updateAboutSection(json.dataRecievedTime, json.copyright);
-    updatePage();
+    if(messages !== undefined && areas !== undefined)
+    {
+        fillAreaDropdown(areas);
+        updateAboutSection(json.dataRecievedTime, json.copyright);
+        updatePage();        
+    }
+    else //fel
+    {
+        showError(json.error);
+    }
 });
 
-listForm.addEventListener("change", function(e)
+//visa felmeddelande från server.
+var showError = function(error)
+{
+    var errorDiv = document.getElementById("errorMessage");
+    if(error !== undefined)
+    {
+        errorDiv.appendChild(document.createTextNode(error))
+    }
+    else
+    {
+        errorDiv.appendChild(document.createTextNode("Ett okänt fel har inträffat"))
+    }
+}
+
+//När någon ändrar hur de vill att listan ska sorteras.
+document.getElementById("sortMethodForm").addEventListener("change", function(e)
 {
         
     var dropdown = document.getElementById("listSortDropdown"); 
@@ -45,7 +69,8 @@ listForm.addEventListener("change", function(e)
     updatePage();
 })
 
-filterForm.addEventListener("change", function(e)
+//när någon ändrar i filter-alternativen
+document.getElementById("filterOptionsForm").addEventListener("change", function(e)
 {
     var categoryDropdown = document.getElementById("categoryDropdown"); 
     categoryFilter = Number(categoryDropdown.options[categoryDropdown.selectedIndex].value);
@@ -64,6 +89,7 @@ filterForm.addEventListener("change", function(e)
    
 },false);
 
+//ändra inzoomning och position på kartan med denna funktion.
 var updateMapOptions = function()
 {
     //0 : default
@@ -83,7 +109,8 @@ var updateMapOptions = function()
             break;
         }
     }
-
+    
+    //räkna ut genomsnittet på alla markers som ska visas för att vi ska kunna veta var på kartan man ska zomam in.
     var count = 0;
     var averageLat = 0;
     var averageLong = 0;
@@ -108,26 +135,31 @@ var updateMapOptions = function()
     
 }
 
+//lägg till alla områden i den dropdown där man kan filtrera kartan/listan efter område
 var fillAreaDropdown = function(areas)
 {
     var dropdown = document.getElementById("areaDropdown");
     var option;
     
-    option = document.createElement("option");
-    option.setAttribute("value", 0);
-    option.appendChild(document.createTextNode("Visa alla"));
-    dropdown.appendChild(option);
-    
-    for(var i = 0; i < areas.length;i++)
+    //minifunktion som skapar ett option och lägger till det i dropdownen.
+    var makeOption = function(id, text)
     {
         option = document.createElement("option");
-        option.setAttribute("value", areas[i].trafficdepartmentunitid);
-        option.appendChild(document.createTextNode(areas[i].name));
-        dropdown.appendChild(option);            
+        option.setAttribute("value", id);
+        option.appendChild(document.createTextNode(text));
+        dropdown.appendChild(option);        
     }
-   
+
+    makeOption(0, "Visa alla") //ska alltid finnas.
+    
+    //skapa för varje område
+    for(var i = 0; i < areas.length;i++)
+    {
+        makeOption(areas[i].trafficdepartmentunitid, areas[i].name)
+    }
 }
 
+//sektion där det står lite info om att datan kommer från sr och när senaste uppdateringen skedde.
 var updateAboutSection = function(date, copyright)
 {
     
@@ -194,23 +226,26 @@ var updatePage = function()
 
     var position;
     var marker;
-    
     var markerIcon;
-
     var subList;
 
+    //sortera listan efter det val som användaren gjorde.
     sortList();
+    
     
     for(var j = 0; j < messages.length; j++)
     {
+        //kollar så att detta meddelande ska visas (filtren)
         if((categoryFilter === 4 || categoryFilter === messages[j].category) && (areaFilter === 0 || areaFilter === messages[j].area ))
         {
+            //custom-made marker. hämtas från sprite
             markerIcon = {url: "../img/marker.png", origin: {x: (messages[j].priority -1 ) * 22 , y: 0}, size: {width:22, height:41}};
             
             position = new google.maps.LatLng(messages[j].latitude, messages[j].longitude);
             marker = new google.maps.Marker({position: position, map: map, icon: markerIcon });
             addInfoWindow(marker, messages[j]);
     
+            //kollar hur listan ska sorteras. 
             if(listSort === 0)
             {
                 messageList.appendChild(createListItem(messages[j], marker));
@@ -231,6 +266,7 @@ var updatePage = function()
     }
 }
 
+//sortera listan.
 var sortList = function()
 {
     
@@ -260,6 +296,7 @@ var sortList = function()
     }
 }
 
+//lägg till ett infowindow på en marker.
 var addInfoWindow = function(marker, message)
 {
     var infowindow;
@@ -287,6 +324,7 @@ var addInfoWindow = function(marker, message)
 
 }
 
+//här skapas dom-element och innehåll för ett infowindow
 var createInfoWindowContent = function(message)
 {
     
@@ -314,6 +352,7 @@ var createInfoWindowContent = function(message)
     return infowindowDiv;
 }
 
+//skapa ett item för listan. 
 var createListItem = function(message, marker)
 {
     //delar av ett listelement
@@ -374,9 +413,10 @@ var createListItem = function(message, marker)
     return listItem;
 }
 
+//gör om timestamp till ett mer läsbart format.
 var getDateString = function(timestamp)
 {
-    
+    //minuter, timmar och sekunder ska ha en nolla framför sig om < 10
     var addZero = function(time)
     {
         if(time < 10)
@@ -400,7 +440,6 @@ var getDateString = function(timestamp)
     return addZero(hour) + ":" + addZero(minute) + ":" + addZero(second) + " " + date + " " + month + " " + year;
     
 }
-
 
 //ladda in kartan när sidan laddat klart.
 google.maps.event.addDomListener(window, 'load', loadMap);
