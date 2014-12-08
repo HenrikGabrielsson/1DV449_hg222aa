@@ -4,6 +4,9 @@ var Traffic = function(http)
     this.http = http; //för att skicka http-requests
     this.fs = require("fs"); //för att arbeta med filer (cachning)
     
+    //flag för att visa om meddelanden har förändrats.
+    this.hasChanged = false;
+    
     //filnamn
     this.messageFile = "traffic.json";
     this.areaFile = "areas.json";
@@ -14,7 +17,7 @@ var Traffic = function(http)
 }
 
 //Hämtar meddelanden från SR och sparar dem lokalt.
-Traffic.prototype.saveTrafficNewsFromSR = function()
+Traffic.prototype.saveTrafficNewsFromSR = function(callback)
 {
     //workaround
     var traffic = this;
@@ -30,6 +33,8 @@ Traffic.prototype.saveTrafficNewsFromSR = function()
             json.messages = messagesWithAreas;
             traffic.fs.writeFileSync(traffic.messageFile, JSON.stringify(json));
             console.log("Last Message Update: " + new Date(json.dataRecievedTime));
+            
+            callback();
         },0);
     });
     
@@ -123,7 +128,7 @@ Traffic.prototype.addAreaCodeToEachMessage = function(messages, callback, messNu
         var alreadyCached = false;
         
         //om det finns meddelanden cachade (annars ska alla få en area-kod)
-        if(cachedMessages !== null)
+        if(cachedMessages !== null && cachedMessages.error === undefined)
         {
             for(var i = 0; i < cachedMessages.messages.length;i++)
             {
@@ -141,6 +146,8 @@ Traffic.prototype.addAreaCodeToEachMessage = function(messages, callback, messNu
         //inte cachad sedan tidigare.
         if(!alreadyCached)
         {
+            traffic.hasChanged = true;
+            
             //hämta area-kod för detta meddelande, lägg till till i meddelandet, och kolla nästa meddelande.
             this.getFromURL("http://api.sr.se/api/v2/traffic/areas?format=json&latitude="+messages[messNumber].latitude+"&longitude="+messages[messNumber].longitude, function(json)
             {

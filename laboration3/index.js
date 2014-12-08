@@ -22,28 +22,37 @@ var globals =
 var init = function()
 {
     globals.httpServer = modules.http.createServer(handler);
-    globals.fileServer = new modules.ns.Server("./public",{cache: 1});
+    globals.fileServer = new modules.ns.Server("./public",{cache: 1209600});
     globals.traffic = new modules.traffic(modules.http);
  
     modules.sio = require('socket.io').listen(globals.httpServer);
 
-    //globals.traffic.saveTrafficNewsFromSR();
+    globals.traffic.saveTrafficNewsFromSR(broadcastMessages);
     setInterval(function()
     {
-        //globals.traffic.saveTrafficNewsFromSR()
+        globals.traffic.saveTrafficNewsFromSR(broadcastMessages)
         
     }, 300000);
 };
 
 //skickar json-fil med messages och areas till klient genom socket.
+//skickar till alla om ingen socket är definierad
 var broadcastMessages = function(socket)
 {
     var json = globals.traffic.getMessages();
     
     //skicka med alla areas i samma fil;
     json.areas = globals.traffic.getAreas().areas;
-    
-    socket.emit("trafficMessages",json);
+ 
+    if(socket !== undefined)
+    {
+        socket.emit("trafficMessages",json);
+    }
+    else if(globals.traffic.hasChanged)
+    {
+        modules.sio.sockets.emit("trafficMessages",json);   
+        globals.traffic.hasChanged = false;
+    }
 }
 
 
