@@ -32,12 +32,10 @@ socket.on("trafficMessages", function(json)
     messages = json.messages;
     areas = json.areas;
 
-    console.log(messages.length);
-
     if(messages !== undefined && areas !== undefined)
     {
         fillAreaDropdown(areas);
-        updateAboutSection(json.dataRecievedTime, json.copyright);
+        updateAboutSection(json.dataRecievedTime);
         updatePage();        
     }
     else //fel
@@ -167,25 +165,21 @@ var fillAreaDropdown = function(areas)
     }
 }
 
-//sektion där det står lite info om att datan kommer från sr och när senaste uppdateringen skedde.
-var updateAboutSection = function(date, copyright)
+//sektion där det står lite info om när senaste uppdateringen skedde.
+var updateAboutSection = function(date)
 {
     
     var lastUpdateDiv = document.getElementsByClassName("lastUpdate")[0];
-    var copyrightDiv = document.getElementsByClassName("copyright")[0];
 
     //ta bort gammal information innan ny läggs till.
     while(lastUpdateDiv.firstChild)
     {
         lastUpdateDiv.removeChild(lastUpdateDiv.firstChild);
-        copyrightDiv.removeChild(copyrightDiv.firstChild);
     }
     
     var lastUpdateText = document.createTextNode("Senaste uppdatering: " + getDateString(date));
-    var copyrightText = document.createTextNode(copyright);
     
     lastUpdateDiv.appendChild(lastUpdateText);
-    copyrightDiv.appendChild(copyrightText);
 }
 
 //lägger in meddelanden i listan och lägger till markers på kartan. 
