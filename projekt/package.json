@@ -1,0 +1,5 @@
+{
+    "name":"FacebookAmazonMashup",
+    "description":"This application will be using The Facebook Graph API and The Amazon Web Service (AWS) Product Advertising API to let users choose a friend and then get suggestions for books, movies, games etc that they might like (and that you should totally give to them this christmas!). To find similar products the Amazon API Will be used. ",
+    "version":"v0.1.0"
+}
