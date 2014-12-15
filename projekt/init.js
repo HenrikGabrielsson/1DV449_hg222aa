@@ -1,7 +1,7 @@
 
 var app = 
 {
-    
+    //inladdade moduler
     modules: 
     {
         http: require("http"),
@@ -9,9 +9,12 @@ var app =
         sio: require("socket.io")
     },
    
+    //för att kunna skicka/ta emot http-anrop
     httpServer: null,
     fileServer: null,
  
+ 
+    //skickar anropade filer
     serveFiles: function(req, res) 
     {
         req.addListener('end', function() 
@@ -21,6 +24,7 @@ var app =
         }).resume();                
     }, 
    
+    //anrop går hit först
     httpHandler : function(req, res) 
     {
         //ignorera favicon
@@ -35,6 +39,7 @@ var app =
         app.serveFiles(req, res);
     },
    
+    //vid start. Lite initieringar.
     init: function() 
     {
         app.httpServer = app.modules.http.createServer(app.httpHandler);

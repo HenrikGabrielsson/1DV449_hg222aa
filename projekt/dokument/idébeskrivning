@@ -15,4 +15,4 @@ Man ska också kunna filtrera listan (efter spel, maxpris etc).
 + Ebay Finding API
 
 ##OAuth 
-Jag kommer att använda Google's OAuth2-tjänst. Användare måste logga in med Google för att sköta inställningar som har med offline-läget att göra och för att applikationen ska komma ihåg vilka filter och Steam-vänner man har.
+Jag kommer att använda Steam OpenID som, likt OAuth, låter användaren logga in med sitt Steam-konto för att se sina vänner och spel. Man ska inte i min applikation kunna se en främlings spel eller förslag till merchandise. Man ska bara se sina egna, och sina vänners.
