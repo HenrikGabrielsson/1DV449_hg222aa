@@ -13,7 +13,7 @@ LoginHandler.prototype.isLoggedIn = function()
 
 LoginHandler.prototype.authenticate = function()
 {
-    
+    this.passport.authenticate("steam", function(req,res){console.log("derp")})
 }
 
 LoginHandler.prototype.setConfiguration = function()
