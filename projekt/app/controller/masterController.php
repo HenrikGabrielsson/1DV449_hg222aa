@@ -1,29 +1,37 @@
 <?php
 
-require_once("../model/loginHandler.php");
-
 namespace controller;
+
+require_once("./view/templateView.php");
+require_once("./controller/authenticationController.php");
+require_once("./model/loginHandler.php");
 
 class MasterController
 {
     private $loginHandler;
+    private $templateView;
     
     public function __construct()
     {
-        $this->$loginHandler = new \model\LoginHandler();
+        $this->templateView = new \view\TemplateView();
+        $this->loginHandler = new \model\LoginHandler();
+        
     }   
     
     public function GetPage()
     {
-        die("test");
-        if(!$this->LoginHandler->IsLoggedIn())
+        $controller;
+        
+        if($this->loginHandler->GetLoginId())
         {
-            echo "not logged in";
+            die("anything is possible when you're logged in!");
         }
         else
         {
-            echo "logged in";
+            $controller = new \controller\AuthenticationController($this->loginHandler);
         }
+        
+        $this->templateView->EchoContent($controller->GetTitle(), $controller->GetContent());
         
     }
 

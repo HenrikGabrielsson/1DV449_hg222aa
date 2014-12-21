@@ -2,20 +2,51 @@
 
 namespace model;
 
+require_once("vendor/lightopenid.php");
+require_once("./configurations.php");
+
 class LoginHandler
 {
+    private $lightOpenId;
+    
     public function __construct()
     {
-        session_start();
+        session_start();    
+        $this->lightopenid = new \LightOpenID(\Configurations::$DOMAIN);
     }
     
-    public function GetSteamId()
+    public function GetLoginId()
     {
-        return $_SESSION["steamId"];
+        if(isset($_SESSION["steamId"]))
+        {
+            return $_SESSION["steamId"];
+        }
+        return false;
     }
     
-    public function IsLoggedIn()
+    public function LoginUser()
     {
-        return isset(GetSteamId());
+        //
+        if(!$this->lightopenid->mode)
+        {
+            $this->lightopenid->identity = "http://steamcommunity.com/openid/";
+            header("Location:" . $this->lightopenid->authUrl());
+        }
+        
+        else if($this->lightopenid->mode == "cancel")
+        {
+            header("location:" . \Configurations::$DOMAIN);    
+        }
+        else 
+        {
+            if($this->lightopenid->validate())
+            {
+                $_SESSION["steamOpenId"] = $this->lightopenid->identity;
+                $_SESSION["steamId"] = str_replace("http://steamcommunity.com/openid/", "", $_SESSION["steamOpenId"]);
+                
+                die($_SESSION["steamId"]);
+            }
+        }
     }
+    
 }
