@@ -3,8 +3,9 @@
 namespace controller;
 
 require_once("./view/authenticationView.php");
+require_once("IContentController.php");
 
-class AuthenticationController
+class AuthenticationController implements IContentController
 {
     private $view;
     private $loginHandler;

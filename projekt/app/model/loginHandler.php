@@ -26,7 +26,6 @@ class LoginHandler
     
     public function LoginUser()
     {
-        //
         if(!$this->lightopenid->mode)
         {
             $this->lightopenid->identity = "http://steamcommunity.com/openid/";
@@ -41,12 +40,22 @@ class LoginHandler
         {
             if($this->lightopenid->validate())
             {
-                $_SESSION["steamOpenId"] = $this->lightopenid->identity;
-                $_SESSION["steamId"] = str_replace("http://steamcommunity.com/openid/", "", $_SESSION["steamOpenId"]);
-                
-                die($_SESSION["steamId"]);
+                $this->SetUserSessions();
+                header("location: .");
             }
         }
+    }
+    
+    private function SetUserSessions()
+    {
+        $_SESSION["steamOpenId"] = $this->lightopenid->identity;
+        $_SESSION["steamId"] = str_replace("http://steamcommunity.com/openid/id/", "", $_SESSION["steamOpenId"]);
+    }
+    
+    public function Logout()
+    {
+    	session_unset(); 
+    	session_destroy();         
     }
     
 }
