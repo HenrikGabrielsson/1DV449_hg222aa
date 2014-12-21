@@ -12,7 +12,7 @@ class SteamService
     private $getFriendListURL = "http://api.steampowered.com/ISteamUser/GetFriendList/v0001/";
     private $getOwnedGames = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?include_appinfo=1&include_played_free_games=1";
 
-    private function GetUser($steamId = null)
+    public function GetUser($steamId = null)
     {
         if(!isset($steamId))
         {
@@ -21,11 +21,24 @@ class SteamService
         
         $json = json_decode(file_get_contents($this->getPlayerSummariesURL . "?key=".\Configurations::$STEAM_API_KEY."&steamids=".$steamId), true);
         $json_player = $json['response']['players'][0];
-
-        $json = json_decode(file_get_contents($this->getOwnedGames . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$steamId), true);
-        $json_games = $json['response']['games'];
+    
+        $games = $this->GetGames($steamId);
         
-
+        return new SteamUser (
+            null,
+            $json_player['steamid'],
+            $json_player['personaname'],
+            time(),
+            $json_player['avatarmedium'],
+            $games
+        );
+    }
+    
+    private function GetGames($steamId)
+    {
+        $json = json_decode(file_get_contents($this->getOwnedGames . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$steamId), true);
+        $json_games = $json['response']['games']; 
+        
         $games = array();
         foreach ($json_games as $game) {
             
@@ -37,14 +50,6 @@ class SteamService
             );
         }
         
-        return new SteamUser (
-            null,
-            $json_player['steamid'],
-            $json_player['personaname'],
-            time(),
-            $json_player['avatarmedium'],
-            $games
-        );
-        
+        return $games;
     }
 }

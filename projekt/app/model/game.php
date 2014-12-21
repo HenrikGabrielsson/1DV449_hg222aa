@@ -18,4 +18,13 @@ class Game
         $this->overallPlaytime = $overallPlaytime;
         $this->recentPlaytime = $recentPlaytime;
     }
+    
+    public function GetAppId()
+    {
+        return $this->appId;
+    }
+    public function GetTitle()
+    {
+        return $this->title;
+    }
 }
