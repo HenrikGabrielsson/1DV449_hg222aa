@@ -5,12 +5,21 @@ namespace model;
 require_once("./configurations.php");
 require_once("game.php");
 require_once("steamUser.php");
+require_once("repository/userRepository.php");
 
 class SteamService
 {
+    private $userRepo;
+    
     private $getPlayerSummariesURL = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/";
     private $getFriendListURL = "http://api.steampowered.com/ISteamUser/GetFriendList/v0001/";
     private $getOwnedGames = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?include_appinfo=1&include_played_free_games=1";
+
+    public function __construct()
+    {
+        $this->userRepo = new \model\repository\userRepository();
+    }
+
 
     public function GetUser($steamId = null)
     {
@@ -18,6 +27,8 @@ class SteamService
         {
             $steamId = $_SESSION["steamId"];
         }
+        
+        $this->userRepo->GetUserBySteamId($steamId);
         
         $user = $this->GetUserFromSteam($steamId);
         $games = $this->GetGames($steamId);

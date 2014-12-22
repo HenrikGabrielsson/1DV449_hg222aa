@@ -8,6 +8,13 @@ class BaseRepository
 {
     protected $dbConnection;
     
+    //tabellnamn
+    protected $userTable = "steam.user";
+    protected $friendshipTable = "steam.friendship";
+    protected $gameOwnershipTable = "steam.gameOwnership";
+    protected $gameTable = "steam.game";
+    protected $avatarTable = "steam.avatar";
+    
     public function connect()
     {
         //kollar ifall det inte redan finns en anslutning till databasen så skapas den här
