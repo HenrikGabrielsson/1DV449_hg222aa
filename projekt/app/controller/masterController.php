@@ -7,6 +7,7 @@ require_once("./view/templateView.php");
 
 require_once("./controller/authenticationController.php");
 require_once("./controller/homePageController.php");
+require_once("./controller/suggestController.php");
 
 require_once("./model/loginHandler.php");
 require_once("./model/steamService.php");

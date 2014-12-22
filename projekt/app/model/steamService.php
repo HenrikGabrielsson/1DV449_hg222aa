@@ -19,19 +19,26 @@ class SteamService
             $steamId = $_SESSION["steamId"];
         }
         
+        $user = $this->GetUserFromSteam($steamId);
+        $games = $this->GetGames($steamId);
+        $user->SetGames($games);
+        
+        return $user;
+    }
+    
+    private function GetUserFromSteam($steamId)
+    {
         $json = json_decode(file_get_contents($this->getPlayerSummariesURL . "?key=".\Configurations::$STEAM_API_KEY."&steamids=".$steamId), true);
         $json_player = $json['response']['players'][0];
     
-        $games = $this->GetGames($steamId);
-        
         return new SteamUser (
             null,
             $json_player['steamid'],
             $json_player['personaname'],
             time(),
             $json_player['avatarmedium'],
-            $games
-        );
+            null
+        );   
     }
     
     private function GetGames($steamId)

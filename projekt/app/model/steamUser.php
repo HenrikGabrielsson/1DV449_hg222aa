@@ -21,6 +21,11 @@ class SteamUser
         $this->games = $games;
     }
     
+    public function SetGames($games)
+    {
+        $this->games = $games;
+    }
+    
     public function GetSteamId()
     {
         return $this->steamId;
