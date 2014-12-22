@@ -2,6 +2,8 @@
 
 namespace model\repository;
 
+require_once("./configurations.php");
+
 class BaseRepository
 {
     protected $dbConnection;
@@ -13,7 +15,7 @@ class BaseRepository
         {
             try
             {
-                $this->dbConnection  = new \PDO(\Configurations::$connectionString, \Configurations::$dbUserName,\Configurations::$dbPassword);
+                $this->dbConnection  = new \PDO(\Configurations::$CONNECTION_STRING, \Configurations::$DB_USERNAME,\Configurations::$DB_PASSWORD);
             }
             catch(Exception $e)
             {
