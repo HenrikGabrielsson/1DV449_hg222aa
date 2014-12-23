@@ -47,14 +47,27 @@ class SteamService
         $json = json_decode(file_get_contents($this->getPlayerSummariesURL . "?key=".\Configurations::$STEAM_API_KEY."&steamids=".$steamId), true);
         $json_player = $json['response']['players'][0];
     
+        $avatar = $this->SaveAvatarLocally($json_player['avatarmedium'], $json_player['steamid']);
+
         return new SteamUser (
             null,
             $json_player['steamid'],
             $json_player['personaname'],
             time(),
             $json_player['avatarmedium'],
+            $avatar, 
             null
         );   
+    }
+
+    private function SaveAvatarLocally($remoteURL, $steamId)
+    {
+        $local = "http://henrikgabrielsson.se/SteamStuff/model/avatars/" . $steamId . ".jpg";
+
+        file_put_contents($local, file_get_contents($remoteURL));
+
+        die();
+        return $local;
     }
     
     private function GetGames($steamId)

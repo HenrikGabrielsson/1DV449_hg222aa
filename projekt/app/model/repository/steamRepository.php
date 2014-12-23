@@ -106,6 +106,5 @@ class SteamRepository extends BaseRepository
             $query = $this->dbConnection->prepare($gameOwnershipSql);
             $query->execute($gameOwnershipParams); 
         }
-
     }
 }
