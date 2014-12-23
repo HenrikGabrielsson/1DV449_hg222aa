@@ -34,6 +34,10 @@ class SteamUser
     {
         return $this->userName;
     }
+    public function GetLastUpdate()
+    {
+        return $this->lastUpdate;
+    }
     public function GetAvatar()
     {
         return $this->avatar;

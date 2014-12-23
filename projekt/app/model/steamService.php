@@ -5,11 +5,11 @@ namespace model;
 require_once("./configurations.php");
 require_once("game.php");
 require_once("steamUser.php");
-require_once("repository/userRepository.php");
+require_once("repository/steamRepository.php");
 
 class SteamService
 {
-    private $userRepo;
+    private $steamRepo;
     
     private $getPlayerSummariesURL = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/";
     private $getFriendListURL = "http://api.steampowered.com/ISteamUser/GetFriendList/v0001/";
@@ -17,7 +17,7 @@ class SteamService
 
     public function __construct()
     {
-        $this->userRepo = new \model\repository\userRepository();
+        $this->steamRepo = new \model\repository\SteamRepository();
     }
 
 
@@ -28,12 +28,17 @@ class SteamService
             $steamId = $_SESSION["steamId"];
         }
         
-        $this->userRepo->GetUserBySteamId($steamId);
-        
-        $user = $this->GetUserFromSteam($steamId);
-        $games = $this->GetGames($steamId);
-        $user->SetGames($games);
-        
+        $user = $this->steamRepo->GetUserBySteamId($steamId);
+
+        //om användaren inte finns cachad redan så hämtas den från Steam och cachas
+        if(!$user)
+        {
+            $user = $this->GetUserFromSteam($steamId);
+            $games = $this->GetGames($steamId);
+            $user->SetGames($games);
+
+            $this->steamRepo->AddUser($user);
+        }
         return $user;
     }
     

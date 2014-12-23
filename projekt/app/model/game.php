@@ -13,7 +13,7 @@ class Game
     public function __construct($id, $appId, $title, $overallPlaytime, $recentPlaytime)
     {
         $this->id = $id;
-        $this->appId = $appId;
+        $this->appId = $appId; //Steams spelid
         $this->title = $title;
         $this->overallPlaytime = $overallPlaytime;
         $this->recentPlaytime = $recentPlaytime;
@@ -26,5 +26,13 @@ class Game
     public function GetTitle()
     {
         return $this->title;
+    }
+    public function GetOverallPlaytime()
+    {
+        return $this->overallPlaytime;
+    }
+    public function GetRecentPlaytime()
+    {
+        return $this->recentPlaytime;
     }
 }
