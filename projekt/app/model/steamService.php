@@ -30,19 +30,38 @@ class SteamService
         
         $user = $this->steamRepo->GetUserBySteamId($steamId);
 
-        //om användaren inte finns cachad redan så hämtas den från Steam och cachas
-        if(!$user)
+        $oldId = null;
+        $isOld = false;
+        if($user)
         {
-            $user = $this->GetUserFromSteam($steamId);
+            $lastUpdate = new \Datetime($user->GetLastUpdate());
+            $isOld = $lastUpdate->add(new \DateInterval('PT2M')) < new \Datetime();
+            $oldId = $user->GetId();
+        }
+
+        //om användaren inte finns cachad eller om den inte har uppdaterats på ett dygn redan så hämtas den från Steam och cachas
+        if(!$user || $isOld)
+        {
+            $user = $this->GetUserFromSteam($steamId,$oldId);
             $games = $this->GetGames($steamId);
             $user->SetGames($games);
 
-            $this->steamRepo->AddUser($user);
+            //uppdatera befintlig användare
+            if($isOld)
+            {
+                $this->steamRepo->UpdateUser($user);
+            }
+
+            //skapa ny user i db.
+            else
+            {
+                $this->steamRepo->AddUser($user);
+            }
         }
         return $user;
     }
     
-    private function GetUserFromSteam($steamId)
+    private function GetUserFromSteam($steamId, $userId)
     {
         $json = json_decode(file_get_contents($this->getPlayerSummariesURL . "?key=".\Configurations::$STEAM_API_KEY."&steamids=".$steamId), true);
         $json_player = $json['response']['players'][0];
@@ -50,11 +69,10 @@ class SteamService
         $avatar = $this->SaveAvatarLocally($json_player['avatarmedium'], $json_player['steamid']);
 
         return new SteamUser (
-            null,
+            $userId,
             $json_player['steamid'],
             $json_player['personaname'],
-            time(),
-            $json_player['avatarmedium'],
+            date("Y-m-d H:i:s"),
             $avatar, 
             null
         );   
@@ -62,11 +80,10 @@ class SteamService
 
     private function SaveAvatarLocally($remoteURL, $steamId)
     {
-        $local = "http://henrikgabrielsson.se/SteamStuff/model/avatars/" . $steamId . ".jpg";
+        $local = "model/avatars/" . $steamId . ".jpg";
 
         file_put_contents($local, file_get_contents($remoteURL));
 
-        die();
         return $local;
     }
     

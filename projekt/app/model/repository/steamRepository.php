@@ -82,29 +82,68 @@ class SteamRepository extends BaseRepository
         $query = $this->dbConnection->prepare($sql);
         $query->execute($params);
 
-        $this->AddGames($user->GetGames(), $this->dbConnection->lastInsertId());
+
+
+        $this->UpdateOrAddGames($user->GetGames(), $this->dbConnection->lastInsertId());
     }
 
-    public function AddGames($games, $userId)
+    public function UpdateOrAddGames($games, $userId)
     {
+        $checkSql = "SELECT id FROM `".$this->gameTable."` WHERE appId = ?";
         $gameSql = "INSERT INTO `".$this->gameTable."`(`title`,`appId`) VALUE(?,?);";
-        $gameOwnershipSql = "INSERT INTO `".$this->gameOwnershipTable."`(`userId`,`gameId`,`recentPlaytime`,`overallPlaytime`) VALUES(?,?,?,?)";
+        $addGameOwnershipSql = "INSERT INTO `".$this->gameOwnershipTable."`(`userId`,`gameId`,`recentPlaytime`,`overallPlaytime`) VALUES(?,?,?,?)";
+        $updateGamerOwnershipSql = "UPDATE `".$this->gameOwnershipTable."` SET `recentPlaytime`=?,`overallPlaytime`=? WHERE userId=? AND gameId=?";
+
+        $checkParams;
         $gameParams;
-        $gameOwnershipParams;
+        $addGameOwnershipParams;
+        $updateGamerOwnershipParams;
 
         $this->connect();
+
         foreach ($games as $game) 
         {
-            $gameParams = array($game->GetTitle(), $game->GetAppId());
-            
-            $query = $this->dbConnection->prepare($gameSql);
-            $query->execute($gameParams); 
+            $checkParams = array($game->GetAppId());
+
+            $query = $this->dbConnection->prepare($checkSql);
+            $query->execute($checkParams);
+
+            $result = $query->fetch();
+
+            if($result)
+            {
+                $updateGamerOwnershipParams = array($game->GetRecentPlaytime(), $game->GetOverallPlaytime(), $userId, $game->GetId());
+                
+                $query = $this->dbConnection->prepare($updateGamerOwnershipSql);
+                $query->execute($updateGamerOwnershipParams);
+            }
+
+            else
+            {
+                $gameParams = array($game->GetTitle(), $game->GetAppId());
+                
+                $query = $this->dbConnection->prepare($gameSql);
+                $query->execute($gameParams); 
 
 
-            $gameOwnershipParams = array($userId, $this->dbConnection->lastInsertId(), $game->GetRecentPlaytime(), $game->GetOverallPlaytime());
-            
-            $query = $this->dbConnection->prepare($gameOwnershipSql);
-            $query->execute($gameOwnershipParams); 
+                $addGameOwnershipParams = array($userId, $this->dbConnection->lastInsertId(), $game->GetRecentPlaytime(), $game->GetOverallPlaytime());
+                
+                $query = $this->dbConnection->prepare($addGameOwnershipSql);
+                $query->execute($addGameOwnershipParams);                
+            }
         }
+    }
+
+    public function UpdateUser($user)
+    {
+        $sql = "UPDATE `".$this->userTable."` SET `steamId`=?, `userName`=?, `lastUpdate`=?, `avatar`=? WHERE id = ?;";
+        $params = array($user->GetSteamId(), $user->GetUserName(), $user->GetLastUpdate(), $user->GetAvatar(), $user->GetId());
+
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+
+        $this->UpdateOrAddGames($user->GetGames(), $user->GetId());
     }
 }
