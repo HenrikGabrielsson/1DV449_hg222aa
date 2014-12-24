@@ -1,4 +1,4 @@
-#Idébeskrivning
+﻿#Idébeskrivning
 
 Skrivet av: Henrik Gabrielsson (hg222aa)
 Kurs: Webbteknik II (1DV449)
