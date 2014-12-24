@@ -14,7 +14,11 @@ class SuggestController implements IContentController
     public function __construct($steamService)
     {
         $this->steamService = $steamService;
-        $this->suggestView = new \view\SuggestView($this->steamService->GetUser());
+
+        $user = $this->steamService->GetUser();
+        $friends = $this->steamService->GetFriends($user);
+
+        $this->suggestView = new \view\SuggestView($user, $friends);
     }
     
     public function GetTitle()

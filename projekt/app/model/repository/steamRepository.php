@@ -29,6 +29,39 @@ class SteamRepository extends BaseRepository
                 $result['steamId'],
                 $result['userName'],
                 $result['lastUpdate'],
+                $result['lastFriendListUpdate'],
+                $result['avatar'],
+                $games
+            );
+            return $user;
+        }
+        return false;
+    }
+
+    public function GetUserById($id)
+    {
+        $sql = "SELECT * FROM `".$this->userTable."` WHERE id = ?"; 
+        $params = array($id);
+
+        $this->connect();
+        
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+
+        $result = $query->fetch();
+        
+        $user;
+        if($result)
+        {
+            $games = $this->GetGamesOwnedByUser($result['id']);
+
+            $user = new \model\SteamUser
+            (
+                $result['id'],
+                $result['steamId'],
+                $result['userName'],
+                $result['lastUpdate'],
+                $result['lastFriendListUpdate'],
                 $result['avatar'],
                 $games
             );
@@ -136,8 +169,8 @@ class SteamRepository extends BaseRepository
 
     public function UpdateUser($user)
     {
-        $sql = "UPDATE `".$this->userTable."` SET `steamId`=?, `userName`=?, `lastUpdate`=?, `avatar`=? WHERE id = ?;";
-        $params = array($user->GetSteamId(), $user->GetUserName(), $user->GetLastUpdate(), $user->GetAvatar(), $user->GetId());
+        $sql = "UPDATE `".$this->userTable."` SET `steamId`=?, `userName`=?, `lastUpdate`=?, `lastFriendListUpdate`=?, `avatar`=? WHERE id = ?;";
+        $params = array($user->GetSteamId(), $user->GetUserName(), $user->GetLastUpdate(),$user->GetLastFriendListUpdate(), $user->GetAvatar(), $user->GetId());
 
         $this->connect();
 
@@ -145,5 +178,88 @@ class SteamRepository extends BaseRepository
         $query->execute($params);
 
         $this->UpdateOrAddGames($user->GetGames(), $user->GetId());
+    }
+
+    public function UpdateFriendships($user, $steamFriends)
+    {
+        $cachedFriends = $this->GetFriendsOf($user);
+
+        foreach($steamFriends as $friend)
+        {
+            if(!in_array($friend, $cachedFriends))
+            {
+                $this->AddFriendship($user, $friend);
+            }            
+        } 
+
+        foreach($cachedFriends as $friend)
+        {
+            if(!in_array($friend, $steamFriends))
+            {
+                $this->DeleteFriendship($user, $friend);
+            }
+        }
+
+        $sql = "UPDATE `".$this->userTable."` SET `lastFriendListUpdate`=? WHERE `id`=?;";
+        $params = array(date("Y-m-d H:i:s"), $user->GetId());
+
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+    }
+
+    private function AddFriendship($friend1, $friend2)
+    {
+        $sql = "INSERT INTO `".$this->friendshipTable."` (`friend1`,`friend2`) VALUES(?,?)";
+        $params = array($friend1->GetId(), $friend2->GetId());
+
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+    }
+
+    private function DeleteFriendship($friend1, $friend2)
+    {
+        $sql = "DELETE FROM `".$this->friendshipTable."` WHERE (`friend1` = ? AND `friend2` = ?) OR (`friend2` = ? AND `friend1` = ?)";
+        $params = array($friend1->GetId(), $friend2->GetId(), $friend1->GetId(), $friend2->GetId());
+
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+    }
+
+    public function GetFriendsOf($user)
+    {
+        $sql = "SELECT * FROM `".$this->friendshipTable."` WHERE friend1 = ? OR friend2 = ?";
+        $params = array($user->GetId(), $user->GetId());
+
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+
+        $result = $query->fetchAll();
+
+        if($result)
+        {
+
+            $friends = array();
+            foreach($result as $friendship)
+            {
+                if($friendship["friend1"] == $user->GetId())
+                {
+                    $friends[] = $this->GetUserById($friendship["friend2"]);
+                }
+                else
+                {
+                    $friends[] = $this->GetUserById($friendship["friend1"]);
+                }        
+            }
+
+            return $friends;
+        }
     }
 }

@@ -11,14 +11,15 @@ class HomePageController implements IContentController
     private $homePageView;
     
     private $steamService; 
-    private $steamUser;
     
     public function __construct($steamService)
     {
         $this->steamService = $steamService;
-        $this->steamUser = $this->steamService->GetUser();
-        
-        $this->homePageView = new \view\HomePageView($this->steamUser);
+
+        $user = $this->steamService->GetUser();
+        $friends = $this->steamService->GetFriends($user);
+
+        $this->homePageView = new \view\HomePageView($user, $friends);
     }
     
     public function GetTitle()

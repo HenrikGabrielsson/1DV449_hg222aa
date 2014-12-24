@@ -8,15 +8,17 @@ class SteamUser
     private $steamId;
     private $userName;
     private $lastUpdate;
+    private $lastFriendListUpdate;
     private $avatar;
     private $games;
     
-    public function __construct($id, $steamId, $userName, $lastUpdate, $avatarUrl, $games)
+    public function __construct($id, $steamId, $userName, $lastUpdate, $lastFriendListUpdate, $avatarUrl, $games)
     {
         $this->id = $id;
         $this->steamId = $steamId;
         $this->userName = $userName;
         $this->lastUpdate = $lastUpdate; 
+        $this->lastFriendListUpdate = $lastFriendListUpdate;
         $this->avatar = $avatarUrl;
         $this->games = $games;
     }
@@ -42,6 +44,10 @@ class SteamUser
     public function GetLastUpdate()
     {
         return $this->lastUpdate;
+    }
+    public function GetLastFriendListUpdate()
+    {
+        return $this->lastFriendListUpdate;
     }
     public function GetAvatar()
     {

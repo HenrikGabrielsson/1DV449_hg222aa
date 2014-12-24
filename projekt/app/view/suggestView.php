@@ -5,10 +5,12 @@ namespace view;
 class SuggestView
 {
     private $user;
+    private $friends;
     
-    public function __construct($user)
+    public function __construct($user, $friends)
     {
         $this->user = $user;
+        $this->friends = $friends;
     }
     
     public function GetTitle()
