@@ -2,14 +2,13 @@
 
 namespace model;
 
+require_once("merchandise.php");
 require_once("./configurations.php");
 
 class EbayService
 {
 	private $ebayUrl = "http://svcs.ebay.com/services/search/FindingService/v1?SERVICE-VERSION=1.13.0&
-		OPERATION-NAME=findItemsAdvanced&RESPONSE-DATA-FORMAT=JSON&paginationInput.entriesPerPage=20&
-		categoryId=45101,38583&REST-PAYLOAD&		
-		";
+		OPERATION-NAME=findItemsAdvanced&RESPONSE-DATA-FORMAT=JSON&categoryId=38583&REST-PAYLOAD";
 
 	public function __construct()
 	{
@@ -20,10 +19,43 @@ class EbayService
 	{
 		//hämta ut vilka spel som man ska hämta förslag till på ebay
 		$featuredTitles = $this->DecideGameToFeature($games);
-		
-		$result = file_get_contents($this->ebayUrl . "&SECURITY-APPNAME=" .\Configurations::$EBAY_API_KEY . "&keywords=team+fortress&paginationInput.pageNumber=1");
 
-		var_dump($result);
+		//$id, $itemId, $title, $imageURL, $ebayURL, $location, $country, $startTime, $endTime, $gameId
+		foreach($featuredTitles as $gameTitle => $count)
+		{
+			$result = json_decode(file_get_contents($this->ebayUrl . "&SECURITY-APPNAME=" .\Configurations::$EBAY_API_KEY . "&keywords=". str_replace(" ", "+", $gameTitle) ."&paginationInput.entriesPerPage=" . 10*$count ), true);	
+			
+			$items = $result["findItemsAdvancedResponse"][0]["searchResult"][0]["item"];
+
+			$merchandise = array();
+			foreach ($items as $item) 
+			{
+				$thisGameId;
+				foreach ($games as $game) 
+				{
+					if($game->GetTitle() == $gameTitle)
+					{
+						$thisGameId = $game->GetId();
+						break;
+					}
+				}
+
+				$merchandise[] = new Merchandise
+				(
+					null, 
+					$item["itemId"][0],
+					$item["title"][0],
+					$item["galleryURL"][0],
+					$item["viewItemURL"][0],
+					$item["location"][0],
+					$item["country"][0],
+					$item["listingInfo"][0]["startTime"][0],
+					$item["listingInfo"][0]["endTime"][0],
+					$thisGameId
+				);
+			}
+		}
+	
 	}
 
 	private function DecideGameToFeature($games)
