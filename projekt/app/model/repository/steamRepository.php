@@ -96,7 +96,8 @@ class SteamRepository extends BaseRepository
                     $resultGame['appId'],
                     $resultGame['title'],
                     $resultGame['overallPlaytime'],
-                    $resultGame['recentPlaytime']
+                    $resultGame['recentPlaytime'],
+                    $resultGame['lastMerchandiseUpdate']
                 );
             }
 
@@ -123,7 +124,7 @@ class SteamRepository extends BaseRepository
     public function UpdateOrAddGames($games, $userId)
     {
         $checkSql = "SELECT id FROM `".$this->gameTable."` WHERE appId = ?";
-        $gameSql = "INSERT INTO `".$this->gameTable."`(`title`,`appId`) VALUE(?,?);";
+        $gameSql = "INSERT INTO `".$this->gameTable."`(`title`,`appId`, `lastMerchandiseUpdate`) VALUE(?,?,?);";
         $addGameOwnershipSql = "INSERT INTO `".$this->gameOwnershipTable."`(`userId`,`gameId`,`recentPlaytime`,`overallPlaytime`) VALUES(?,?,?,?)";
         $updateGamerOwnershipSql = "UPDATE `".$this->gameOwnershipTable."` SET `recentPlaytime`=?,`overallPlaytime`=? WHERE userId=? AND gameId=?";
 
@@ -153,7 +154,7 @@ class SteamRepository extends BaseRepository
 
             else
             {
-                $gameParams = array($game->GetTitle(), $game->GetAppId());
+                $gameParams = array($game->GetTitle(), $game->GetAppId(), $game->GetLastMerchandiseUpdate());
                 
                 $query = $this->dbConnection->prepare($gameSql);
                 $query->execute($gameParams); 

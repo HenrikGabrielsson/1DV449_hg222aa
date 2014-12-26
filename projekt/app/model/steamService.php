@@ -138,7 +138,8 @@ class SteamService
                 null, 
                 $game['appid'],$game['name'], 
                 $game['playtime_forever'], 
-                isset($game['playtime_2weeks']) ? $game['playtime_2weeks'] : 0  //denna parameter följer inte med vid 0 by default
+                isset($game['playtime_2weeks']) ? $game['playtime_2weeks'] : 0, //denna parameter följer inte med vid 0 by default
+                null
             );
         }
         

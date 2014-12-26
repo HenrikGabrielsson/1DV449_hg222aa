@@ -9,16 +9,22 @@ require_once("./controller/IContentController.php");
 class SuggestController implements IContentController
 {
     private $steamService;
+    private $ebayService;
+
+    private $user;
+    private $friends;
+
     private $suggestView;
     
-    public function __construct($steamService)
+    public function __construct($steamService, $ebayService)
     {
         $this->steamService = $steamService;
+        $this->ebayService = $ebayService;
 
-        $user = $this->steamService->GetUser();
-        $friends = $this->steamService->GetFriends($user);
+        $this->user = $this->steamService->GetUser();
+        $this->friends = $this->steamService->GetFriends($this->user);
 
-        $this->suggestView = new \view\SuggestView($user, $friends);
+        $this->suggestView = new \view\SuggestView($this->user, $this->friends);
     }
     
     public function GetTitle()
@@ -28,6 +34,8 @@ class SuggestController implements IContentController
     
     public function GetContent()
     {
+        $this->ebayService->GetProducts($this->user->GetGames());
+
         return $this->suggestView->GetContent();
     }
 }

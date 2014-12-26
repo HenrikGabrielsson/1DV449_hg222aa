@@ -11,11 +11,13 @@ require_once("./controller/suggestController.php");
 
 require_once("./model/loginHandler.php");
 require_once("./model/steamService.php");
+require_once("./model/ebayService.php");
 
 class MasterController
 {
     private $loginHandler;
     private $steamService;
+    private $ebayService;
     
     private $templateView;
     private $masterView;
@@ -28,6 +30,7 @@ class MasterController
         
         $this->loginHandler = new \model\LoginHandler();
         $this->steamService = new \model\SteamService();
+        $this->ebayService = new \model\EbayService();
         
     }   
     
@@ -40,7 +43,7 @@ class MasterController
             switch ($this->masterView->getPath())
             {
                 case "suggestions":
-                    $controller = new SuggestController($this->steamService);
+                    $controller = new SuggestController($this->steamService,$this->ebayService);
                     break;
                 default: 
                     $controller = new HomePageController($this->steamService);

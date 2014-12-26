@@ -9,14 +9,16 @@ class Game
     private $title;
     private $overallPlaytime;
     private $recentPlaytime;
+    private $lastMerchandiseUpdate;
     
-    public function __construct($id, $appId, $title, $overallPlaytime, $recentPlaytime)
+    public function __construct($id, $appId, $title, $overallPlaytime, $recentPlaytime, $lastMerchandiseUpdate)
     {
         $this->id = $id;
         $this->appId = $appId; //Steams spelid
         $this->title = $title;
         $this->overallPlaytime = $overallPlaytime;
         $this->recentPlaytime = $recentPlaytime;
+        $this->lastMerchandiseUpdate = $lastMerchandiseUpdate;
     }
 
     public function GetId()
@@ -38,5 +40,9 @@ class Game
     public function GetRecentPlaytime()
     {
         return $this->recentPlaytime;
+    }
+    public function GetLastMerchandiseUpdate()
+    {
+        return $this->lastMerchandiseUpdate;
     }
 }
