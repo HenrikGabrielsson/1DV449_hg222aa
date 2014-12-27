@@ -13,7 +13,7 @@ class BaseRepository
     protected $friendshipTable = "steam.friendship";
     protected $gameOwnershipTable = "steam.gameOwnership";
     protected $gameTable = "steam.game";
-    protected $avatarTable = "steam.avatar";
+    protected $merchandiseTable = "steam.merchandise";
     
     public function connect()
     {

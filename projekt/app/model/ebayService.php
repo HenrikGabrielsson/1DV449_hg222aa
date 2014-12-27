@@ -4,15 +4,18 @@ namespace model;
 
 require_once("merchandise.php");
 require_once("./configurations.php");
+require_once("./model/repository/ebayRepository.php");
 
 class EbayService
 {
 	private $ebayUrl = "http://svcs.ebay.com/services/search/FindingService/v1?SERVICE-VERSION=1.13.0&
 		OPERATION-NAME=findItemsAdvanced&RESPONSE-DATA-FORMAT=JSON&categoryId=38583&REST-PAYLOAD";
 
+	private $ebayRepo;
+
 	public function __construct()
 	{
-
+		$this->ebayRepo = new \model\repository\EbayRepository();
 	}
 
 	public function GetProducts($games)
@@ -20,14 +23,13 @@ class EbayService
 		//hämta ut vilka spel som man ska hämta förslag till på ebay
 		$featuredTitles = $this->DecideGameToFeature($games);
 
-		//$id, $itemId, $title, $imageURL, $ebayURL, $location, $country, $startTime, $endTime, $gameId
+		$merchandise = array();
 		foreach($featuredTitles as $gameTitle => $count)
 		{
 			$result = json_decode(file_get_contents($this->ebayUrl . "&SECURITY-APPNAME=" .\Configurations::$EBAY_API_KEY . "&keywords=". str_replace(" ", "+", $gameTitle) ."&paginationInput.entriesPerPage=" . 10*$count ), true);	
-			
-			$items = $result["findItemsAdvancedResponse"][0]["searchResult"][0]["item"];
 
-			$merchandise = array();
+			$items = $result["findItemsAdvancedResponse"][0]["searchResult"][0]["item"];
+			
 			foreach ($items as $item) 
 			{
 				$thisGameId;
@@ -45,18 +47,29 @@ class EbayService
 					null, 
 					$item["itemId"][0],
 					$item["title"][0],
-					$item["galleryURL"][0],
+					$this->saveImageLocally($item["galleryURL"][0],$item["itemId"][0]),
 					$item["viewItemURL"][0],
 					$item["location"][0],
 					$item["country"][0],
-					$item["listingInfo"][0]["startTime"][0],
-					$item["listingInfo"][0]["endTime"][0],
+					new \DateTime($item["listingInfo"][0]["startTime"][0]),
+					new \DateTime($item["listingInfo"][0]["endTime"][0]),
 					$thisGameId
 				);
 			}
 		}
+
+		$this->ebayRepo->AddMerchandise($merchandise);
 	
 	}
+
+	private function SaveImageLocally($remoteURL, $itemId)
+    {
+        $local = "model/merch/" . $itemId . ".jpg";
+
+        file_put_contents($local, file_get_contents($remoteURL));
+
+        return $local;
+    }
 
 	private function DecideGameToFeature($games)
 	{
