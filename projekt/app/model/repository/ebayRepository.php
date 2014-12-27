@@ -11,8 +11,6 @@ class EbayRepository extends BaseRepository
 		$sql = "INSERT INTO `".$this->merchandiseTable."` (`itemId`, `title`, `imageURL`, `ebayURL`, `location`, `country`, `startTime`, `endTime`, `gameId`)
 			VALUES(?,?,?,?,?,?,?,?,?)";
 
-		$this->connect();
-
 		foreach($merchandiseArr as $item)
 		{
 			$start = $item->GetStartTime();
@@ -20,18 +18,58 @@ class EbayRepository extends BaseRepository
 
 			$params = array($item->GetItemId(), $item->GetTitle(), $item->GetImageURL(), $item->GetEbayURL(), $item->GetLocation(), $item->GetCountry(), $start->format('Y-m-d H:i:s'), $end->format('Y-m-d H:i:s'), $item->GetGameId());
 
-			$query = $this->dbConnection->prepare($sql);
-			$query->execute($params);
+			$this->RunQuery($sql, $params);
 		}
 	}
 
-	public function DeleteMerchandiseItem($merchandiseId)
+	public function DeleteMerchandiseItem($itemId)
 	{
+		$sql = "DELETE FROM `".$this->merchandiseTable."` WHERE id=?";
+		
+		$this->RunQuery($sql, array($itemId));
+	}
 
+	public function DeleteMerchandiseForGame($gameId)
+	{
+		$sql = $sql = "DELETE FROM `".$this->merchandiseTable."` WHERE gameId=?";
+
+		$this->RunQuery($sql, array($gameId));
 	}
 
 	public function GetMerchandiseForGame($gameId, $count)
 	{
+		$sql = "SELECT * FROM `".$this->merchandiseTable."` WHERE gameId=? ";
+		$result = $this->RunQuery($sql, array($gameId));
 
+		//plocka ut n slumpmässigt valda items.
+		shuffle($result);
+		$result = array_slice($result, 0, $count);
+
+		if(!$result)
+		{
+			return null;
+		}
+
+		$merchandise = array();
+		foreach ($result as $item) 
+		{
+
+			//($id, $itemId, $title, $imageURL, $ebayURL, $location, $country, $startTime, $endTime, $gameId)
+			$merchandise[] = new \model\Merchandise
+			(
+				$item["id"],
+				$item["itemId"],
+				$item["title"],
+				$item["imageURL"],
+				$item["ebayURL"],
+				$item["location"],
+				$item["country"],
+				new \DateTime($item["startTime"]),
+				new \DateTime($item["endTime"]),
+				$gameId
+			);
+		}
+
+		return $merchandise;
 	}
 }

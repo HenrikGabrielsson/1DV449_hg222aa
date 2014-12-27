@@ -30,4 +30,14 @@ class BaseRepository
             }
         }
     }
+
+    public function runQuery($sql, $params)
+    {
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+
+        return $query->fetchAll();
+    }
 }

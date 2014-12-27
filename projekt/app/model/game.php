@@ -21,6 +21,11 @@ class Game
         $this->lastMerchandiseUpdate = $lastMerchandiseUpdate;
     }
 
+    public function SetLastMerchandiseUpdate($date)
+    {
+        $this->lastMerchandiseUpdate = $date;
+    }
+
     public function GetId()
     {
         return $this->id;

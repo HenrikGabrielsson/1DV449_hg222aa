@@ -168,6 +168,19 @@ class SteamRepository extends BaseRepository
         }
     }
 
+    public function UpdateGame($game)
+    {
+        $date = $game->GetLastMerchandiseUpdate();
+
+        $sql = "UPDATE `".$this->gameTable."` SET `appId`=?, `title`=?, `lastMerchandiseUpdate`=? WHERE `id`=?";
+        $params = array($game->GetAppId(), $game->GetTitle(), $date->format('Y-m-d H:i:s'), $game->GetId());
+
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+    }
+
     public function UpdateUser($user)
     {
         $sql = "UPDATE `".$this->userTable."` SET `steamId`=?, `userName`=?, `lastUpdate`=?, `lastFriendListUpdate`=?, `avatar`=? WHERE id = ?;";

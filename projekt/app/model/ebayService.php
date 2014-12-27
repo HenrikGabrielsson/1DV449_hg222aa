@@ -5,6 +5,7 @@ namespace model;
 require_once("merchandise.php");
 require_once("./configurations.php");
 require_once("./model/repository/ebayRepository.php");
+require_once("./model/repository/steamRepository.php");
 
 class EbayService
 {
@@ -12,10 +13,12 @@ class EbayService
 		OPERATION-NAME=findItemsAdvanced&RESPONSE-DATA-FORMAT=JSON&categoryId=38583&REST-PAYLOAD";
 
 	private $ebayRepo;
+	private $steamRepo;
 
 	public function __construct()
 	{
 		$this->ebayRepo = new \model\repository\EbayRepository();
+		$this->steamRepo = new \model\repository\SteamRepository();
 	}
 
 	public function GetProducts($games)
@@ -26,41 +29,74 @@ class EbayService
 		$merchandise = array();
 		foreach($featuredTitles as $gameTitle => $count)
 		{
-			$result = json_decode(file_get_contents($this->ebayUrl . "&SECURITY-APPNAME=" .\Configurations::$EBAY_API_KEY . "&keywords=". str_replace(" ", "+", $gameTitle) ."&paginationInput.entriesPerPage=" . 10*$count ), true);	
-
-			$items = $result["findItemsAdvancedResponse"][0]["searchResult"][0]["item"];
-			
-			foreach ($items as $item) 
+			$thisGame;
+			foreach ($games as $game) 
 			{
-				$thisGameId;
-				foreach ($games as $game) 
+				if($game->GetTitle() == $gameTitle)
 				{
-					if($game->GetTitle() == $gameTitle)
-					{
-						$thisGameId = $game->GetId();
-						break;
-					}
+					$thisGame = $game;
+					break;
 				}
+			}
 
-				$merchandise[] = new Merchandise
-				(
-					null, 
-					$item["itemId"][0],
-					$item["title"][0],
-					$this->saveImageLocally($item["galleryURL"][0],$item["itemId"][0]),
-					$item["viewItemURL"][0],
-					$item["location"][0],
-					$item["country"][0],
-					new \DateTime($item["listingInfo"][0]["startTime"][0]),
-					new \DateTime($item["listingInfo"][0]["endTime"][0]),
-					$thisGameId
-				);
+			$lastUpdate = new \DateTime($thisGame->GetLastMerchandiseUpdate());
+
+			if($lastUpdate == null || $lastUpdate->add(new \DateInterval('P1D')) < new \Datetime())
+			{
+				$this->ebayRepo->DeleteMerchandiseForGame($thisGame->GetId());
+
+				$this->ebayRepo->AddMerchandise($this->GetProductsFromEbay($thisGame));
+				$thisGame->SetLastMerchandiseUpdate(new \DateTime());
+				$this->steamRepo->UpdateGame($thisGame);
+			}
+
+			$merchandiseFromDb = $this->ebayRepo->GetMerchandiseForGame($thisGame->GetId(), $count * 10);
+
+			if(isset($merchandiseFromDb))
+			{
+				$merchandise = array_merge($merchandise, $merchandiseFromDb);
 			}
 		}
 
-		$this->ebayRepo->AddMerchandise($merchandise);
-	
+		foreach ($merchandise as $item) 
+		{
+
+			if($item->GetEndTime() < new \Datetime())
+			{
+				$this->ebayRepo->DeleteMerchandiseItem($item->GetId());
+			}
+		}
+
+		return $merchandise;
 	}
+
+	private function GetProductsFromEbay($game)
+	{
+		$result = json_decode(file_get_contents($this->ebayUrl . "&SECURITY-APPNAME=" .\Configurations::$EBAY_API_KEY . "&keywords=". str_replace(" ", "+", $game->GetTitle()) ."&paginationInput.entriesPerPage=50"), true);	
+
+		$items = $result["findItemsAdvancedResponse"][0]["searchResult"][0]["item"];
+		
+		$merchandise = array();
+		foreach ($items as $item) 
+		{
+			$merchandise[] = new Merchandise
+			(
+				null, 
+				$item["itemId"][0],
+				$item["title"][0],
+				$this->saveImageLocally($item["galleryURL"][0], $item["itemId"][0]),
+				$item["viewItemURL"][0],
+				$item["location"][0],
+				$item["country"][0],
+				new \DateTime($item["listingInfo"][0]["startTime"][0]),
+				new \DateTime($item["listingInfo"][0]["endTime"][0]),
+				$game->GetId()
+			);
+		}
+
+		return $merchandise;
+	}
+	
 
 	private function SaveImageLocally($remoteURL, $itemId)
     {
