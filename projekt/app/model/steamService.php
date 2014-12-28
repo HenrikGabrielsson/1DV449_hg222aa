@@ -23,11 +23,13 @@ class SteamService
 
     public function GetUser($steamId = null)
     {
+
+
         if(!isset($steamId))
         {
             $steamId = $_SESSION["steamId"];
         }
-
+        
         $user = $this->steamRepo->GetUserBySteamId($steamId);
 
         $oldId = null;

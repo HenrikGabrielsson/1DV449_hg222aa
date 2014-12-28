@@ -39,7 +39,12 @@ class EbayService
 				}
 			}
 
-			$lastUpdate = new \DateTime($thisGame->GetLastMerchandiseUpdate());
+			$lastUpdate = $thisGame->GetLastMerchandiseUpdate();
+
+			if(isset($lastUpdate))
+			{
+				$lastUpdate = new \DateTime($thisGame->GetLastMerchandiseUpdate());
+			}
 
 			if($lastUpdate == null || $lastUpdate->add(new \DateInterval('P1D')) < new \Datetime())
 			{
@@ -60,7 +65,6 @@ class EbayService
 
 		foreach ($merchandise as $item) 
 		{
-
 			if($item->GetEndTime() < new \Datetime())
 			{
 				$this->ebayRepo->DeleteMerchandiseItem($item->GetId());

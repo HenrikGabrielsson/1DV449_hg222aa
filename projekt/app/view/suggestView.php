@@ -25,7 +25,7 @@ class SuggestView
     
     public function GetContent($merchandise)
     {
-        var_dump($merchandise);
+
         return "";
     }
 }

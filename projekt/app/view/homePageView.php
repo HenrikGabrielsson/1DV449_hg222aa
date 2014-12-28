@@ -25,7 +25,7 @@ class HomePageView
         <p>What do you wish to do today?</p>
         
         <form id="forMeForm" method="post" action="?path=suggestions">
-            <input type="hidden" name="id" value="'.$this->user->GetId().'">
+            <input type="hidden" name="id" value="'.$this->user->GetSteamId().'">
             <input type="submit" value="" id="forMeSubmit">
         </form>
 
@@ -48,7 +48,7 @@ class HomePageView
         foreach ($this->friends as $friend) 
         {
             $optionsList .= 
-            '<option value="'.$friend->GetId().'"> '.
+            '<option value="'.$friend->GetSteamId().'"> '.
             $friend->GetUserName().
             '</option>';
         }
