@@ -34,8 +34,10 @@ class SuggestController implements IContentController
     
     public function GetContent()
     {
-        $this->ebayService->GetProducts($this->user->GetGames());
+        $suggestionsUser = $this->steamService->GetUser($this->suggestView->GetId());
 
-        return $this->suggestView->GetContent();
+        $merchandise = $this->ebayService->GetProducts($suggestionsUser->GetGames());
+
+        return $this->suggestView->GetContent($merchandise);
     }
 }

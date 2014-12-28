@@ -12,10 +12,23 @@ class TemplateView
         <html>
             <head>
                 <title>'.$title.' - SteamStuff</title>
+
+                <link href="view/style/steamStuffStyle.css" rel="stylesheet" />
             </head>
             
             <body>
-                '.$content.'
+
+                <div id="container">
+                    <div id="header">
+                    </div>
+                    
+                    <div id="main_content">
+                        '.$content.'
+                    </div>
+                </div>
+
+                <script type="text/javascript" src="view/script/main.js">
+                </script>
             </body>
         </html>
         ';

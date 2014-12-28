@@ -23,10 +23,36 @@ class HomePageView
         $content = '
         <h1>Hello, ' . $this->user->GetUserName() .'!</h1>
         <p>What do you wish to do today?</p>
-        <p><a href="?path=suggestions&for=me">Look at merchandise for me</a></p>
-        <p><a href="?path=suggestions&for=friends">Look at merchandise for a friend</a></p>
+        
+        <form id="forMeForm" method="post" action="?path=suggestions">
+            <input type="hidden" name="id" value="'.$this->user->GetId().'">
+            <input type="submit" value="" id="forMeSubmit">
+        </form>
+
+        <form id="forFriendForm" method="post" action="?path=suggestions">
+            <select id="forFriendSelect" name="id">
+                <option value="0" selected>Choose Friend</option>
+                '.$this->GetFriendsOptions().'
+            </select>
+        </form>
+
         ';
         
         return $content;
+    }
+
+    private function GetFriendsOptions()
+    {
+        $optionsList = "";
+
+        foreach ($this->friends as $friend) 
+        {
+            $optionsList .= 
+            '<option value="'.$friend->GetId().'"> '.
+            $friend->GetUserName().
+            '</option>';
+        }
+
+        return $optionsList;
     }
 }

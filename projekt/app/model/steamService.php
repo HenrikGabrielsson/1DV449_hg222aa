@@ -27,7 +27,7 @@ class SteamService
         {
             $steamId = $_SESSION["steamId"];
         }
-        
+
         $user = $this->steamRepo->GetUserBySteamId($steamId);
 
         $oldId = null;
@@ -38,6 +38,7 @@ class SteamService
             $isOld = $lastUpdate->add(new \DateInterval('P1D')) < new \Datetime();
             $oldId = $user->GetId();
         }
+
 
         //om användaren inte finns cachad eller om den inte har uppdaterats på ett dygn redan så hämtas den från Steam och cachas
         if(!$user || $isOld)
@@ -58,7 +59,6 @@ class SteamService
                 $this->steamRepo->AddUser($user);
             }
         }
-
         return $user;
     }
 
@@ -85,8 +85,16 @@ class SteamService
     private function UpdateFriendList($user)
     {
 
-        $json = json_decode(file_get_contents($this->getFriendListURL . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$user->GetSteamId()),true);
-        $json_friends = $json['friendslist']["friends"];
+        for($i = 0; $i < 10; $i++)
+        {
+            $json = json_decode(file_get_contents($this->getFriendListURL . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$user->GetSteamId()),true);
+            
+            if(isset($json))
+            {
+                break;
+            }
+        }
+        $json_friends = $json['friendslist']["friends"];   
 
         $friends = array();
 
@@ -101,7 +109,16 @@ class SteamService
 
     private function GetUserFromSteam($steamId, $userId)
     {
+        for($i = 0; $i < 10; $i++)
+        {        
         $json = json_decode(file_get_contents($this->getPlayerSummariesURL . "?key=".\Configurations::$STEAM_API_KEY."&steamids=".$steamId), true);
+            
+            if(isset($json))
+            {
+                break;
+            }
+        }
+
         $json_player = $json['response']['players'][0];
     
         $avatar = $this->SaveAvatarLocally($json_player['avatarmedium'], $json_player['steamid']);
@@ -128,7 +145,16 @@ class SteamService
     
     private function GetGamesFromSteam($steamId)
     {
-        $json = json_decode(file_get_contents($this->getOwnedGames . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$steamId), true);
+        for($i = 0; $i < 10; $i++)
+        {
+            $json = json_decode(file_get_contents($this->getOwnedGames . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$steamId), true);
+            
+            if(isset($json))
+            {
+                break;
+            }
+        }        
+
         $json_games = $json['response']['games']; 
         
         $games = array();

@@ -12,14 +12,20 @@ class SuggestView
         $this->user = $user;
         $this->friends = $friends;
     }
+
+    public function GetId()
+    {
+        return isset($_POST["id"]) ? $_POST["id"] : false;
+    }
     
     public function GetTitle()
     {
-        return "Suggestions for " . $this->user->GetUserName();
+        return "Gaming merchandise";
     }
     
-    public function GetContent()
+    public function GetContent($merchandise)
     {
-        return "Stuff goes here";
+        var_dump($merchandise);
+        return "";
     }
 }
