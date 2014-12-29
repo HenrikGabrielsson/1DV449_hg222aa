@@ -34,6 +34,8 @@ class HomePageView
                 <option value="0" selected>Choose Friend</option>
                 '.$this->GetFriendsOptions().'
             </select>
+            <input type="submit" value="Get suggestions for friend" id="forFriendSubmit" />
+
         </form>
 
         ';

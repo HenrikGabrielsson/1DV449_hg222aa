@@ -38,6 +38,6 @@ class SuggestController implements IContentController
 
         $merchandise = $this->ebayService->GetProducts($suggestionsUser->GetGames());
 
-        return $this->suggestView->GetContent($merchandise);
+        return $this->suggestView->GetContent($merchandise, $suggestionsUser);
     }
 }
