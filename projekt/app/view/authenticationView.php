@@ -18,7 +18,7 @@ class AuthenticationView
         </a>
         ';
     }
-    
+
     //kollar om användaren vill logga in genom steam
     public function UserWantsToLogin()
     {

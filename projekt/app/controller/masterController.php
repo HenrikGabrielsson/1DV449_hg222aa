@@ -38,7 +38,7 @@ class MasterController
     {
         $controller;
         
-        if($this->loginHandler->GetLoginId())
+        if($this->loginHandler->GetLoginId() && !$this->masterView->UserWantsToLogout())
         {
             switch ($this->masterView->getPath())
             {
@@ -50,12 +50,18 @@ class MasterController
                     break;
             }
         }
+
         else
         {
+            if($this->masterView->UserWantsToLogout())
+            {
+                $this->loginHandler->Logout();
+            }
+            
             $controller = new AuthenticationController($this->loginHandler);
         }
         
-        $this->templateView->EchoContent($controller->GetTitle(), $controller->GetContent());
+        $this->templateView->EchoContent($controller->GetTitle(), $controller->GetContent(), $this->loginHandler->GetLoginId());
         
     }
 

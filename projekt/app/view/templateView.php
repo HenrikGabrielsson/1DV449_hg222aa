@@ -5,8 +5,10 @@ namespace view;
 class TemplateView
 {
 
-    public function EchoContent($title, $content)
+    public function EchoContent($title, $content, $loggedIn)
     {
+        $loginBox = $loggedIn ? $this->GetLogoutBox() : "";
+
         echo '
         <!doctype html>
         <html>
@@ -20,6 +22,7 @@ class TemplateView
 
                 <div id="container">
                     <div id="header">
+                        '. $loginBox .'
                     </div>
                     
                     <div id="main_content">
@@ -31,6 +34,17 @@ class TemplateView
                 <script type="text/javascript" src="view/script/main.js"></script>
             </body>
         </html>
+        ';
+    }
+
+    private function GetLogoutBox()
+    {
+        return 
+        '
+            <div id="loginBox">
+                <p>You are logged in!</p>
+                <p><a href="?logout">Log out</a></p>
+            </div>
         ';
     }
     

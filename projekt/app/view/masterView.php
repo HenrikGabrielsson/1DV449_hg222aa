@@ -14,5 +14,10 @@ class MasterView
         }
         return "";
     }
+
+    public function UserWantsToLogout()
+    {
+    	return isset($_GET["logout"]);
+    }
     
 }

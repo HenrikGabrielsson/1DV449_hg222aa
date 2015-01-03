@@ -81,6 +81,7 @@ var main = {
 		dt_endTime.appendChild(document.createTextNode("Auction ends at: "));		
 		dd_endTime.appendChild(document.createTextNode(item.endTime.date));
 
+
 		//sätter ihop allt och returnerar
 		dl.appendChild(dt_location);
 		dl.appendChild(dd_location);
