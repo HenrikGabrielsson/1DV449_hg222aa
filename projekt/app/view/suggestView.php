@@ -42,9 +42,7 @@ class SuggestView
         $suggestionsUser = $this->steamService->GetUser($id);
         $merchandise = $this->ebayService->GetProducts($suggestionsUser->GetGames());
 
-        $suggestionList = $this->GetSuggestionList($merchandise, $suggestionsUser->GetGames());
-
-        return $suggestionList;
+        return $merchandise;
     }
 
     private function GetSuggestionList($merchandise, $games)

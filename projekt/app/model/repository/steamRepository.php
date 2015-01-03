@@ -168,6 +168,34 @@ class SteamRepository extends BaseRepository
         }
     }
 
+    public function GetGame($id)
+    {
+        $sql = "SELECT * FROM `".$this->gameTable."` WHERE id=?";
+        $params = array($id);
+
+        $this->connect();
+
+        $query = $this->dbConnection->prepare($sql);
+        $query->execute($params);
+
+        $result = $query->fetch();
+
+        if($result)
+        {
+            return new \model\Game
+            (
+                $result['gameId'],
+                $result['appId'],
+                $result['title'],
+                $result['overallPlaytime'],
+                $result['recentPlaytime'],
+                $result['lastMerchandiseUpdate']
+            );
+        }
+
+        return false;
+    }
+
     public function UpdateGame($game)
     {
         $date = $game->GetLastMerchandiseUpdate();

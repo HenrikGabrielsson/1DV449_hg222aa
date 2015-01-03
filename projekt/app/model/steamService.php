@@ -63,6 +63,11 @@ class SteamService
         return $user;
     }
 
+    public function GetCachedGame($id)
+    {
+        return $this->steamRepo->GetGame($id);
+    }
+
     public function GetFriends($user)
     {
         $lastUpdate = $user->GetLastFriendListUpdate();
