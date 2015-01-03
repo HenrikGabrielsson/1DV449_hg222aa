@@ -6,16 +6,21 @@ class SuggestView
 {
     private $user;
     private $friends;
-    
-    public function __construct($user, $friends)
+    private $ebayService;
+    private $steamService;
+
+    public function __construct($ebayService, $steamService)
     {
-        $this->user = $user;
-        $this->friends = $friends;
+        $this->ebayService = $ebayService;
+        $this->steamService = $steamService;
+
+        $this->user = $this->steamService->GetUser();
+        $this->friends = $this->steamService->GetFriends($this->user);
     }
 
     public function GetId()
     {
-        return isset($_POST["id"]) ? $_POST["id"] : false;
+        return isset($_GET["id"]) ? $_GET["id"] : false;
     }
     
     public function GetTitle()
@@ -25,6 +30,18 @@ class SuggestView
     
     public function GetContent($merchandise, $suggestionsUser)
     {
+        return 
+        "
+            <div id='suggestions'>
+            </div>
+        ";
+    }
+
+    public function GetMerchandise($id)
+    {
+        $suggestionsUser = $this->steamService->GetUser($id);
+        $merchandise = $this->ebayService->GetProducts($suggestionsUser->GetGames());
+
         $suggestionList = $this->GetSuggestionList($merchandise, $suggestionsUser->GetGames());
 
         return $suggestionList;

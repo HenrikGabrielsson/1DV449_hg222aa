@@ -24,17 +24,18 @@ class HomePageView
         <h1>Hello, ' . $this->user->GetUserName() .'!</h1>
         <p>What do you wish to do today?</p>
         
-        <form id="forMeForm" method="post" action="?path=suggestions">
+        <form id="forMeForm" method="get" action="?path=suggestions">
+            <input type="hidden" name="path" value="suggestions" />
             <input type="hidden" name="id" value="'.$this->user->GetSteamId().'">
             <input type="submit" value="" id="forMeSubmit">
         </form>
 
-        <form id="forFriendForm" method="post" action="?path=suggestions">
+        <form id="forFriendForm" method="get" action="?path=suggestions">
+            <input type="hidden" name="path" value="suggestions" />
             <select id="forFriendSelect" name="id">
                 <option value="0" selected>Choose Friend</option>
                 '.$this->GetFriendsOptions().'
             </select>
-            <input type="submit" value="Get suggestions for friend" id="forFriendSubmit" />
 
         </form>
 

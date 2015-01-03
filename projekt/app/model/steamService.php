@@ -24,7 +24,6 @@ class SteamService
     public function GetUser($steamId = null)
     {
 
-
         if(!isset($steamId))
         {
             $steamId = $_SESSION["steamId"];

@@ -21,12 +21,9 @@ class SuggestController implements IContentController
         $this->steamService = $steamService;
         $this->ebayService = $ebayService;
 
-        $this->user = $this->steamService->GetUser();
-        $this->friends = $this->steamService->GetFriends($this->user);
-
-        $this->suggestView = new \view\SuggestView($this->user, $this->friends);
+        $this->suggestView = new \view\SuggestView($this->ebayService, $this->steamService);
     }
-    
+
     public function GetTitle()
     {
         return $this->suggestView->GetTitle();
@@ -35,7 +32,6 @@ class SuggestController implements IContentController
     public function GetContent()
     {
         $suggestionsUser = $this->steamService->GetUser($this->suggestView->GetId());
-
         $merchandise = $this->ebayService->GetProducts($suggestionsUser->GetGames());
 
         return $this->suggestView->GetContent($merchandise, $suggestionsUser);
