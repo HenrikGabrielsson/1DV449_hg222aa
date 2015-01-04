@@ -15,7 +15,7 @@ class BaseRepository
     protected $gameTable = "steam.game";
     protected $merchandiseTable = "steam.merchandise";
     
-    public function connect()
+    public function Connect()
     {
         //kollar ifall det inte redan finns en anslutning till databasen så skapas den här
         if($this->dbConnection === NULL)
@@ -31,13 +31,17 @@ class BaseRepository
         }
     }
 
-    public function runQuery($sql, $params)
+    public function RunQuery($sql, $params)
     {
         $this->connect();
 
         $query = $this->dbConnection->prepare($sql);
         $query->execute($params);
 
-        return $query->fetchAll();
+        $result = $query->fetchAll();
+
+        return $result;
+
+
     }
 }

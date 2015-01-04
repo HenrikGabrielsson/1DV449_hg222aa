@@ -11,9 +11,6 @@ class SuggestController implements IContentController
     private $steamService;
     private $ebayService;
 
-    private $user;
-    private $friends;
-
     private $suggestView;
     
     public function __construct($steamService, $ebayService)

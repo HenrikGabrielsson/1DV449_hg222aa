@@ -50,6 +50,7 @@ class EbayService
 			{
 				$this->ebayRepo->DeleteMerchandiseForGame($thisGame->GetId());
 
+
 				$this->ebayRepo->AddMerchandise($this->GetProductsFromEbay($thisGame));
 				$thisGame->SetLastMerchandiseUpdate(new \DateTime());
 				$this->steamRepo->UpdateGame($thisGame);
@@ -78,9 +79,15 @@ class EbayService
 	{
 		$result = json_decode(file_get_contents($this->ebayUrl . "&SECURITY-APPNAME=" .\Configurations::$EBAY_API_KEY . "&keywords=". str_replace(" ", "+", $game->GetTitle()) ."&paginationInput.entriesPerPage=50"), true);	
 
+		if($result["findItemsAdvancedResponse"][0]["searchResult"][0]["@count"] == "0")
+		{
+			return null;
+		}
+
 		$items = $result["findItemsAdvancedResponse"][0]["searchResult"][0]["item"];
 		
 		$merchandise = array();
+
 		foreach ($items as $item) 
 		{
 			$merchandise[] = new Merchandise

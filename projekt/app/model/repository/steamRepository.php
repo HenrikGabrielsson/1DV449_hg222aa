@@ -11,12 +11,8 @@ class SteamRepository extends BaseRepository
         $sql = "SELECT * FROM `".$this->userTable."` WHERE steamId = ?"; 
         $params = array($steamId);
 
-        $this->connect();
-        
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
-
-        $result = $query->fetch();
+        $result = $this->RunQuery($sql, $params);
+        $result = $result[0];
         
         $user;
         if($result)
@@ -43,13 +39,9 @@ class SteamRepository extends BaseRepository
         $sql = "SELECT * FROM `".$this->userTable."` WHERE id = ?"; 
         $params = array($id);
 
-        $this->connect();
-        
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
+        $result = $this->RunQuery($sql, $params);
+        $result = $result[0];
 
-        $result = $query->fetch();
-        
         $user;
         if($result)
         {
@@ -77,12 +69,7 @@ class SteamRepository extends BaseRepository
             WHERE `".$this->gameOwnershipTable."`.userId = ?";
         $params = array($id);
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
-
-        $result = $query->fetchAll();
+        $result = $this->RunQuery($sql, $params);
 
         if($result)
         {
@@ -111,12 +98,7 @@ class SteamRepository extends BaseRepository
         $sql = "INSERT INTO `".$this->userTable."`(`steamId`, `userName`, `lastUpdate`, `avatar`) VALUES(?,?,?,?);";
         $params = array($user->GetSteamId(), $user->GetUserName(), $user->GetLastUpdate(), $user->GetAvatar());
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
-
-
+        $this->RunQuery($sql, $params);
 
         $this->UpdateOrAddGames($user->GetGames(), $this->dbConnection->lastInsertId());
     }
@@ -133,7 +115,7 @@ class SteamRepository extends BaseRepository
         $addGameOwnershipParams;
         $updateGamerOwnershipParams;
 
-        $this->connect();
+        $this->Connect();
 
         foreach ($games as $game) 
         {
@@ -173,12 +155,8 @@ class SteamRepository extends BaseRepository
         $sql = "SELECT * FROM `".$this->gameTable."` WHERE id=?";
         $params = array($id);
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
-
-        $result = $query->fetch();
+        $result = $this->RunQuery($sql, $params);
+        $result = $result[0];
 
         if($result)
         {
@@ -203,10 +181,7 @@ class SteamRepository extends BaseRepository
         $sql = "UPDATE `".$this->gameTable."` SET `appId`=?, `title`=?, `lastMerchandiseUpdate`=? WHERE `id`=?";
         $params = array($game->GetAppId(), $game->GetTitle(), $date->format('Y-m-d H:i:s'), $game->GetId());
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
+        $this->RunQuery($sql, $params);
     }
 
     public function UpdateUser($user)
@@ -214,10 +189,7 @@ class SteamRepository extends BaseRepository
         $sql = "UPDATE `".$this->userTable."` SET `steamId`=?, `userName`=?, `lastUpdate`=?, `lastFriendListUpdate`=?, `avatar`=? WHERE id = ?;";
         $params = array($user->GetSteamId(), $user->GetUserName(), $user->GetLastUpdate(),$user->GetLastFriendListUpdate(), $user->GetAvatar(), $user->GetId());
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
+        $this->RunQuery($sql, $params);
 
         $this->UpdateOrAddGames($user->GetGames(), $user->GetId());
     }
@@ -225,14 +197,6 @@ class SteamRepository extends BaseRepository
     public function UpdateFriendships($user, $steamFriends)
     {
         $cachedFriends = $this->GetFriendsOf($user);
-
-        foreach($steamFriends as $friend)
-        {
-            if(!in_array($friend, $cachedFriends))
-            {
-                $this->AddFriendship($user, $friend);
-            }            
-        } 
 
         foreach($cachedFriends as $friend)
         {
@@ -242,13 +206,18 @@ class SteamRepository extends BaseRepository
             }
         }
 
+        foreach($steamFriends as $friend)
+        {
+            if(!in_array($friend, $cachedFriends))
+            {
+                $this->AddFriendship($user, $friend);
+            }            
+        } 
+
         $sql = "UPDATE `".$this->userTable."` SET `lastFriendListUpdate`=? WHERE `id`=?;";
         $params = array(date("Y-m-d H:i:s"), $user->GetId());
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
+        $this->RunQuery($sql, $params);
     }
 
     private function AddFriendship($friend1, $friend2)
@@ -256,10 +225,7 @@ class SteamRepository extends BaseRepository
         $sql = "INSERT INTO `".$this->friendshipTable."` (`friend1`,`friend2`) VALUES(?,?)";
         $params = array($friend1->GetId(), $friend2->GetId());
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
+        $this->RunQuery($sql, $params);
     }
 
     private function DeleteFriendship($friend1, $friend2)
@@ -267,10 +233,7 @@ class SteamRepository extends BaseRepository
         $sql = "DELETE FROM `".$this->friendshipTable."` WHERE (`friend1` = ? AND `friend2` = ?) OR (`friend2` = ? AND `friend1` = ?)";
         $params = array($friend1->GetId(), $friend2->GetId(), $friend1->GetId(), $friend2->GetId());
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
+        $this->RunQuery($sql, $params);
     }
 
     public function GetFriendsOf($user)
@@ -278,12 +241,7 @@ class SteamRepository extends BaseRepository
         $sql = "SELECT * FROM `".$this->friendshipTable."` WHERE friend1 = ? OR friend2 = ?";
         $params = array($user->GetId(), $user->GetId());
 
-        $this->connect();
-
-        $query = $this->dbConnection->prepare($sql);
-        $query->execute($params);
-
-        $result = $query->fetchAll();
+        $result = $this->RunQuery($sql, $params);
 
         if($result)
         {
@@ -300,7 +258,6 @@ class SteamRepository extends BaseRepository
                     $friends[] = $this->GetUserById($friendship["friend1"]);
                 }        
             }
-
             return $friends;
         }
     }

@@ -18,6 +18,5 @@ class MasterView
     public function UserWantsToLogout()
     {
     	return isset($_GET["logout"]);
-    }
-    
+    } 
 }

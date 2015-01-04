@@ -8,6 +8,11 @@ class EbayRepository extends BaseRepository
 {
 	public function AddMerchandise($merchandiseArr)
 	{
+		if($merchandiseArr === null)
+		{
+			return;
+		}
+
 		$sql = "INSERT INTO `".$this->merchandiseTable."` (`itemId`, `title`, `imageURL`, `ebayURL`, `location`, `country`, `startTime`, `endTime`, `gameId`)
 			VALUES(?,?,?,?,?,?,?,?,?)";
 

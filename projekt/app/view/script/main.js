@@ -17,22 +17,56 @@ var main = {
 	{
 		var id = document.URL.split("id=")[1].split("&")[0];
 
+		main.printLoadingScreen();
+
 		if(window.localStorage)
 		{	
-			//det finns lokal data att hämta och den är mindre än en timme gammal
-			if(localStorage.getItem(id) && JSON.parse(localStorage.getItem(id)).timeReceived + 60 * 60000 >= Date.now())
-			{		
-				main.printSuggestions(id);			
-			}
-			else
+			main.pingServer(function(response)
 			{
-				main.getSuggestionsFromServer(id);
-			}
+				//online
+				if(response)
+				{
+					main.getSuggestionsFromServer(id);
+				}
+				else
+				{
+					if(localStorage.getItem(id))
+					{
+						main.printSuggestions(id);
+					}
+					else
+					{
+						console.log("error");
+					}
+					
+				}
+			});
 		}
+		else
+		{
+			main.getSuggestionsFromServer(id);
+		}
+	},
+
+	printLoadingScreen: function()
+	{
+		var suggestionsDiv = document.getElementById("suggestions");
+		var loadingGif = document.createElement("img");
+		loadingGif.setAttribute("class", "loadingGif");
+		loadingGif.setAttribute("src", "view/img/ajax-loader.gif");
+	},
+
+	pingServer: function(callback)
+	{
+		var ajaxGetter = $.get("ajaxHelper.php?function=ping")
+		.done(function(){callback(true)})
+		.fail(function(){callback(false)});		
 	},
 
 	printSuggestions: function(id)
 	{
+
+
 		var merchandise = JSON.parse(window.localStorage.getItem(id)).merchandise;
 		var suggestionsDiv = document.getElementById("suggestions");
 		var suggestionList = document.createElement("ul");
@@ -42,6 +76,8 @@ var main = {
 		{
 			suggestionList.appendChild(main.createListElement(item));
 		});
+
+		main.pingServer
 	},
 
 	createListElement: function(item)
@@ -105,8 +141,8 @@ var main = {
 
 	getSuggestionsFromServer: function(id)
 	{
-		//här ska ajax användas för att hämta in data från servern och returneras
-		$.get("ajaxHelper.php?id=" + id, function(data)
+		//här ska ajax användas för att hämta in data från servern och sedan skrivas ut
+		$.get("ajaxHelper.php?function=getMerchandise&id=" + id, function(data)
 		{
 			localStorage.setItem(id, data);
 			main.printSuggestions(id);
