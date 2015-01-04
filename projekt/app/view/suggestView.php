@@ -23,9 +23,9 @@ class SuggestView
         return isset($_GET["id"]) ? $_GET["id"] : false;
     }
     
-    public function GetTitle()
+    public function GetTitle($suggestionsUser)
     {
-        return "Gaming merchandise";
+        return "Merchandise for " . $suggestionsUser->GetUserName();
     }
     
     public function GetContent($merchandise, $suggestionsUser)

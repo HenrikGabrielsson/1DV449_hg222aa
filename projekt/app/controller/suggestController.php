@@ -12,6 +12,8 @@ class SuggestController implements IContentController
     private $ebayService;
 
     private $suggestView;
+
+    private $suggestionsUser;
     
     public function __construct($steamService, $ebayService)
     {
@@ -19,18 +21,19 @@ class SuggestController implements IContentController
         $this->ebayService = $ebayService;
 
         $this->suggestView = new \view\SuggestView($this->ebayService, $this->steamService);
+
+        $this->suggestionsUser = $this->steamService->GetUser($this->suggestView->GetId());
     }
 
     public function GetTitle()
     {
-        return $this->suggestView->GetTitle();
+        return $this->suggestView->GetTitle($this->suggestionsUser);
     }
     
     public function GetContent()
     {
-        $suggestionsUser = $this->steamService->GetUser($this->suggestView->GetId());
-        $merchandise = $this->ebayService->GetProducts($suggestionsUser->GetGames());
+        $merchandise = $this->ebayService->GetProducts($this->suggestionsUser->GetGames());
 
-        return $this->suggestView->GetContent($merchandise, $suggestionsUser);
+        return $this->suggestView->GetContent($merchandise, $this->suggestionsUser);
     }
 }

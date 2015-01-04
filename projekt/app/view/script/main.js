@@ -52,8 +52,10 @@ var main = {
 	{
 		var suggestionsDiv = document.getElementById("suggestions");
 		var loadingGif = document.createElement("img");
-		loadingGif.setAttribute("class", "loadingGif");
-		loadingGif.setAttribute("src", "view/img/ajax-loader.gif");
+		loadingGif.setAttribute("id", "loadingGif");
+		loadingGif.setAttribute("src", "view/img/loader.gif");
+
+		suggestionsDiv.appendChild(loadingGif);
 	},
 
 	pingServer: function(callback)
@@ -65,10 +67,11 @@ var main = {
 
 	printSuggestions: function(id)
 	{
-
-
 		var merchandise = JSON.parse(window.localStorage.getItem(id)).merchandise;
 		var suggestionsDiv = document.getElementById("suggestions");
+
+		suggestionsDiv.removeChild(document.getElementById("loadingGif"));
+
 		var suggestionList = document.createElement("ul");
 		suggestionsDiv.appendChild(suggestionList);
 

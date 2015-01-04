@@ -152,7 +152,7 @@ class EbayService
 
 			for($j = 0; $j < count($gamesByChance); $j++)
 			{
-				if($rand < $gamesByChance[$keys[$j]] && $rand > $gamesByChance[$keys[$j-1]])
+				if(count($gamesByChance) == 1 || ($rand < $gamesByChance[$keys[$j]] && $rand > $gamesByChance[$keys[$j-1]]))
 				{
 					$chosenGames[] = $keys[$j];
 					break;
