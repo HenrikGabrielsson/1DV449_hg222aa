@@ -184,10 +184,10 @@ class SteamRepository extends BaseRepository
         $this->RunQuery($sql, $params);
     }
 
-    public function UpdateUser($user)
+    public function UpdateUser($user, $lastFriendListUpdate)
     {
         $sql = "UPDATE `".$this->userTable."` SET `steamId`=?, `userName`=?, `lastUpdate`=?, `lastFriendListUpdate`=?, `avatar`=? WHERE id = ?;";
-        $params = array($user->GetSteamId(), $user->GetUserName(), $user->GetLastUpdate(),$user->GetLastFriendListUpdate(), $user->GetAvatar(), $user->GetId());
+        $params = array($user->GetSteamId(), $user->GetUserName(), $user->GetLastUpdate(), $lastFriendListUpdate, $user->GetAvatar(), $user->GetId());
 
         $this->RunQuery($sql, $params);
 

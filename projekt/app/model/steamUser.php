@@ -28,6 +28,10 @@ class SteamUser
         $this->games = $games;
     }
 
+    public function SetLastFriendListUpdate($lastUpdate)
+    {
+        $this->lastFriendListUpdate = $lastUpdate;
+    }
 
     public function GetId()
     {

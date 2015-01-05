@@ -44,6 +44,9 @@ class SteamService
         //om användaren inte finns cachad eller om den inte har uppdaterats på ett dygn redan så hämtas den från Steam och cachas
         if(!$user || $isOld)
         {
+            //den här ska inte återställas och sparas
+            $lastFriendListUpdate = $user->GetLastFriendListUpdate();
+
             $user = $this->GetUserFromSteam($steamId,$oldId);
             $games = $this->GetGamesFromSteam($steamId);
             $user->SetGames($games);
@@ -51,7 +54,7 @@ class SteamService
             //uppdatera befintlig användare
             if($isOld)
             {
-                $this->steamRepo->UpdateUser($user);
+                $this->steamRepo->UpdateUser($user, $lastFriendListUpdate);
             }
 
             //skapa ny user i db.
@@ -59,6 +62,8 @@ class SteamService
             {
                 $this->steamRepo->AddUser($user);
             }
+
+            $user->SetLastFriendListUpdate($lastFriendListUpdate);
         }
         return $user;
     }
@@ -76,7 +81,7 @@ class SteamService
         if(isset($lastUpdate))
         {
             $lastUpdateDatetime = new \Datetime($user->GetLastFriendListUpdate());
-            $isOld = $lastUpdateDatetime->add(new \DateInterval('P3D')) < new \Datetime(); //5 dagar
+            $isOld = $lastUpdateDatetime->add(new \DateInterval('P3D')) < new \Datetime(); //3 dagar
         }
         
         //Uppdaterar bara friendlist om den aldrig har skapats eller om den inte uppdaterats på länge.
