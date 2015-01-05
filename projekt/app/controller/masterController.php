@@ -34,10 +34,12 @@ class MasterController
         
     }   
     
+    //hämtar den sida som användaren vill komma åt.
     public function GetPage()
     {
         $controller;
         
+        //kollar så man är inloggad. annars tvingas man göra det.
         if($this->loginHandler->GetLoginId() && !$this->masterView->UserWantsToLogout())
         {
             switch ($this->masterView->getPath())
@@ -50,9 +52,9 @@ class MasterController
                     break;
             }
         }
-
         else
         {
+            //utloggning.
             if($this->masterView->UserWantsToLogout())
             {
                 $this->loginHandler->Logout();

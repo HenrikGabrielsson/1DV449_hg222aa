@@ -4,11 +4,14 @@ namespace view;
 
 class AuthenticationView
 {
+
+    //hämtar sidans title
     public function GetTitle()
     {
         return "Identify Yourself";
     }
     
+    //hämtar sidans innehåll.
     public function GetContent()
     {
         return '

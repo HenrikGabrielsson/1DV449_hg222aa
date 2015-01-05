@@ -31,6 +31,7 @@ class BaseRepository
         }
     }
 
+    //Tar emot en sql-fråga och parametrar och kör satsen. Returnerar resultatet av queryn som en array.
     public function RunQuery($sql, $params)
     {
         $this->connect();
@@ -41,7 +42,5 @@ class BaseRepository
         $result = $query->fetchAll();
 
         return $result;
-
-
     }
 }

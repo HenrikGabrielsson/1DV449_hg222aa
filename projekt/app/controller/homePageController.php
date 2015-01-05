@@ -22,11 +22,13 @@ class HomePageController implements IContentController
         $this->homePageView = new \view\HomePageView($user, $friends);
     }
     
+    //hämtar sidinnehåll
     public function GetTitle()
     {
         return $this->homePageView->GetTitle();
     }
     
+    //hämtar title
     public function GetContent()
     {
         return $this->homePageView->GetContent();

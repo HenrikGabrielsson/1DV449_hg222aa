@@ -1,4 +1,6 @@
 var main = {
+
+	///denna funktion körs alltid när en sida hämtats.
 	init: function()
 	{
 		//om det är sidan med formuläret för att välja en användare så körs denna funktion.
@@ -7,20 +9,26 @@ var main = {
 			main.submitFriendFormOnSelect();
 		}
 
+		//om ett element ska fyllas med produkter från ebay.
 		if(document.getElementById("suggestions") !== null)
 		{
 			main.getSuggestionsForUser();
 		}
 	},
 
+	//hämtar ebay-produkter från servern
 	getSuggestionsForUser: function()
 	{
+		//id på användaren som ska få förslag.
 		var id = document.URL.split("id=")[1].split("&")[0];
 
+		//loading
 		main.printLoadingScreen();
 
+		//om det finnns möjlighet till cachning på klientsidan
 		if(window.localStorage)
 		{	
+			//kollar om klienten-servern kommer åt varandra.
 			main.pingServer(function(response)
 			{
 				//online
@@ -30,10 +38,12 @@ var main = {
 				}
 				else
 				{
+					//hämtar cachade objekt.
 					if(localStorage.getItem(id))
 					{
 						main.printSuggestions(id);
 					}
+					//finns inte
 					else
 					{
 						console.log("error");
@@ -42,12 +52,14 @@ var main = {
 				}
 			});
 		}
+		//försöker hämta från servern.
 		else
 		{
 			main.getSuggestionsFromServer(id);
 		}
 	},
 
+	//visar för användaren att sidan laddar medan produkter hämtas.
 	printLoadingScreen: function()
 	{
 		var suggestionsDiv = document.getElementById("suggestions");
@@ -58,6 +70,7 @@ var main = {
 		suggestionsDiv.appendChild(loadingGif);
 	},
 
+	//kollar om det finns anslutning
 	pingServer: function(callback)
 	{
 		var ajaxGetter = $.get("ajaxHelper.php?function=ping")
@@ -65,24 +78,26 @@ var main = {
 		.fail(function(){callback(false)});		
 	},
 
+	//skriver ut produkter
 	printSuggestions: function(id)
 	{
+		//hämtar de cachade produkterna.
 		var merchandise = JSON.parse(window.localStorage.getItem(id)).merchandise;
+
+		//tar bort loading-gif och hämtar viktiga element.
 		var suggestionsDiv = document.getElementById("suggestions");
-
 		suggestionsDiv.removeChild(document.getElementById("loadingGif"));
-
 		var suggestionList = document.createElement("ul");
 		suggestionsDiv.appendChild(suggestionList);
 
+		//skapar ett nytt listelement för varje produkt.
 		merchandise.forEach(function(item)
 		{
 			suggestionList.appendChild(main.createListElement(item));
 		});
-
-		main.pingServer
 	},
 
+	//skapar ett listelement för en given produkt.
 	createListElement: function(item)
 	{
 		//skapar alla element
@@ -114,7 +129,7 @@ var main = {
 		dt_location.appendChild(document.createTextNode("Location: "));
 		dd_location.appendChild(document.createTextNode(item.location));
 		dt_country.appendChild(document.createTextNode("Country: "));
-		dd_location.appendChild(document.createTextNode(item.country));
+		dd_country.appendChild(document.createTextNode(item.country));
 		dt_startTime.appendChild(document.createTextNode("Auction started at: "));
 		dd_startTime.appendChild(document.createTextNode(item.startTime.date));
 		dt_endTime.appendChild(document.createTextNode("Auction ends at: "));		
@@ -142,6 +157,7 @@ var main = {
 		return li;
 	},
 
+	//hämtar produkter från servern
 	getSuggestionsFromServer: function(id)
 	{
 		//här ska ajax användas för att hämta in data från servern och sedan skrivas ut
@@ -152,6 +168,7 @@ var main = {
 		});
 	},
 
+	//ser till så formulär skickas så fort man väljer en person i listan.
 	submitFriendFormOnSelect: function()
 	{
 		var friendForm = document.getElementById("forFriendForm");
@@ -161,8 +178,6 @@ var main = {
 			friendForm.submit();
 		}, false);
 	}
-
-
 }
 
 window.addEventListener("load", main.init, false);

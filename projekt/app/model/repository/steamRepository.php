@@ -6,6 +6,8 @@ require_once("baseRepository.php");
 
 class SteamRepository extends BaseRepository
 {
+
+    //Hämta användare efter givet SteamId
     public function GetUserBySteamId($steamId)
     {
         $sql = "SELECT * FROM `".$this->userTable."` WHERE steamId = ?"; 
@@ -14,7 +16,7 @@ class SteamRepository extends BaseRepository
         $result = $this->RunQuery($sql, $params);
         $result = $result[0];
         
-        $user;
+        //om det finns en användare i databasen så skapas den och returneras. Annars false.
         if($result)
         {
             $games = $this->GetGamesOwnedByUser($result['id']);
@@ -34,6 +36,7 @@ class SteamRepository extends BaseRepository
         return false;
     }
 
+    //Hämta användare efter givet id
     public function GetUserById($id)
     {
         $sql = "SELECT * FROM `".$this->userTable."` WHERE id = ?"; 
@@ -42,7 +45,7 @@ class SteamRepository extends BaseRepository
         $result = $this->RunQuery($sql, $params);
         $result = $result[0];
 
-        $user;
+        //om det finns en användare i databasen så skapas den och returneras. Annars false.
         if($result)
         {
             $games = $this->GetGamesOwnedByUser($result['id']);
@@ -62,6 +65,7 @@ class SteamRepository extends BaseRepository
         return false;
     }
 
+    //hämtar alla spel som ägs av given användare
     public function GetGamesOwnedByUser($id)
     {
         $sql = "SELECT * FROM `".$this->gameOwnershipTable."` 
@@ -71,6 +75,7 @@ class SteamRepository extends BaseRepository
 
         $result = $this->RunQuery($sql, $params);
 
+        // om det finns några spel att hämta så skapas de och returneras. annars null.
         if($result)
         {
             $games = array();
@@ -93,6 +98,7 @@ class SteamRepository extends BaseRepository
         return null;
     }
 
+    //lägger till en användare i databasen.
     public function AddUser($user)
     {
         $sql = "INSERT INTO `".$this->userTable."`(`steamId`, `userName`, `lastUpdate`, `avatar`) VALUES(?,?,?,?);";
@@ -103,6 +109,7 @@ class SteamRepository extends BaseRepository
         $this->UpdateOrAddGames($user->GetGames(), $this->dbConnection->lastInsertId());
     }
 
+    //Lägger till en användare som ägare av ett spel.
     public function UpdateOrAddGames($games, $userId)
     {
         $checkSql = "SELECT id FROM `".$this->gameTable."` WHERE appId = ?";
@@ -110,46 +117,34 @@ class SteamRepository extends BaseRepository
         $addGameOwnershipSql = "INSERT INTO `".$this->gameOwnershipTable."`(`userId`,`gameId`,`recentPlaytime`,`overallPlaytime`) VALUES(?,?,?,?)";
         $updateGamerOwnershipSql = "UPDATE `".$this->gameOwnershipTable."` SET `recentPlaytime`=?,`overallPlaytime`=? WHERE userId=? AND gameId=?";
 
-        $checkParams;
-        $gameParams;
-        $addGameOwnershipParams;
-        $updateGamerOwnershipParams;
-
-        $this->Connect();
-
         foreach ($games as $game) 
         {
+            //koll om spelet redan finns cachat.
             $checkParams = array($game->GetAppId());
+            $result = $this->RunQuery($checkSql, $checkParams);
+            $result = $result[0];
 
-            $query = $this->dbConnection->prepare($checkSql);
-            $query->execute($checkParams);
-
-            $result = $query->fetch();
-
+            //finns redan, uppdateras med ägare.
             if($result)
             {
                 $updateGamerOwnershipParams = array($game->GetRecentPlaytime(), $game->GetOverallPlaytime(), $userId, $game->GetId());
-                
-                $query = $this->dbConnection->prepare($updateGamerOwnershipSql);
-                $query->execute($updateGamerOwnershipParams);
+
+                $this->RunQuery($updateGamerOwnershipSql, $updateGamerOwnershipParams);
             }
 
+            //finns inte, spelet skapas...Ägare läggs till.
             else
             {
                 $gameParams = array($game->GetTitle(), $game->GetAppId(), $game->GetLastMerchandiseUpdate());
-                
-                $query = $this->dbConnection->prepare($gameSql);
-                $query->execute($gameParams); 
-
+                $this->RunQuery($gameSql, $gameParams);
 
                 $addGameOwnershipParams = array($userId, $this->dbConnection->lastInsertId(), $game->GetRecentPlaytime(), $game->GetOverallPlaytime());
-                
-                $query = $this->dbConnection->prepare($addGameOwnershipSql);
-                $query->execute($addGameOwnershipParams);                
+                $this->RunQuery($addGameOwnershipSql, $addGameOwnershipParams);          
             }
         }
     }
 
+    //hämta spel efter givet id.
     public function GetGame($id)
     {
         $sql = "SELECT * FROM `".$this->gameTable."` WHERE id=?";
@@ -158,6 +153,7 @@ class SteamRepository extends BaseRepository
         $result = $this->RunQuery($sql, $params);
         $result = $result[0];
 
+        //returnerar spel om det finns .annars false.
         if($result)
         {
             return new \model\Game
@@ -174,6 +170,7 @@ class SteamRepository extends BaseRepository
         return false;
     }
 
+    //uppdatera befintligt spel med nya uppgifter.
     public function UpdateGame($game)
     {
         $date = $game->GetLastMerchandiseUpdate();
@@ -184,6 +181,7 @@ class SteamRepository extends BaseRepository
         $this->RunQuery($sql, $params);
     }
 
+    //uppdatera befintlig användare med nya uppgifter.
     public function UpdateUser($user, $lastFriendListUpdate)
     {
         $sql = "UPDATE `".$this->userTable."` SET `steamId`=?, `userName`=?, `lastUpdate`=?, `lastFriendListUpdate`=?, `avatar`=? WHERE id = ?;";
@@ -194,10 +192,13 @@ class SteamRepository extends BaseRepository
         $this->UpdateOrAddGames($user->GetGames(), $user->GetId());
     }
 
+    //uppdatera vänskapsband.
     public function UpdateFriendships($user, $steamFriends)
     {
+        //redan cachade vänner till $user
         $cachedFriends = $this->GetFriendsOf($user);
 
+        //tar bort vänskapsband som inte längre finns.
         foreach($cachedFriends as $friend)
         {
             if(!in_array($friend, $steamFriends))
@@ -206,6 +207,7 @@ class SteamRepository extends BaseRepository
             }
         }
 
+        //lägger till vänskapsband som inte redan finns.
         foreach($steamFriends as $friend)
         {
             if(!in_array($friend, $cachedFriends))
@@ -220,6 +222,7 @@ class SteamRepository extends BaseRepository
         $this->RunQuery($sql, $params);
     }
 
+    //lägger till ett vänskapsband
     private function AddFriendship($friend1, $friend2)
     {
         $sql = "INSERT INTO `".$this->friendshipTable."` (`friend1`,`friend2`) VALUES(?,?)";
@@ -228,6 +231,7 @@ class SteamRepository extends BaseRepository
         $this->RunQuery($sql, $params);
     }
 
+    //tar bort ett vänskapsband
     private function DeleteFriendship($friend1, $friend2)
     {
         $sql = "DELETE FROM `".$this->friendshipTable."` WHERE (`friend1` = ? AND `friend2` = ?) OR (`friend2` = ? AND `friend1` = ?)";
@@ -236,6 +240,7 @@ class SteamRepository extends BaseRepository
         $this->RunQuery($sql, $params);
     }
 
+    //Hämtar alla vänner till given användare.
     public function GetFriendsOf($user)
     {
         $sql = "SELECT * FROM `".$this->friendshipTable."` WHERE friend1 = ? OR friend2 = ?";
@@ -245,7 +250,6 @@ class SteamRepository extends BaseRepository
 
         if($result)
         {
-
             $friends = array();
             foreach($result as $friendship)
             {

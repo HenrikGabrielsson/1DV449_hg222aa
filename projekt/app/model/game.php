@@ -2,6 +2,7 @@
 
 namespace model;
 
+//detta är ett spel.
 class Game
 {
     private $id;

@@ -5,6 +5,7 @@ namespace view;
 class TemplateView
 {
 
+    //Skriver ut det inehåll som ska visas på alla sidor.
     public function EchoContent($title, $content, $loggedIn)
     {
         $loginBox = $loggedIn ? $this->GetLogoutBox() : "";
@@ -37,6 +38,7 @@ class TemplateView
         ';
     }
 
+    //skapar en ruta för utloggning om det ska visas.
     private function GetLogoutBox()
     {
         return 

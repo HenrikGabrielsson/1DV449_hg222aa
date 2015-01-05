@@ -2,6 +2,7 @@
 
 namespace model;
 
+//detta är en steamanvändare och även en användare på SteamStuff
 class SteamUser
 {
     private $id;

@@ -11,6 +11,7 @@ class SteamService
 {
     private $steamRepo;
     
+    //url:er till Steam Web API
     private $getPlayerSummariesURL = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/";
     private $getFriendListURL = "http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?relationship=friend";
     private $getOwnedGames = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?include_appinfo=1&include_played_free_games=1";
@@ -20,7 +21,7 @@ class SteamService
         $this->steamRepo = new \model\repository\SteamRepository();
     }
 
-
+    //hämta en användare med givet steamId. Om inget anges hämtas inloggad användare.
     public function GetUser($steamId = null)
     {
 
@@ -29,8 +30,10 @@ class SteamService
             $steamId = $_SESSION["steamId"];
         }
         
+        //hämtar eventuellt cachad användare.
         $user = $this->steamRepo->GetUserBySteamId($steamId);
 
+        //kollar här om användaren inte har uppdaterats på länge från Steam.
         $oldId = null;
         $isOld = false;
         if($user)
@@ -39,7 +42,6 @@ class SteamService
             $isOld = $lastUpdate->add(new \DateInterval('P1D')) < new \Datetime();
             $oldId = $user->GetId();
         }
-
 
         //om användaren inte finns cachad eller om den inte har uppdaterats på ett dygn redan så hämtas den från Steam och cachas
         if(!$user || $isOld)
@@ -68,15 +70,18 @@ class SteamService
         return $user;
     }
 
+    //Hämta ett spel från databasen.
     public function GetCachedGame($id)
     {
         return $this->steamRepo->GetGame($id);
     }
 
+    //hämta en spelares vänner.
     public function GetFriends($user)
     {
-        $lastUpdate = $user->GetLastFriendListUpdate();
 
+        //först en koll om vänlistan har uppdaterats på länge.
+        $lastUpdate = $user->GetLastFriendListUpdate();
         $isOld = false;
         if(isset($lastUpdate))
         {
@@ -93,9 +98,10 @@ class SteamService
         return $this->steamRepo->GetFriendsOf($user);
     }
 
+    //uppdatera en vänlista för en given användare.
     private function UpdateFriendList($user)
     {
-
+        //hämtar vänner från steam. Försöker högst 10 gånger.
         for($i = 0; $i < 10; $i++)
         {
             $json = json_decode(file_get_contents($this->getFriendListURL . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$user->GetSteamId()),true);
@@ -115,11 +121,14 @@ class SteamService
             $friends[] = $this->GetUser($json_friend["steamid"]);
         }
 
-        $this->steamRepo->UpdateFriendships($user, $friends); // lägg till nya vänskap och ta bort gamla som blivit borttagna :(   
+        // lägg till nya vänskap och ta bort gamla som blivit borttagna
+        $this->steamRepo->UpdateFriendships($user, $friends); 
     }
 
+    //hämtar en användare från steam och cachar.
     private function GetUserFromSteam($steamId, $userId)
     {
+        //hämtar användaren från steam. Försöker högst 10 gånger.
         for($i = 0; $i < 10; $i++)
         {        
         $json = json_decode(file_get_contents($this->getPlayerSummariesURL . "?key=".\Configurations::$STEAM_API_KEY."&steamids=".$steamId), true);
@@ -132,6 +141,7 @@ class SteamService
 
         $json_player = $json['response']['players'][0];
     
+        //spara avataren som en fil.
         $avatar = $this->SaveAvatarLocally($json_player['avatarmedium'], $json_player['steamid']);
 
         return new SteamUser (
@@ -145,6 +155,7 @@ class SteamService
         );   
     }
 
+    //sparar avataren i korrekt mapp.
     private function SaveAvatarLocally($remoteURL, $steamId)
     {
         $local = "model/avatars/" . $steamId . ".jpg";
@@ -154,8 +165,10 @@ class SteamService
         return $local;
     }
     
+    //hämtar alla spel som en spelare äger från Steam.
     private function GetGamesFromSteam($steamId)
     {
+        //hämtar spel från steam. Försöker högst 10 gånger.
         for($i = 0; $i < 10; $i++)
         {
             $json = json_decode(file_get_contents($this->getOwnedGames . "&key=".\Configurations::$STEAM_API_KEY."&steamid=".$steamId), true);
@@ -179,7 +192,6 @@ class SteamService
                 null
             );
         }
-        
         return $games;
     }
 }

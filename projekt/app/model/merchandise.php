@@ -2,6 +2,7 @@
 
 namespace model;
 
+//detta är ett föremål som tillhör ett spel (gaming merchandise)
 class Merchandise
 {
 	private $id;

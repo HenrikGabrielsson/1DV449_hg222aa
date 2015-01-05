@@ -13,11 +13,13 @@ class HomePageView
         $this->friends = $friends; 
     }
     
+    //hämtar sidans title.
     public function GetTitle()
     {
         return "Welcome, " . $this->user->GetUserName();
     }
     
+    //hämtar sidans innehåll.
     public function GetContent()
     {
         $content = '

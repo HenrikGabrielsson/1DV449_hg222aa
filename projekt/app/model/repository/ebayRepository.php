@@ -6,8 +6,11 @@ require_once("baseRepository.php");
 
 class EbayRepository extends BaseRepository
 {
+
+	//Lägger till all merchandise i databasen.
 	public function AddMerchandise($merchandiseArr)
 	{
+		//om array är tom körs inte metoden.
 		if($merchandiseArr === null)
 		{
 			return;
@@ -16,6 +19,7 @@ class EbayRepository extends BaseRepository
 		$sql = "INSERT INTO `".$this->merchandiseTable."` (`itemId`, `title`, `imageURL`, `ebayURL`, `location`, `country`, `startTime`, `endTime`, `gameId`)
 			VALUES(?,?,?,?,?,?,?,?,?)";
 
+		//lägger till dem varför sig.
 		foreach($merchandiseArr as $item)
 		{
 			$start = $item->GetStartTime();
@@ -27,6 +31,7 @@ class EbayRepository extends BaseRepository
 		}
 	}
 
+	//ta bort ett föremål från databasen.
 	public function DeleteMerchandiseItem($itemId)
 	{
 		$sql = "DELETE FROM `".$this->merchandiseTable."` WHERE id=?";
@@ -34,6 +39,7 @@ class EbayRepository extends BaseRepository
 		$this->RunQuery($sql, array($itemId));
 	}
 
+	//ta bort alla föremål som tillhör ett visst spel.
 	public function DeleteMerchandiseForGame($gameId)
 	{
 		$sql = $sql = "DELETE FROM `".$this->merchandiseTable."` WHERE gameId=?";
@@ -41,6 +47,7 @@ class EbayRepository extends BaseRepository
 		$this->RunQuery($sql, array($gameId));
 	}
 
+	//hämtar alla föremål som hör till ett visst spel.
 	public function GetMerchandiseForGame($gameId, $count)
 	{
 		$sql = "SELECT * FROM `".$this->merchandiseTable."` WHERE gameId=? ";
@@ -50,6 +57,7 @@ class EbayRepository extends BaseRepository
 		shuffle($result);
 		$result = array_slice($result, 0, $count);
 
+		//avslutar om det inte fanns något i databasen.
 		if(!$result)
 		{
 			return null;
@@ -58,8 +66,6 @@ class EbayRepository extends BaseRepository
 		$merchandise = array();
 		foreach ($result as $item) 
 		{
-
-			//($id, $itemId, $title, $imageURL, $ebayURL, $location, $country, $startTime, $endTime, $gameId)
 			$merchandise[] = new \model\Merchandise
 			(
 				$item["id"],

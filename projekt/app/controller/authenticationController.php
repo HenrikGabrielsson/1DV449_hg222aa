@@ -16,6 +16,7 @@ class AuthenticationController implements IContentController
         $this->view = new \view\AuthenticationView();  
     }
     
+    //hämtar innehåll.
     public function GetContent()
     {
         if($this->view->UserWantsToLogin())
@@ -26,6 +27,7 @@ class AuthenticationController implements IContentController
         return $this->view->GetContent();
     }
     
+    //hämtar title
     public function GetTitle()
     {
         return $this->view->GetTitle();

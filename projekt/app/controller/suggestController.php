@@ -25,11 +25,13 @@ class SuggestController implements IContentController
         $this->suggestionsUser = $this->steamService->GetUser($this->suggestView->GetId());
     }
 
+    //hämtar sidans title
     public function GetTitle()
     {
         return $this->suggestView->GetTitle($this->suggestionsUser);
     }
     
+    //hämtar sidans innehåll.
     public function GetContent()
     {
         $merchandise = $this->ebayService->GetProducts($this->suggestionsUser->GetGames());

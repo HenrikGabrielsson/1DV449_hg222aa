@@ -18,16 +18,19 @@ class SuggestView
         $this->friends = $this->steamService->GetFriends($this->user);
     }
 
+    //hämtar id på den användare som man vill ha mechandise-förslag till.
     public function GetId()
     {
         return isset($_GET["id"]) ? $_GET["id"] : false;
     }
     
+    //Hämta sidans title
     public function GetTitle($suggestionsUser)
     {
         return "Merchandise for " . $suggestionsUser->GetUserName();
     }
-    
+
+    //hämta sidans innehåll.
     public function GetContent($merchandise, $suggestionsUser)
     {
         return 
@@ -52,6 +55,7 @@ class SuggestView
         ';
     }
 
+    //hämta merchandise.
     public function GetMerchandise($id)
     {
         $suggestionsUser = $this->steamService->GetUser($id);
@@ -60,6 +64,7 @@ class SuggestView
         return $merchandise;
     }
 
+    //hämta vänner i en select-lista.
     private function GetFriendsOptions()
     {
         $optionsList = "";
