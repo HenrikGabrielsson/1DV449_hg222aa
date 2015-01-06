@@ -19,7 +19,6 @@ var main = {
 	//hämtar ebay-produkter från servern
 	getSuggestionsForUser: function()
 	{
-		console.log("testing");
 		//id på användaren som ska få förslag.
 		var id = document.URL.split("id=")[1].split("&")[0];
 
@@ -42,12 +41,13 @@ var main = {
 					//hämtar cachade objekt.
 					if(localStorage.getItem(id))
 					{
+						main.printCacheWarning(id);
 						main.printSuggestions(id);
 					}
 					//finns inte
 					else
 					{
-						console.log("error");
+						main.printError();
 					}
 					
 				}
@@ -58,6 +58,34 @@ var main = {
 		{
 			main.getSuggestionsFromServer(id);
 		}
+	},
+
+	//skriver ut ett felmeddelande om det av någon anledning inte gick att visa några förslag.
+	printError: function()
+	{
+		var suggestionsDiv = document.getElementById("suggestions");
+		suggestionsDiv.removeChild(document.getElementById("loadingGif"));
+
+		var h2 = document.createElement("h2");
+		var p = document.createElement("p");
+		h2.appendChild(document.createTextNode("Sorry!"));
+		p.appendChild(document.createTextNode("Something went wrong when getting suggestions for you. Try again later!"));
+
+		suggestionsDiv.appendChild(h2);
+		suggestionsDiv.appendChild(p);
+	},
+
+	//Berättar för användaren att utskrivna objekt är gamla.
+	printCacheWarning: function(id)
+	{
+		var suggestionsDiv = document.getElementById("suggestions");
+
+		var timeReceived = JSON.parse(window.localStorage.getItem(id)).timeReceived;
+
+		var warning = document.createElement("p");
+		warning.appendChild(document.createTextNode("Note that these suggestions are received from the cache, because of some unknown problem! Try to refresh at a later time. These products were received from Ebay at: "  + new Date(new Date(JSON.parse(window.localStorage.getItem(id)).timeReceived))))
+		
+		suggestionsDiv.appendChild(warning);
 	},
 
 	//visar för användaren att sidan laddar medan produkter hämtas.
