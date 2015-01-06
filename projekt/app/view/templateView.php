@@ -16,6 +16,7 @@ class TemplateView
             <head>
                 <title>'.$title.' - SteamStuff</title>
 
+                <link rel="icon" type="img/ico" href="view/img/favicon.ico">
                 <link href="view/style/steamStuffStyle.css" rel="stylesheet" />
             </head>
             

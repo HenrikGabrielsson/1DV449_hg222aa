@@ -17,7 +17,7 @@ class AuthenticationView
         return '
         <p>Login via Steam to get access to the site</p>
         <a href="?login">
-            <image src="img/steamlogin.png" alt="Click here to login with your Steam account." />
+            <image src="view/img/steamlogin.png" alt="Click here to login with your Steam account." />
         </a>
         ';
     }
