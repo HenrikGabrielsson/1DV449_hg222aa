@@ -23,6 +23,11 @@ class TemplateView
 
                 <div id="container">
                     <div id="header">
+
+                        <div id="logo">
+                            <img src="view/img/logo.png">
+                        </div>
+
                         '. $loginBox .'
                     </div>
                     

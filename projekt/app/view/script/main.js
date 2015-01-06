@@ -19,6 +19,7 @@ var main = {
 	//hämtar ebay-produkter från servern
 	getSuggestionsForUser: function()
 	{
+		console.log("testing");
 		//id på användaren som ska få förslag.
 		var id = document.URL.split("id=")[1].split("&")[0];
 
@@ -103,55 +104,45 @@ var main = {
 		//skapar alla element
 		var li = document.createElement("li");
 		var div = document.createElement("div");
+		var div_about = document.createElement("div");
 
 		var h2 = document.createElement("h2");
 		var a = document.createElement("a");
 		var img = document.createElement("img");
-		var p = document.createElement("p");
-
-		var dl = document.createElement("dl");
-		var dt_location = document.createElement("dt");
-		var dd_location = document.createElement("dd");
-		var dt_country = document.createElement("dt");
-		var dd_country = document.createElement("dd");
-		var dt_startTime = document.createElement("dt");
-		var dd_startTime = document.createElement("dd");
-		var dt_endTime = document.createElement("dt");
-		var dd_endTime = document.createElement("dd");
+		var p_game = document.createElement("p");
+		var p_location = document.createElement("p");
+		var p_country = document.createElement("p");
+		var p_startTime = document.createElement("p");
+		var p_endTime = document.createElement("p");
 
 
 		//fyller alla element
 		div.setAttribute("class", "itemDisplay");
+		div_about.setAttribute("class", "item_about");
 		a.appendChild(document.createTextNode(item.title));
 		a.setAttribute("href", item.ebayURL);
 		img.setAttribute("src", item.imageURL);
-		p.appendChild(document.createTextNode("Game: " + item.gameTitle));
-		dt_location.appendChild(document.createTextNode("Location: "));
-		dd_location.appendChild(document.createTextNode(item.location));
-		dt_country.appendChild(document.createTextNode("Country: "));
-		dd_country.appendChild(document.createTextNode(item.country));
-		dt_startTime.appendChild(document.createTextNode("Auction started at: "));
-		dd_startTime.appendChild(document.createTextNode(item.startTime.date));
-		dt_endTime.appendChild(document.createTextNode("Auction ends at: "));		
-		dd_endTime.appendChild(document.createTextNode(item.endTime.date));
 
+		p_game.appendChild(document.createTextNode("Game: " + item.gameTitle));
+		p_game.setAttribute("class", "gameTitle");
+		p_location.appendChild(document.createTextNode("Location: " + item.location));
+		p_country.appendChild(document.createTextNode("Country: " + item.country));
+		p_startTime.appendChild(document.createTextNode("Auction started at: " + item.startTime.date));
+		p_endTime.appendChild(document.createTextNode("Auction ends at: " + item.endTime.date));		
 
 		//sätter ihop allt och returnerar
-		dl.appendChild(dt_location);
-		dl.appendChild(dd_location);
-		dl.appendChild(dt_country);
-		dl.appendChild(dd_country);
-		dl.appendChild(dt_startTime);
-		dl.appendChild(dd_startTime);
-		dl.appendChild(dt_endTime);
-		dl.appendChild(dd_endTime);
-
 		h2.appendChild(a);
 
-		div.appendChild(h2);
+		div.appendChild(h2);	
+		div.appendChild(div_about);
+		div_about.appendChild(p_game);
+		div_about.appendChild(p_location);
+		div_about.appendChild(p_country);
+		div_about.appendChild(p_startTime);
+		div_about.appendChild(p_endTime);
+		
 		div.appendChild(img);
-		div.appendChild(p);
-		div.appendChild(dl);
+
 		li.appendChild(div);
 
 		return li;

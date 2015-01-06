@@ -5,7 +5,9 @@ html, body {
 
 body {
 	background-color:#1E1E1E;
-	color: #B4B4B4;
+	color: #E1E1E1;
+
+	font-family: arial;
 }
 
 #container {
@@ -21,7 +23,8 @@ body {
 
 	margin:auto;
 
-	height:70%;
+	min-height:70%;
+	overflow: auto;
 }
 
 #header {
@@ -30,4 +33,44 @@ body {
 
 	background-color:#3C3C3C;
 	border-radius: 40px 40px 0 0;
+}
+
+#suggestions ul{
+	list-style-type: none;
+}
+
+.itemDisplay {
+	border:4px solid #E1E1E1;
+	border-radius: 15px;
+
+	width: 400px;
+	height:340px;
+
+	margin:20px;
+	padding:10px;
+	
+	display:inline;
+	float:left;
+}
+
+.itemDisplay h2 {
+	font-size: 15pt;
+}
+
+.itemDisplay img {
+	float:left;
+	width: 140px;
+}
+
+.itemDisplay .gameTitle {
+	color: #ffce00;
+}
+
+.itemDisplay .item_about {
+	float:right;
+	width:200px;
+}
+
+.itemDisplay a:link, .itemDisplay a:visited {
+	color:#E1E1E1;
 }
