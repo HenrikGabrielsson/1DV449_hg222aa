@@ -30,4 +30,14 @@ class AuthenticationView
             return true;
         }
     }
+
+    public function GetUserAgent()
+    {
+        return $_SERVER["HTTP_USER_AGENT"];
+    }
+
+    public function GetIp()
+    {
+        return $_SERVER["REMOTE_ADDR"];
+    }
 }

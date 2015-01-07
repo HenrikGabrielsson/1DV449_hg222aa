@@ -40,7 +40,7 @@ class MasterController
         $controller;
         
         //kollar så man är inloggad. annars tvingas man göra det.
-        if($this->loginHandler->GetLoginId() && !$this->masterView->UserWantsToLogout())
+        if($this->loginHandler->GetLoginId($this->masterView->GetIp(), $this->masterView->GetUserAgent()) && !$this->masterView->UserWantsToLogout())
         {
             switch ($this->masterView->getPath())
             {

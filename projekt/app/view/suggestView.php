@@ -21,17 +21,38 @@ class SuggestView
     //hämtar id på den användare som man vill ha mechandise-förslag till.
     public function GetId()
     {
-        return isset($_GET["id"]) ? $_GET["id"] : false;
+
+        if(isset($_GET["id"]))
+        {
+            $id = $_GET["id"];
+
+            //kollar så användaren är användaren själv eller en vän. annars är åtkomst inte tillåten.
+            $isFriend = false;
+            foreach ($this->friends as $friend) 
+            {
+                if($friend->GetSteamId() == $id)
+                {
+                    $isFriend = true;
+                }
+            }
+
+            if($this->user->GetSteamId() == $id || $isFriend)
+            {
+                return $id;
+            }
+
+        }
+        return false;
     }
     
     //Hämta sidans title
     public function GetTitle($suggestionsUser)
     {
-        return "Merchandise for " . $suggestionsUser->GetUserName();
+        return isset($suggestionsUser) ? "Merchandise for " . $suggestionsUser->GetUserName() : "Error";
     }
 
     //hämta sidans innehåll.
-    public function GetContent($merchandise, $suggestionsUser)
+    public function GetContent($merchandise, $suggestionsUser, $token)
     {
         return 
         '
@@ -43,6 +64,7 @@ class SuggestView
 
         <form id="forFriendForm" method="get" action="?path=suggestions">
             <input type="hidden" name="path" value="suggestions" />
+            <input type="hidden" name="token" id="token" value="'.$token.'">
             <select id="forFriendSelect" name="id">
                 <option value="0" selected>Choose Friend</option>
                 '.$this->GetFriendsOptions().'
@@ -52,6 +74,30 @@ class SuggestView
 
         <div id="suggestions">
         </div>
+        ';
+    }
+
+    public function GetErrorContent($token)
+    {
+        return
+        '
+            <form id="forMeForm" method="get" action="?path=suggestions">
+                <input type="hidden" name="path" value="suggestions" />
+                <input type="hidden" name="id" value="'.$this->user->GetSteamId().'">
+                <input type="submit" value="" id="forMeSubmit">
+            </form>
+
+            <form id="forFriendForm" method="get" action="?path=suggestions">
+                <input type="hidden" name="path" value="suggestions" />
+                <input type="hidden" name="token" id="token" value="'.$token.'">
+                <select id="forFriendSelect" name="id">
+                    <option value="0" selected>Choose Friend</option>
+                    '.$this->GetFriendsOptions().'
+                </select>
+
+            </form>
+
+            <p>Something went wrong and we couldn\'t help you with your request. Try again.</p>
         ';
     }
 

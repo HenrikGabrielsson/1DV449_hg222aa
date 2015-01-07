@@ -22,15 +22,19 @@ class HomePageController implements IContentController
         $this->homePageView = new \view\HomePageView($user, $friends);
     }
     
-    //hämtar sidinnehåll
+    //hämtar title
     public function GetTitle()
     {
         return $this->homePageView->GetTitle();
     }
     
-    //hämtar title
+    //hämtar sidinnehåll
     public function GetContent()
     {
-        return $this->homePageView->GetContent();
+        //skapar en token som ska jämföras med en som sparas i sessionen för att skydda mot CSRF
+        $token = md5(uniqid());
+        $this->steamService->SetSecurityToken($token);
+
+        return $this->homePageView->GetContent($token);
     }
 }

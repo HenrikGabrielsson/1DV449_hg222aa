@@ -11,6 +11,8 @@ class HomePageView
     {
         $this->user = $user;   
         $this->friends = $friends; 
+
+
     }
     
     //hämtar sidans title.
@@ -20,7 +22,7 @@ class HomePageView
     }
     
     //hämtar sidans innehåll.
-    public function GetContent()
+    public function GetContent($token)
     {
         $content = '
         <h1>Hello, ' . $this->user->GetUserName() .'!</h1>
@@ -34,6 +36,7 @@ class HomePageView
 
         <form id="forFriendForm" method="get" action="?path=suggestions">
             <input type="hidden" name="path" value="suggestions" />
+            <input type="hidden" name="token" id="token" value="'.$token.'">
             <select id="forFriendSelect" name="id">
                 <option value="0" selected>Choose Friend</option>
                 '.$this->GetFriendsOptions().'

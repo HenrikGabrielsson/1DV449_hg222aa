@@ -22,7 +22,16 @@ class SuggestController implements IContentController
 
         $this->suggestView = new \view\SuggestView($this->ebayService, $this->steamService);
 
-        $this->suggestionsUser = $this->steamService->GetUser($this->suggestView->GetId());
+        $id = $this->suggestView->GetId();
+
+        if($id)
+        {
+            $this->suggestionsUser = $this->steamService->GetUser($id);
+        }
+        else
+        {
+            $this->suggestionsUser = null;
+        }      
     }
 
     //hämtar sidans title
@@ -34,8 +43,18 @@ class SuggestController implements IContentController
     //hämtar sidans innehåll.
     public function GetContent()
     {
-        $merchandise = $this->ebayService->GetProducts($this->suggestionsUser->GetGames());
+        //skapar en token som ska jämföras med en som sparas i sessionen för att skydda mot CSRF
+        $token = md5(uniqid());
+        $this->steamService->SetSecurityToken($token);
 
-        return $this->suggestView->GetContent($merchandise, $this->suggestionsUser);
+        if(isset($this->suggestionsUser))
+        {
+            $merchandise = $this->ebayService->GetProducts($this->suggestionsUser->GetGames());
+
+
+            return $this->suggestView->GetContent($merchandise, $this->suggestionsUser, $token);            
+        }
+
+        return $this->suggestView->GetErrorContent($token);
     }
 }

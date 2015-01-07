@@ -20,9 +20,24 @@ class LoginHandler
     {
         return isset($_SESSION["steamId"]) ? $_SESSION["steamId"] : false;
     }
+
+    //kollar om man är inloggad
+    public function isLoggedIn($ip, $userAgent)
+    {
+        //kollar först om det finns en cookie med steamid
+        if($this->GetLoginId())
+        {
+            //kollar så det fortfarande är samma person bakom.
+            if($_SESSION["user_agent"] == $userAgent && $_SESSION["ip"] == $ip)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     
     //körs när en användare försöker logga in.
-    public function LoginUser()
+    public function LoginUser($ip, $userAgent)
     {
         //användaren skickas till steam för att logga in och godkänna att SteamStuff får logga in med Steam-kontot.
         if(!$this->lightopenid->mode)
@@ -42,17 +57,20 @@ class LoginHandler
             //sessioner sätts om allt går bra.
             if($this->lightopenid->validate())
             {
-                $this->SetUserSessions();
+                $this->SetUserSessions($ip, $userAgent);
                 header("location: .");
             }
         }
     }
     
     //Sätter session för inloggning.
-    private function SetUserSessions()
+    private function SetUserSessions($ip, $userAgent)
     {
         $_SESSION["steamOpenId"] = $this->lightopenid->identity;
         $_SESSION["steamId"] = str_replace("http://steamcommunity.com/openid/id/", "", $_SESSION["steamOpenId"]);
+        
+        $_SESSION["user_agent"] = $userAgent;
+        $_SESSION["ip"] = $ip;
     }
     
     //förstör sessionen vid utloggning.

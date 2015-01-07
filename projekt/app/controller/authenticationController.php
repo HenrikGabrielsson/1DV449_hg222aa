@@ -21,7 +21,7 @@ class AuthenticationController implements IContentController
     {
         if($this->view->UserWantsToLogin())
         {
-            $this->loginHandler->LoginUser();
+            $this->loginHandler->LoginUser($this->view->GetIp(), $this->view->GetUserAgent());
         }
         
         return $this->view->GetContent();

@@ -179,9 +179,13 @@ var main = {
 	//hämtar produkter från servern
 	getSuggestionsFromServer: function(id)
 	{
+		var token = document.getElementById("token").value;
+
+
 		//här ska ajax användas för att hämta in data från servern och sedan skrivas ut
-		$.get("ajaxHelper.php?function=getMerchandise&id=" + id, function(data)
+		$.get("ajaxHelper.php?function=getMerchandise&token="+token+"&id=" + id, function(data)
 		{
+			console.log(data);
 			localStorage.setItem(id, data);
 			main.printSuggestions(id);
 		});

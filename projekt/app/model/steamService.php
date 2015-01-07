@@ -47,7 +47,7 @@ class SteamService
         if(!$user || $isOld)
         {
             //den här ska inte återställas och sparas
-            $lastFriendListUpdate = $user->GetLastFriendListUpdate();
+            $lastFriendListUpdate;
 
             $user = $this->GetUserFromSteam($steamId,$oldId);
             $games = $this->GetGamesFromSteam($steamId);
@@ -56,6 +56,7 @@ class SteamService
             //uppdatera befintlig användare
             if($isOld)
             {
+                $lastFriendListUpdate = $user->GetLastFriendListUpdate();
                 $this->steamRepo->UpdateUser($user, $lastFriendListUpdate);
             }
 
@@ -65,7 +66,10 @@ class SteamService
                 $this->steamRepo->AddUser($user);
             }
 
-            $user->SetLastFriendListUpdate($lastFriendListUpdate);
+            if(isset($lastFriendListUpdate))
+            {
+                $user->SetLastFriendListUpdate($lastFriendListUpdate);
+            }    
         }
         return $user;
     }
@@ -74,6 +78,21 @@ class SteamService
     public function GetCachedGame($id)
     {
         return $this->steamRepo->GetGame($id);
+    }
+
+    //token som skydd mot CSRF
+    public function SetSecurityToken($token)
+    {
+        $_SESSION["token"] = $token;
+    }
+
+    public function CheckSecurityToken($token)
+    {
+        if(isset($token) && isset($_SESSION["token"]))
+        {
+            return $_SESSION["token"] == $token;
+        }
+        return false;
     }
 
     //hämta en spelares vänner.
