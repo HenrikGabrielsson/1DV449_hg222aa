@@ -15,7 +15,7 @@ if(isset($_GET["function"]))
 		$steamService = new \model\SteamService();
 
 		$suggestView = new \view\SuggestView($ebayService, $steamService);
-
+		
 		//avbryter om användarens token inte stämmer överens med den som kom som get-parameter
 		if(!$steamService->CheckSecurityToken($_GET["token"]))
 		{

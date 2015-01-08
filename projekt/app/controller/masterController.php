@@ -8,6 +8,7 @@ require_once("./view/templateView.php");
 require_once("./controller/authenticationController.php");
 require_once("./controller/homePageController.php");
 require_once("./controller/suggestController.php");
+require_once("./controller/errorController.php");
 
 require_once("./model/loginHandler.php");
 require_once("./model/steamService.php");
@@ -39,30 +40,38 @@ class MasterController
     {
         $controller;
         
-        //kollar så man är inloggad. annars tvingas man göra det.
-        if($this->loginHandler->GetLoginId($this->masterView->GetIp(), $this->masterView->GetUserAgent()) && !$this->masterView->UserWantsToLogout())
+        try
         {
-            switch ($this->masterView->getPath())
+            //kollar så man är inloggad. annars tvingas man göra det.
+            if($this->loginHandler->GetLoginId($this->masterView->GetIp(), $this->masterView->GetUserAgent()) && !$this->masterView->UserWantsToLogout())
             {
-                case "suggestions":
-                    $controller = new SuggestController($this->steamService,$this->ebayService);
-                    break;
-                default: 
-                    $controller = new HomePageController($this->steamService);
-                    break;
+                switch ($this->masterView->getPath())
+                {
+                    case "suggestions":
+                        $controller = new SuggestController($this->steamService,$this->ebayService);
+                        break;
+                    default: 
+                        $controller = new HomePageController($this->steamService);
+                        break;
+                }
             }
+            else
+            {
+                //utloggning.
+                if($this->masterView->UserWantsToLogout())
+                {
+                    $this->loginHandler->Logout();
+                }
+                
+                $controller = new AuthenticationController($this->loginHandler);
+            }        
         }
-        else
+        //vid fel så visas denna generella felsida
+        catch(\Exception $e)
         {
-            //utloggning.
-            if($this->masterView->UserWantsToLogout())
-            {
-                $this->loginHandler->Logout();
-            }
-            
-            $controller = new AuthenticationController($this->loginHandler);
+            $controller = new ErrorController();
         }
-        
+
         $this->templateView->EchoContent($controller->GetTitle(), $controller->GetContent(), $this->loginHandler->GetLoginId());
         
     }
