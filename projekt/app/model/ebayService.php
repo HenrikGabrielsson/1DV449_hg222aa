@@ -25,6 +25,12 @@ class EbayService
 	//hämtar en lista med produkter som ska visas på användaren beroende på vilka spel som ägs av spelaren.
 	public function GetProducts($games)
 	{
+		//har inga spel
+		if(count($games) == 0)
+		{
+			return;
+		}
+
 		//hämta ut vilka spel som man ska hämta förslag till på ebay
 		$featuredTitles = $this->DecideGameToFeature($games);
 

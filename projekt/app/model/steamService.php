@@ -14,7 +14,7 @@ class SteamService
     //url:er till Steam Web API
     private $getPlayerSummariesURL = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/";
     private $getFriendListURL = "http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?relationship=friend";
-    private $getOwnedGames = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?include_appinfo=1&include_played_free_games=1";
+    private $getOwnedGames = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?include_appinfo=1&include_played_free_games=0";
 
     public function __construct()
     {

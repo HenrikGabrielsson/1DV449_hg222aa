@@ -195,8 +195,15 @@ class SteamRepository extends BaseRepository
     //uppdatera vänskapsband.
     public function UpdateFriendships($user, $steamFriends)
     {
+
         //redan cachade vänner till $user
         $cachedFriends = $this->GetFriendsOf($user);
+
+        //inga vänner. behöver ej köra funktionen
+        if(count($cachedFriends) == 0 || count($steamFriends) == 0)
+        {
+            return;
+        }
 
         //tar bort vänskapsband som inte längre finns.
         foreach($cachedFriends as $friend)

@@ -53,12 +53,15 @@ class HomePageView
     {
         $optionsList = "";
 
-        foreach ($this->friends as $friend) 
+        if(count($this->friends) > 0)
         {
-            $optionsList .= 
-            '<option value="'.$friend->GetSteamId().'"> '.
-            $friend->GetUserName().
-            '</option>';
+            foreach ($this->friends as $friend) 
+            {
+                $optionsList .= 
+                '<option value="'.$friend->GetSteamId().'"> '.
+                $friend->GetUserName().
+                '</option>';
+            }
         }
 
         return $optionsList;

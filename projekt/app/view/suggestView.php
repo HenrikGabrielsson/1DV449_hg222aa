@@ -28,11 +28,14 @@ class SuggestView
 
             //kollar så användaren är användaren själv eller en vän. annars är åtkomst inte tillåten.
             $isFriend = false;
-            foreach ($this->friends as $friend) 
-            {
-                if($friend->GetSteamId() == $id)
+            if(count($this->friends) > 0)
                 {
-                    $isFriend = true;
+                foreach ($this->friends as $friend) 
+                {
+                    if($friend->GetSteamId() == $id)
+                    {
+                        $isFriend = true;
+                    }
                 }
             }
 
@@ -115,12 +118,15 @@ class SuggestView
     {
         $optionsList = "";
 
-        foreach ($this->friends as $friend) 
+        if(count($this->friends) > 0)
         {
-            $optionsList .= 
-            '<option value="'.$friend->GetSteamId().'"> '.
-            $friend->GetUserName().
-            '</option>';
+            foreach ($this->friends as $friend) 
+            {
+                $optionsList .= 
+                '<option value="'.$friend->GetSteamId().'"> '.
+                $friend->GetUserName().
+                '</option>';
+            }            
         }
 
         return $optionsList;
