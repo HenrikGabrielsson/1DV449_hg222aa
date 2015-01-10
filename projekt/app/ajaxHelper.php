@@ -19,7 +19,7 @@ if(isset($_GET["function"]))
 		//avbryter om användarens token inte stämmer överens med den som kom som get-parameter
 		if(!$steamService->CheckSecurityToken($_GET["token"]))
 		{
-			return;
+			echo "";
 		}
 
 		$merchandise = $suggestView->GetMerchandise($_GET['id']);

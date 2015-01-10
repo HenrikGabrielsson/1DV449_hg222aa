@@ -33,10 +33,11 @@ var main = {
 
 		//om det finnns möjlighet till cachning på klientsidan
 		if(window.localStorage)
-		{	
+		{
 			//kollar om klienten-servern kommer åt varandra.
 			main.pingServer(function(response)
 			{
+			
 				//online
 				if(response)
 				{
@@ -96,7 +97,6 @@ var main = {
 	printCacheWarning: function(id)
 	{
 		var suggestionsDiv = document.getElementById("suggestions");
-
 		var timeReceived = JSON.parse(window.localStorage.getItem(id)).timeReceived;
 
 		var warning = document.createElement("p");
@@ -119,9 +119,15 @@ var main = {
 	//kollar om det finns anslutning
 	pingServer: function(callback)
 	{
-		var ajaxGetter = $.get("ajaxHelper.php?function=ping")
-		.done(function(){callback(true)})
-		.fail(function(){callback(false)});		
+		$.ajax
+		({
+			url:"ajaxHelper.php?function=ping",
+			timeout:10000,	//10 sekunder timeout
+			success: function(){callback(true)},
+			error: function(){callback(false)},
+			fail: function(){callback(false)}
+		});
+
 	},
 
 	//skriver ut produkter
@@ -206,13 +212,11 @@ var main = {
 	//hämtar produkter från servern
 	getSuggestionsFromServer: function(id)
 	{
-		var token = document.getElementById("token").value;
-
+		var token = document.getElementById("token").innerHTML;
 
 		//här ska ajax användas för att hämta in data från servern och sedan skrivas ut
 		$.get("ajaxHelper.php?function=getMerchandise&token="+token+"&id=" + id, function(data)
 		{
-			console.log(data);
 			localStorage.setItem(id, data);
 			main.printSuggestions(id);
 		});
@@ -222,8 +226,7 @@ var main = {
 	submitMeFormOnTextClick: function()
 	{
 		var forMeText = document.getElementsByClassName("forMeFormText")[0];
-		var forMeForm = document.getElementById("forMeForm")
-;
+		var forMeForm = document.getElementById("forMeForm");
 		forMeText.addEventListener("click", function()
 		{
 			forMeForm.submit();

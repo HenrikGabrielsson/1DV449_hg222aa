@@ -93,13 +93,13 @@ class SuggestView
 
                     <form id="forFriendForm" method="get" action="?path=suggestions">
                         <input type="hidden" name="path" value="suggestions" />
-                        <input type="hidden" name="token" id="token" value="'.$token.'">
                         <select id="forFriendSelect" name="id">
                             <option value="0" selected>Friend</option>
                             '.$this->GetFriendsOptions().'
                         </select>
-
                     </form>
+
+                    <p id="token">'.$token.'</p>
                 </div>
             </div>
         ';

@@ -1,0 +1,20 @@
+CACHE MANIFEST
+#1
+#2
+CACHE:
+ajaxHelper.php
+
+view/script/main.js
+view/script/jquery-1.11.2.min.js
+
+view/style/steamStuffStyle.css
+
+view/img/alone.png
+view/img/friends.png
+view/img/favicon.ico
+view/img/loader.gif
+view/img/logo.png
+view/img/steamlogin.png
+
+FALLBACK: 
+/ view/error.html

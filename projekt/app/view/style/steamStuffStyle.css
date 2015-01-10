@@ -231,3 +231,7 @@ body {
 	float:left;
 }
 
+#token {
+	display: none;
+}
+

@@ -12,7 +12,7 @@ class TemplateView
 
         echo '
         <!doctype html>
-        <html>
+        <html manifest="cache.manifest">
             <head>
                 <title>'.$title.' - SteamStuff</title>
 
