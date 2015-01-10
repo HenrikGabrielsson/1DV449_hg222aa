@@ -55,52 +55,53 @@ class SuggestView
     }
 
     //hämta sidans innehåll.
-    public function GetContent($merchandise, $suggestionsUser, $token)
+    public function GetContent($token, $suggestionsUser)
     {
         return 
-        '
-        <form id="forMeForm" method="get" action="?path=suggestions">
-            <input type="hidden" name="path" value="suggestions" />
-            <input type="hidden" name="id" value="'.$this->user->GetSteamId().'">
-            <input type="submit" value="" id="forMeSubmit">
-        </form>
+            $this->GetForms($token).   
+            '
+            <div id="content_header">
+                <h1>Merchandise for '.$suggestionsUser->GetUserName().'</h1>
+                <img src="model/avatars/'.$suggestionsUser->GetSteamId().'.jpg" class="avatar">
+            </div>
+            <div id="suggestions">
 
-        <form id="forFriendForm" method="get" action="?path=suggestions">
-            <input type="hidden" name="path" value="suggestions" />
-            <input type="hidden" name="token" id="token" value="'.$token.'">
-            <select id="forFriendSelect" name="id">
-                <option value="0" selected>Choose Friend</option>
-                '.$this->GetFriendsOptions().'
-            </select>
-
-        </form>
-
-        <div id="suggestions">
-        </div>
-        ';
+            </div>
+            ';
     }
 
     public function GetErrorContent($token)
     {
         return
+            $this->GetForms($token).
+            '<p>Something went wrong and we couldn\'t help you with your request. Try again.</p>
+        ';
+    }
+
+    private function GetForms($token)
+    {
+        return 
         '
-            <form id="forMeForm" method="get" action="?path=suggestions">
-                <input type="hidden" name="path" value="suggestions" />
-                <input type="hidden" name="id" value="'.$this->user->GetSteamId().'">
-                <input type="submit" value="" id="forMeSubmit">
-            </form>
 
-            <form id="forFriendForm" method="get" action="?path=suggestions">
-                <input type="hidden" name="path" value="suggestions" />
-                <input type="hidden" name="token" id="token" value="'.$token.'">
-                <select id="forFriendSelect" name="id">
-                    <option value="0" selected>Choose Friend</option>
-                    '.$this->GetFriendsOptions().'
-                </select>
+            <div id="suggestions_options">
+                <div id="formsMiniVersion">
+                    <form id="forMeForm" method="get" action="?path=suggestions">
+                        <input type="hidden" name="path" value="suggestions" />
+                        <input type="hidden" name="id" value="'.$this->user->GetSteamId().'">
+                        <input type="submit" value="" id="forMeSubmit">
+                    </form>
 
-            </form>
+                    <form id="forFriendForm" method="get" action="?path=suggestions">
+                        <input type="hidden" name="path" value="suggestions" />
+                        <input type="hidden" name="token" id="token" value="'.$token.'">
+                        <select id="forFriendSelect" name="id">
+                            <option value="0" selected>Friend</option>
+                            '.$this->GetFriendsOptions().'
+                        </select>
 
-            <p>Something went wrong and we couldn\'t help you with your request. Try again.</p>
+                    </form>
+                </div>
+            </div>
         ';
     }
 

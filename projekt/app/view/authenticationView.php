@@ -15,10 +15,16 @@ class AuthenticationView
     public function GetContent()
     {
         return '
-        <p>Login via Steam to get access to the site</p>
-        <a href="?login">
-            <image src="view/img/steamlogin.png" alt="Click here to login with your Steam account." />
-        </a>
+
+        <div id="text_content">
+            <h1>Welcome to SteamStuff</h1>
+            <p>SteamStuff helps you find t-shirts, posters, special editions and other gaming merchandise for your favorite games. You don\'t even have to do any searching yourself! All
+            you have to do is log in with your Steam account (don\'t worry, it\'s safe!) and we will check what items might be perfect just for you. You can also find stuff to give to your friends. </p>
+            <p>Login via Steam to get access to the site</p>
+            <a href="?login">
+                <image src="view/img/steamlogin.png" alt="Click here to login with your Steam account." />
+            </a>
+        </div>
         ';
     }
 

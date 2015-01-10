@@ -49,10 +49,7 @@ class SuggestController implements IContentController
 
         if(isset($this->suggestionsUser))
         {
-            $merchandise = $this->ebayService->GetProducts($this->suggestionsUser->GetGames());
-
-
-            return $this->suggestView->GetContent($merchandise, $this->suggestionsUser, $token);            
+            return $this->suggestView->GetContent($token, $this->suggestionsUser);            
         }
 
         return $this->suggestView->GetErrorContent($token);

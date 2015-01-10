@@ -8,7 +8,7 @@ class TemplateView
     //Skriver ut det inehåll som ska visas på alla sidor.
     public function EchoContent($title, $content, $loggedIn)
     {
-        $loginBox = $loggedIn ? $this->GetLogoutBox() : "";
+        $loginBox = $loggedIn ? $this->GetLoginArea($loggedIn) : "";
 
         echo '
         <!doctype html>
@@ -26,7 +26,7 @@ class TemplateView
                     <div id="header">
 
                         <div id="logo">
-                            <img src="view/img/logo.png">
+                            <img src="view/img/logo.png" id="logo">
                         </div>
 
                         '. $loginBox .'
@@ -45,13 +45,13 @@ class TemplateView
     }
 
     //skapar en ruta för utloggning om det ska visas.
-    private function GetLogoutBox()
+    private function GetLoginArea($id)
     {
         return 
         '
             <div id="loginBox">
-                <p>You are logged in!</p>
-                <p><a href="?logout">Log out</a></p>
+                <img src="model/avatars/'.$id.'.jpg" class="avatar">
+                <p>You are logged in! <a href="?logout" class="logoutLink">Log out</a></p>
             </div>
         ';
     }

@@ -9,6 +9,12 @@ var main = {
 			main.submitFriendFormOnSelect();
 		}
 
+		if(document.getElementsByClassName("forMeFormText")[0] !== undefined)
+		{
+			
+			main.submitMeFormOnTextClick();
+		}
+
 		//om ett element ska fyllas med produkter från ebay.
 		if(document.getElementById("suggestions") !== null)
 		{
@@ -64,7 +70,7 @@ var main = {
 	printError: function()
 	{
 		var suggestionsDiv = document.getElementById("suggestions");
-		suggestionsDiv.removeChild(document.getElementById("loadingGif"));
+		main.removeLoadingGif();
 
 		var h2 = document.createElement("h2");
 		var p = document.createElement("p");
@@ -73,6 +79,17 @@ var main = {
 
 		suggestionsDiv.appendChild(h2);
 		suggestionsDiv.appendChild(p);
+	},
+
+	//visas när inga items hittades
+	printNoMerchandise: function()
+	{
+		var suggestionsDiv = document.getElementById("suggestions");
+		var noMerchandise = document.createElement("p");
+
+		noMerchandise.appendChild(document.createTextNode("No merchandise found. Try to refresh the page, or buy more games..."));
+
+		suggestionsDiv.appendChild(noMerchandise);
 	},
 
 	//Berättar för användaren att utskrivna objekt är gamla.
@@ -91,12 +108,12 @@ var main = {
 	//visar för användaren att sidan laddar medan produkter hämtas.
 	printLoadingScreen: function()
 	{
-		var suggestionsDiv = document.getElementById("suggestions");
-		var loadingGif = document.createElement("img");
-		loadingGif.setAttribute("id", "loadingGif");
-		loadingGif.setAttribute("src", "view/img/loader.gif");
+		document.getElementById("suggestions").setAttribute("class", "loadingGif");
+	},
 
-		suggestionsDiv.appendChild(loadingGif);
+	removeLoadingGif: function()
+	{
+		document.getElementById("suggestions").removeAttribute("class");
 	},
 
 	//kollar om det finns anslutning
@@ -115,15 +132,25 @@ var main = {
 
 		//tar bort loading-gif och hämtar viktiga element.
 		var suggestionsDiv = document.getElementById("suggestions");
-		suggestionsDiv.removeChild(document.getElementById("loadingGif"));
+		main.removeLoadingGif();
+
 		var suggestionList = document.createElement("ul");
 		suggestionsDiv.appendChild(suggestionList);
 
-		//skapar ett nytt listelement för varje produkt.
-		merchandise.forEach(function(item)
+		//inget hittades!
+		if(merchandise.length === 0)
 		{
-			suggestionList.appendChild(main.createListElement(item));
-		});
+			main.printNoMerchandise();
+		}
+		else
+		{
+			//skapar ett nytt listelement för varje produkt.
+			merchandise.forEach(function(item)
+			{
+				suggestionList.appendChild(main.createListElement(item));
+			});			
+		}
+
 	},
 
 	//skapar ett listelement för en given produkt.
@@ -189,6 +216,18 @@ var main = {
 			localStorage.setItem(id, data);
 			main.printSuggestions(id);
 		});
+	},
+
+	//skickar formulär även när man klickar på text.
+	submitMeFormOnTextClick: function()
+	{
+		var forMeText = document.getElementsByClassName("forMeFormText")[0];
+		var forMeForm = document.getElementById("forMeForm")
+;
+		forMeText.addEventListener("click", function()
+		{
+			forMeForm.submit();
+		}, false);
 	},
 
 	//ser till så formulär skickas så fort man väljer en person i listan.
