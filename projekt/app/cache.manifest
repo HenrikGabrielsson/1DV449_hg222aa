@@ -1,6 +1,7 @@
 CACHE MANIFEST
+#2015-01-11
 #1
-#2
+
 CACHE:
 ajaxHelper.php
 
@@ -16,5 +17,8 @@ view/img/loader.gif
 view/img/logo.png
 view/img/steamlogin.png
 
+NETWORK:
+ajaxHelper.php?function=ping
+
 FALLBACK: 
-/ view/error.html
+/ view/problem.html

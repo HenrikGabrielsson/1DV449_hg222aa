@@ -22,6 +22,22 @@ var main = {
 		}
 	},
 
+	//felsidan anropar denna funktion för att hämta sidan igen när det finns anslutning till servern igen.
+	refreshWhenOnline: function()
+	{
+		var pingLoop = setInterval(function()
+		    {
+		        main.pingServer(function(response)
+		        {
+		            if(response)
+		            {
+		                clearInterval(pingLoop);
+		                location.reload();
+		            }
+		        })
+		    },10000);
+	},
+
 	//hämtar ebay-produkter från servern
 	getSuggestionsForUser: function()
 	{
@@ -38,6 +54,7 @@ var main = {
 			main.pingServer(function(response)
 			{
 			
+				
 				//online
 				if(response)
 				{
@@ -123,6 +140,7 @@ var main = {
 		({
 			url:"ajaxHelper.php?function=ping",
 			timeout:10000,	//10 sekunder timeout
+			cache:false,
 			success: function(){callback(true)},
 			error: function(){callback(false)},
 			fail: function(){callback(false)}
@@ -135,6 +153,7 @@ var main = {
 	{
 		//hämtar de cachade produkterna.
 		var merchandise = JSON.parse(window.localStorage.getItem(id)).merchandise;
+
 
 		//tar bort loading-gif och hämtar viktiga element.
 		var suggestionsDiv = document.getElementById("suggestions");
@@ -217,6 +236,7 @@ var main = {
 		//här ska ajax användas för att hämta in data från servern och sedan skrivas ut
 		$.get("ajaxHelper.php?function=getMerchandise&token="+token+"&id=" + id, function(data)
 		{
+			console.log(data);
 			localStorage.setItem(id, data);
 			main.printSuggestions(id);
 		});
