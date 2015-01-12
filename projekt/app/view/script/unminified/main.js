@@ -52,9 +52,7 @@ var main = {
 		{
 			//kollar om klienten-servern kommer åt varandra.
 			main.pingServer(function(response)
-			{
-			
-				
+			{			
 				//online
 				if(response)
 				{
@@ -62,17 +60,7 @@ var main = {
 				}
 				else
 				{
-					//hämtar cachade objekt.
-					if(localStorage.getItem(id))
-					{
-						main.printCacheWarning(id);
-						main.printSuggestions(id);
-					}
-					//finns inte
-					else
-					{
-						main.printError();
-					}
+					main.getSuggestionsFromCache(id);
 					
 				}
 			});
@@ -81,6 +69,22 @@ var main = {
 		else
 		{
 			main.getSuggestionsFromServer(id);
+		}
+	},
+
+	//skriv ut lokala suggestions
+	getSuggestionsFromCache: function(id)
+	{
+		//hämtar cachade objekt.
+		if(localStorage.getItem(id))
+		{
+			main.printCacheWarning(id);
+			main.printSuggestions(id);
+		}
+		//finns inte
+		else
+		{
+			main.printError();
 		}
 	},
 
@@ -236,9 +240,24 @@ var main = {
 		//här ska ajax användas för att hämta in data från servern och sedan skrivas ut
 		$.get("ajaxHelper.php?function=getMerchandise&token="+token+"&id=" + id, function(data)
 		{
-			console.log(data);
-			localStorage.setItem(id, data);
-			main.printSuggestions(id);
+			try
+			{
+				//testar om hämtad data kan tolkas som json
+				var jsonTest = JSON.parse(data);
+
+				//sparar lokalt och skriver ut
+				if(jsonTest !== null && jsonTest !== undefined)
+				{
+					localStorage.setItem(id, data);
+					main.printSuggestions(id);
+				}
+			}
+			//fel inträffade, cachad data hämtas istället.
+			catch(e)
+			{
+				getSuggestionsFromCache(id);
+			}
+			
 		});
 	},
 
