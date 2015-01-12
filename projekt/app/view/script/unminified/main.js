@@ -255,7 +255,7 @@ var main = {
 			//fel inträffade, cachad data hämtas istället.
 			catch(e)
 			{
-				getSuggestionsFromCache(id);
+				main.getSuggestionsFromCache(id);
 			}
 			
 		});
