@@ -29,23 +29,23 @@ class Game
 
     public function GetId()
     {
-        return $this->id;
+        return strip_tags($this->id);
     }
     public function GetAppId()
     {
-        return $this->appId;
+        return strip_tags($this->appId);
     }
     public function GetTitle()
     {
-        return $this->title;
+        return strip_tags($this->title);
     }
     public function GetOverallPlaytime()
     {
-        return $this->overallPlaytime;
+        return strip_tags($this->overallPlaytime);
     }
     public function GetRecentPlaytime()
     {
-        return $this->recentPlaytime;
+        return strip_tags($this->recentPlaytime);
     }
     public function GetLastMerchandiseUpdate()
     {

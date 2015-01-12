@@ -58,7 +58,7 @@ class LoginHandler
             if($this->lightopenid->validate())
             {
                 $this->SetUserSessions($ip, $userAgent);
-                header("location: .");
+                header("location: ./?path=home");
             }
         }
     }

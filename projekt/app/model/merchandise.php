@@ -32,31 +32,31 @@ class Merchandise
 
 	public function GetId()
 	{
-		return $this->id;
+		return strip_tags($this->id);
 	}
 	public function GetItemId()
 	{
-		return $this->itemId;
+		return strip_tags($this->itemId);
 	}
 	public function GetTitle()
 	{
-		return $this->title;
+		return strip_tags($this->title);
 	}
 	public function GetImageURL()
 	{
-		return $this->imageURL;
+		return strip_tags($this->imageURL);
 	}
 	public function GetEbayURL()
 	{
-		return $this->ebayURL;
+		return strip_tags($this->ebayURL);
 	}
 	public function GetLocation()
 	{
-		return $this->location;
+		return strip_tags($this->location);
 	}
 	public function GetCountry()
 	{
-		return $this->country;
+		return strip_tags($this->country);
 	}
 	public function GetStartTime()
 	{
@@ -68,6 +68,6 @@ class Merchandise
 	}
 	public function GetGameId()
 	{
-		return $this->gameId;
+		return strip_tags($this->gameId);
 	}	
 }

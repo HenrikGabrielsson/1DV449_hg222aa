@@ -8,11 +8,14 @@ class TemplateView
     //Skriver ut det inehåll som ska visas på alla sidor.
     public function EchoContent($title, $content, $loggedIn)
     {
+        //sätter inget manifest-attribut vid utloggning eller inloggning.
+        $manifest = isset($_GET["login"]) || isset($_GET["logout"]) ? '' : ' manifest="cache.manifest"' ;
+
         $loginBox = $loggedIn ? $this->GetLoginArea($loggedIn) : "";
 
         echo '
         <!doctype html>
-        <html manifest="cache.manifest">
+        <html'.$manifest.'>
             <head>
                 <title>'.$title.' - SteamStuff</title>
 

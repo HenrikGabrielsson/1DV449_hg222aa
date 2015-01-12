@@ -36,15 +36,15 @@ class SteamUser
 
     public function GetId()
     {
-        return $this->id;
+        return strip_tags($this->id);
     }
     public function GetSteamId()
     {
-        return $this->steamId;
+        return strip_tags($this->steamId);
     }
     public function GetUserName()
     {
-        return $this->userName;
+        return strip_tags($this->userName);
     }
     public function GetLastUpdate()
     {
@@ -56,7 +56,7 @@ class SteamUser
     }
     public function GetAvatar()
     {
-        return $this->avatar;
+        return strip_tags($this->avatar);
     }
     public function GetGames()
     {
