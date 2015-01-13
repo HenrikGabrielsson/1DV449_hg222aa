@@ -1,0 +1,28 @@
+title Hämta användare från Steam
+
+Klient -+ Server Efterfråga användare (id)
+Server - Server Cache  Leta i cache efter användare 
+Server Cache - Server  Inget resultat
+Server - Steam Web API Hämta användare med (id)
+Steam Web API - Server Returnera användaruppgifter
+Server - Server Cache  Spara användare i cache
+Server - Steam Web API Hämta användarens spel-lista
+Steam Web API - Server Returnera spel
+Server - Server Cache  Spara alla spel i cache
+
+Server - Steam Web API Hämta användarens vänlista
+Steam Web API - Server Returnera vänlista
+loop Foreach vän i vänlista
+  Server - Steam Web API Hämta användare med (id)
+  Server - Server Cache  Spara användare i cache
+  Steam Web API - Server Returnera användaruppgifter
+  Server - Steam Web API Hämta användarens spel-lista
+  Steam Web API - Server Returnera spel
+  Server - Server Cache  Spara alla spel i cache
+end
+Server - Klient Returnera användare
+
+
+
+
+

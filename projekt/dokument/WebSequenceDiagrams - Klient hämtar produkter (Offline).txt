@@ -1,0 +1,8 @@
+title Klient hämtar produkter (Offline)
+
+Klient - Server Kolla om det finns anslutning
+Server - Klient (Inget svar)
+Klient - Web Storage  Kolla efter cachade produkter
+Web Storage - Klient  Skicka tillbaka produkter
+Klient - Klient Visa varning om gamla produkter
+Klient - Klient Visa produkter

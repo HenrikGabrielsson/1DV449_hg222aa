@@ -1,0 +1,14 @@
+title Lyckad inloggning
+
+Klient -> Server: Visa sida
+Server -> Server: Kontrollera om klient är inloggad (Ej inloggad)
+Server -> Klient: Inloggningssida
+
+Klient -> Server: Logga in
+
+Server -> Klient: Redirect till Steams Inloggning
+
+Klient -> Steam OpenId: Ge användaruppgifter
+Steam OpenId -> Steam OpenId: Kontrollera användaruppgifter 
+Steam OpenId -> Server: Klient är inloggad
+Server -> Klient: Skicka till startsida

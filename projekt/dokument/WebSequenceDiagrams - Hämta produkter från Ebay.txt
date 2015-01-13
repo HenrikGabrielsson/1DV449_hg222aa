@@ -1,0 +1,22 @@
+title Hämta produkter från Ebay
+
+Klient ->+ Server: Hämta produkter åt användare (id)
+Server -> Server Cache: Hämta spel från användare(id)
+Server Cache -> Server: Returnera spellista
+Server -> Server: Välj spel att hämta produkter till
+Loop foreach spel i valda spel
+  Server -> Server Cache : Leta efter produkter till    (spel)
+  Server Cache: (Hittade inget)
+  Server -> Ebay Finding API : Returnera produkter till (speltitel)
+  Ebay Finding API -> Server: Returnera produkter till spel
+  Server -> Server Cache: spara produkter
+end
+Server -> Klient: Skicka tillbaka produkter
+
+
+
+
+
+
+
+
