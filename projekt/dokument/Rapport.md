@@ -11,6 +11,18 @@ Jag har letat runt en del och medan det finns många sidor som säljer gaming merc
 
 ##Dataflödesschema
 
+###Lyckad inloggning
+![Lyckad inloggning](successful_login.png)
+
+###Hämta användare från Steam
+![Hämta användare från Steam](server_getUserFromSteam.png)
+
+###Hämta produkter från Ebay
+![Hämta produkter från Ebay](server_getProductsFromEbay.png)
+
+###Klient hämtar data från servern
+![Klient hämtar data från servern](client_getProducts.png)
+
 ##Server
 På server-sidan så har jag använt mig av PHP och MySql. När jag började med projektet så jobbade jag med Node.js, men eftersom jag inte fick det att fungera med OpenId och tiden började rinna iväg så hoppade jag över till PHP eftersom det är ett språk som jag känner till väl sedan tidigare, och där det var mycket enkelt att koppla ihop Steams openId-tjänst med min webbplats. Detta gjorde jag med hjälp av biblioteket [LightOpenId](https://gitorious.org/lightopenid). MySql-databasen använder jag mig av eftersom jag har tillgång till den genom webbhotellet där jag publicerar applikationen. 
 
